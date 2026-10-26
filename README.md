@@ -1,1 +1,52 @@
 # stars-shop-27
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Stars Shop 24</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{margin:0;background:#101522;color:white;font-family:Arial,sans-serif;padding:24px 16px}
+
+main{max-width:440px;margin:auto}
+
+header{text-align:center;padding:22px 0}
+
+.logo{font-size:52px}
+
+h1{margin:8px 0;font-size:29px}
+
+p{color:#aeb9d0;line-height:1.5}
+
+.products{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:25px}
+
+.card{background:#1b2436;border:1px solid #303c53;border-radius:18px;padding:20px 10px;text-align:center}
+
+.star{font-size:30px}
+
+.amount{font-size:23px;font-weight:bold;margin:10px 0}
+
+button{width:100%;border:0;border-radius:12px;background:#2688ff;color:white;padding:12px;font-size:15px;font-weight:bold}
+
+.note{font-size:12px;text-align:center;margin-top:24px}
+
+</style>
+
+</head>
+
+<body>
+
+<main>
+
+<header>
+
+<div class="

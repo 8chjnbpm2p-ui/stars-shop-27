@@ -17,7 +17,8 @@ p{color:#aeb9d0;line-height:1.5}
 .card{background:#1b2436;border:1px solid #303c53;border-radius:18px;padding:20px 10px;text-align:center}
 .star{font-size:30px}
 .amount{font-size:23px;font-weight:bold;margin:10px 0}
-button{width:100%;border:0;border-radius:12px;background:#2688ff;color:white;padding:12px;font-size:15px;font-weight:bold}
+.price{font-size:18px;font-weight:bold;color:#55d6a7;margin:12px 0}
+  button{width:100%;border:0;border-radius:12px;background:#2688ff;color:white;padding:12px;font-size:15px;font-weight:bold}
 .note{font-size:12px;text-align:center;margin-top:24px}
 </style>
 </head>
@@ -56,7 +57,14 @@ button{width:100%;border:0;border-radius:12px;background:#2688ff;color:white;pad
 </div>
 <p class="note">Выбор товара пока демонстрационный. Оплата и доставка ещё не подключены.</p>
 </main>
-<script>
+<p style="text-align:center;margin-top:16px">
+
+  Нужна помощь?
+
+  <a href="https://t.me/JonDayviHar1s" style="color:#55aaff" target="_blank">Написать в поддержку</a>
+
+</p
+  <script>
 function order(n){
 if(window.Telegram&&window.Telegram.WebApp){
 Telegram.WebApp.showAlert("Вы выбрали пакет "+n+" звёзд. Заказ и оплата пока не подключены.");

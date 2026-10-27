@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,63 +5,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stars Shop 24</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101522;color:white;font-family:Arial,sans-serif;padding:24px 16px}
-main{max-width:440px;margin:auto}
-header{text-align:center;padding:22px 0}
-.logo{font-size:52px}
-h1{margin:8px 0;font-size:29px}
-p{color:#aeb9d0;line-height:1.5}
-.products{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:25px}
-.card{background:#1b2436;border:1px solid #303c53;border-radius:18px;padding:20px 10px;text-align:center}
-.star{font-size:30px}
-.amount{font-size:23px;font-weight:bold;margin:10px 0}
-.price{font-size:18px;font-weight:bold;color:#55d6a7;margin:12px 0}
-  button{width:100%;border:0;border-radius:12px;background:#2688ff;color:white;padding:12px;font-size:15px;font-weight:bold}
-.note{font-size:12px;text-align:center;margin-top:24px}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #101522;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 24px 16px;
+}
+main {
+  max-width: 440px;
+  margin: auto;
+}
+header {
+  text-align: center;
+  padding: 22px 0;
+}
+.logo {
+  font-size: 52px;
+}
+h1 {
+  margin: 8px 0;
+  font-size: 29px;
+}
+p {
+  color: #aeb9d0;
+  line-height: 1.5;
+}
+.products {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 25px;
+}
+.card {
+  background: #1b2436;
+  border: 1px solid #303c53;
+  border-radius: 18px;
+  padding: 20px 10px;
+  text-align: center;
+}
+.star {
+  font-size: 30px;
+}
+.amount {
+  font-size: 23px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+.price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #55d6a7;
+  margin: 12px 0;
+}
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #2688ff;
+  color: white;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover {
+  background: #1475ec;
+}
+.support {
+  text-align: center;
+  margin-top: 22px;
+}
+.support a {
+  color: #55aaff;
+}
+.note {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 24px;
+}
+#message {
+  display: none;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #1b2436;
+  border: 1px solid #303c53;
+  overflow-wrap: anywhere;
+}
+#message a {
+  color: #55aaff;
+}
 </style>
 </head>
 <body>
 <main>
-<header>
-<div class="logo">⭐</div>
-<h1>Stars Shop 24</h1>
-<p>Твой магазин Telegram Stars</p>
-</header>
-<div class="products">
-<div class="card">
-  <div class="star">⭐</div>
-  <div class="amount">50 звёзд</div>
-  <div class="price">10 000 сум</div>
-  <button onclick="order(50)">Выбрать</button>
-</div>
-<div class="card">
-  <div class="star">⭐</div>
-  <div class="amount">100 звёзд</div>
-  <div class="price">20 000 сум</div>
-  <button onclick="order(100)">Выбрать</button>
-</div>
-<div class="card">
-  <div class="star">⭐</div>
-  <div class="amount">250 звёзд</div>
-  <div class="price">50 000 сум</div>
-  <button onclick="order(250)">Выбрать</button>
-</div>
-<div class="card">
-  <div class="star">⭐</div>
-  <div class="amount">500 звёзд</div>
-  <div class="price">100 000 сум</div>
-  <button onclick="order(500)">Выбрать</button>
-</div>
-</div>
-<p class="note">Выбор товара пока демонстрационный. Оплата и доставка ещё не подключены.</p>
+  <header>
+    <div class="logo">⭐</div>
+    <h1>Stars Shop 24</h1>
+    <p>Твой магазин Telegram Stars</p>
+  </header>
+  <div class="products">
+    <div class="card">
+      <div class="star">⭐</div>
+      <div class="amount">50 звёзд</div>
+      <div class="price">10 000 сум</div>
+      <button onclick="order(50)">Выбрать</button>
+    </div>
+    <div class="card">
+      <div class="star">⭐</div>
+      <div class="amount">100 звёзд</div>
+      <div class="price">20 000 сум</div>
+      <button onclick="order(100)">Выбрать</button>
+    </div>
+    <div class="card">
+      <div class="star">⭐</div>
+      <div class="amount">250 звёзд</div>
+      <div class="price">50 000 сум</div>
+      <button onclick="order(250)">Выбрать</button>
+    </div>
+    <div class="card">
+      <div class="star">⭐</div>
+      <div class="amount">500 звёзд</div>
+      <div class="price">100 000 сум</div>
+      <button onclick="order(500)">Выбрать</button>
+    </div>
+  </div>
+  <div id="message"></div>
+  <p class="note">
+    Сейчас можно создать заявку через Telegram.
+    Онлайн-оплата и автоматическая доставка пока не подключены.
+  </p>
+  <p class="support">
+    Нужна помощь?<br>
+    <a href="https://t.me/JonDayviHar1s"
+       target="_blank"
+       rel="noopener noreferrer">
+      Написать в поддержку
+    </a>
+  </p>
 </main>
-<p style="text-align:center;margin-top:16px">
-
-  Нужна помощь?
-
-  <a href="https://t.me/JonDayviHar1s" style="color:#55aaff" target="_blank">Написать в поддержку</a>
-
-</p
+<script>
+function order(stars) {
+  const prices = {
+    50: 10000,
+    100: 20000,
+    250: 50000,
+    500: 100000
+  };
+  if (!prices[stars]) {
+    return;
+  }
+  const message = document.getElementById("message");
+  const botUrl = "https://t.me/StarsShopUzBot";
+  message.style.display = "block";
+  message.innerHTML = `
+    <strong>⭐ Выбрано: ${stars} Telegram Stars</strong>
+    <p>Стоимость: ${prices[stars].toLocaleString("ru-RU")} сум</p>
+    <p>Для оформления заявки открой бота:</p>
+    <a href="${botUrl}?start=stars_${stars}"
+       target="_blank"
+       rel="noopener noreferrer">
+      Перейти в Stars Shop 24
+    </a>
+    <p style="font-size:12px">
+      Это пока только переход к боту.
+      Оплата и доставка автоматически не выполняются.
+    </p>
+  `;
+  message.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+</script>
 </body>
 </html>

@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stars Shop 24</title>
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 body {
   margin: 0;
   background: #101522;
@@ -15,25 +13,11 @@ body {
   font-family: Arial, sans-serif;
   padding: 24px 16px;
 }
-main {
-  max-width: 440px;
-  margin: auto;
-}
-header {
-  text-align: center;
-  padding: 22px 0;
-}
-.logo {
-  font-size: 52px;
-}
-h1 {
-  margin: 8px 0;
-  font-size: 29px;
-}
-p {
-  color: #aeb9d0;
-  line-height: 1.5;
-}
+main { max-width: 440px; margin: auto; }
+header { text-align: center; padding: 22px 0; }
+.logo { font-size: 52px; }
+h1 { margin: 8px 0; font-size: 29px; }
+p { color: #aeb9d0; line-height: 1.5; }
 .products {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -47,20 +31,9 @@ p {
   padding: 20px 10px;
   text-align: center;
 }
-.star {
-  font-size: 30px;
-}
-.amount {
-  font-size: 23px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-.price {
-  font-size: 18px;
-  font-weight: bold;
-  color: #55d6a7;
-  margin: 12px 0;
-}
+.star { font-size: 30px; }
+.amount { font-size: 23px; font-weight: bold; margin: 10px 0; }
+.price { font-size: 18px; font-weight: bold; color: #55d6a7; margin: 12px 0; }
 button {
   width: 100%;
   border: 0;
@@ -72,21 +45,10 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
-button:hover {
-  background: #1475ec;
-}
-.support {
-  text-align: center;
-  margin-top: 22px;
-}
-.support a {
-  color: #55aaff;
-}
-.note {
-  font-size: 12px;
-  text-align: center;
-  margin-top: 24px;
-}
+button:hover { background: #1475ec; }
+.note { font-size: 12px; text-align: center; margin-top: 24px; }
+.support { text-align: center; margin-top: 22px; }
+a { color: #55aaff; }
 #message {
   display: none;
   margin-top: 20px;
@@ -95,9 +57,6 @@ button:hover {
   background: #1b2436;
   border: 1px solid #303c53;
   overflow-wrap: anywhere;
-}
-#message a {
-  color: #55aaff;
 }
 </style>
 </head>
@@ -113,38 +72,37 @@ button:hover {
       <div class="star">⭐</div>
       <div class="amount">50 звёзд</div>
       <div class="price">10 000 сум</div>
-      <button onclick="order(50)">Выбрать</button>
+      <button onclick="order(50)">Купить</button>
     </div>
     <div class="card">
       <div class="star">⭐</div>
       <div class="amount">100 звёзд</div>
       <div class="price">20 000 сум</div>
-      <button onclick="order(100)">Выбрать</button>
+      <button onclick="order(100)">Купить</button>
     </div>
     <div class="card">
       <div class="star">⭐</div>
       <div class="amount">250 звёзд</div>
       <div class="price">50 000 сум</div>
-      <button onclick="order(250)">Выбрать</button>
+      <button onclick="order(250)">Купить</button>
     </div>
     <div class="card">
       <div class="star">⭐</div>
       <div class="amount">500 звёзд</div>
       <div class="price">100 000 сум</div>
-      <button onclick="order(500)">Выбрать</button>
+      <button onclick="order(500)">Купить</button>
     </div>
   </div>
   <div id="message"></div>
   <p class="note">
-    Сейчас можно создать заявку через Telegram.
+    Оформление заявки доступно через Telegram-бота.
     Онлайн-оплата и автоматическая доставка пока не подключены.
   </p>
   <p class="support">
-    Нужна помощь?<br>
+    🆘 Нужна помощь?<br>
     <a href="https://t.me/JonDayviHar1s"
-       target="_blank"
-       rel="noopener noreferrer">
-      Написать в поддержку
+       target="_blank" rel="noopener noreferrer">
+      Написать @JonDayviHar1s
     </a>
   </p>
 </main>
@@ -156,30 +114,33 @@ function order(stars) {
     250: 50000,
     500: 100000
   };
-  if (!prices[stars]) {
-    return;
-  }
+  if (!Object.prototype.hasOwnProperty.call(prices, stars)) return;
   const message = document.getElementById("message");
-  const botUrl = "https://t.me/StarsShopUzBot";
+  const botUrl = "https://t.me/Star_Shop_27_Bot";
+  message.replaceChildren();
+  const title = document.createElement("strong");
+  title.textContent = `⭐ Выбрано: ${stars} Telegram Stars`;
+  message.appendChild(title);
+  const price = document.createElement("p");
+  price.textContent =
+    `Стоимость: ${prices[stars].toLocaleString("ru-RU")} сум`;
+  message.appendChild(price);
+  const info = document.createElement("p");
+  info.textContent = "Для оформления заявки открой нашего бота:";
+  message.appendChild(info);
+  const link = document.createElement("a");
+  link.href = botUrl + "?start=stars_" + stars;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "Перейти в Stars Shop 24";
+  message.appendChild(link);
+  const note = document.createElement("p");
+  note.style.fontSize = "12px";
+  note.textContent =
+    "Это заявка, а не оплата. Не отправляй деньги до подтверждения заказа.";
+  message.appendChild(note);
   message.style.display = "block";
-  message.innerHTML = `
-    <strong>⭐ Выбрано: ${stars} Telegram Stars</strong>
-    <p>Стоимость: ${prices[stars].toLocaleString("ru-RU")} сум</p>
-    <p>Для оформления заявки открой бота:</p>
-    <a href="${botUrl}?start=stars_${stars}"
-       target="_blank"
-       rel="noopener noreferrer">
-      Перейти в Stars Shop 24
-    </a>
-    <p style="font-size:12px">
-      Это пока только переход к боту.
-      Оплата и доставка автоматически не выполняются.
-    </p>
-  `;
-  message.scrollIntoView({
-    behavior: "smooth",
-    block: "nearest"
-  });
+  message.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 </script>
 </body>

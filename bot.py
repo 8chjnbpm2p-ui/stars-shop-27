@@ -1,6 +1,7 @@
 
 import os
 import logging
+import asyncio
 
 from telegram import (
     Update,
@@ -20,31 +21,53 @@ from telegram.ext import (
     filters,
 )
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID", "")
-SUPPORT_USERNAME = os.getenv("SUPPORT_USERNAME", "")
+SUPPORT_USERNAME = os.getenv(
+    "SUPPORT_USERNAME", "JonDayviHar1s"
+).lstrip("@")
 
 SHOP_URL = "https://8chjnbpm2p-ui.github.io/stars-shop-27/"
 
 PACKAGES = {
-    "50": "50 Telegram Stars",
-    "100": "100 Telegram Stars",
-    "250": "250 Telegram Stars",
-    "500": "500 Telegram Stars",
+    "50": {"stars": 50, "price": 10000},
+    "100": {"stars": 100, "price": 20000},
+    "250": {"stars": 250, "price": 50000},
+    "500": {"stars": 500, "price": 100000},
 }
 
 CHOOSE_PACKAGE, ENTER_USERNAME = range(2)
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def format_price(price: int) -> str:
+    return f"{price:,}".replace(",", " ") + " сум"
+
+
+def package_text(package_id: str) -> str:
+    package = PACKAGES[package_id]
+    return (
+        f"{package['stars']} Telegram Stars — "
+        f"{format_price(package['price'])}"
+    )
+
+
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
     keyboard = [
-        [KeyboardButton(
-            "⭐ Открыть магазин",
-            web_app=WebAppInfo(url=SHOP_URL)
-        )],
+        [
+            KeyboardButton(
+                "⭐ Открыть магазин",
+                web_app=WebAppInfo(url=SHOP_URL),
+            )
+        ],
         [
             KeyboardButton("🛒 Купить звёзды"),
             KeyboardButton("💰 Цены"),
@@ -54,57 +77,84 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.effective_message.reply_text(
         "Добро пожаловать в Stars Shop 24! ⭐\n\n"
-        "Выбери действие в меню или используй команды ниже.\n"
-        "/buy — заказать\n"
-        "/prices — пакеты\n"
-        "/support — поддержка",
+        "Выбери действие в меню.\n\n"
+        "/buy — оформить заявку\n"
+        "/prices — посмотреть цены\n"
+        "/support — связаться с поддержкой",
         reply_markup=ReplyKeyboardMarkup(
-            keyboard,
-            resize_keyboard=True
+            keyboard, resize_keyboard=True
         ),
     )
 
 
-async def prices(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.effective_message.reply_text(
-        "⭐ Пакеты Stars Shop 24:\n\n"
-        "⭐ 50 звёзд\n"
-        "⭐ 100 звёзд\n"
-        "⭐ 250 звёзд\n"
-        "⭐ 500 звёзд\n\n"
-        "Стоимость и оплата пока не подключены.\n"
-        "Для оформления заявки нажми /buy."
+async def prices(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    lines = ["⭐ Цены Stars Shop 24\n"]
+
+    for package_id in PACKAGES:
+        lines.append("⭐ " + package_text(package_id))
+
+    lines.append(
+        "\nДля оформления заявки нажми /buy.\n"
+        "⚠️ Оплата и автоматическая доставка пока не подключены."
     )
 
+    await update.effective_message.reply_text("\n".join(lines))
 
-async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if SUPPORT_USERNAME:
-        contact = SUPPORT_USERNAME
+
+async def support(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    username = SUPPORT_USERNAME
+
+    if username:
+        text = (
+            "🆘 Поддержка Stars Shop 24\n\n"
+            f"Написать администратору: @{username}"
+        )
+        keyboard = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    "💬 Написать в поддержку",
+                    url=f"https://t.me/{username}",
+                )
+            ]
+        ])
     else:
-        contact = "Контакт поддержки пока не настроен."
+        text = "🆘 Контакт поддержки пока не настроен."
+        keyboard = None
 
     await update.effective_message.reply_text(
-        f"🆘 Поддержка Stars Shop 24\n\n{contact}"
+        text, reply_markup=keyboard
     )
 
 
-async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    buttons = [
-        [
-            InlineKeyboardButton("⭐ 50", callback_data="pkg_50"),
-            InlineKeyboardButton("⭐ 100", callback_data="pkg_100"),
-        ],
-        [
-            InlineKeyboardButton("⭐ 250", callback_data="pkg_250"),
-            InlineKeyboardButton("⭐ 500", callback_data="pkg_500"),
-        ],
-        [
-            InlineKeyboardButton("❌ Отмена", callback_data="cancel_order"),
-        ],
-    ]
+async def buy(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    buttons = []
+
+    for package_id, package in PACKAGES.items():
+        buttons.append([
+            InlineKeyboardButton(
+                f"⭐ {package['stars']} — "
+                f"{format_price(package['price'])}",
+                callback_data=f"pkg_{package_id}",
+            )
+        ])
+
+    buttons.append([
+        InlineKeyboardButton(
+            "❌ Отмена", callback_data="cancel_order"
+        )
+    ])
 
     await update.effective_message.reply_text(
-        "🛒 Выбери пакет звёзд:",
+        "🛒 Выбери пакет звёзд и его стоимость:",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
@@ -113,7 +163,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def choose_package(
     update: Update,
-    context: ContextTypes.DEFAULT_TYPE
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     query = update.callback_query
     await query.answer()
@@ -125,13 +175,15 @@ async def choose_package(
     package_id = query.data.removeprefix("pkg_")
 
     if package_id not in PACKAGES:
-        await query.edit_message_text("Неизвестный пакет. Попробуй /buy.")
+        await query.edit_message_text(
+            "Неизвестный пакет. Попробуй /buy."
+        )
         return ConversationHandler.END
 
     context.user_data["package_id"] = package_id
 
     await query.edit_message_text(
-        f"Ты выбрал: {PACKAGES[package_id]}.\n\n"
+        f"Ты выбрал:\n{package_text(package_id)}\n\n"
         "Теперь отправь Telegram-ник получателя, например @username.\n"
         "Не отправляй пароль или код входа от Telegram."
     )
@@ -141,7 +193,7 @@ async def choose_package(
 
 async def enter_username(
     update: Update,
-    context: ContextTypes.DEFAULT_TYPE
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     username = update.effective_message.text.strip()
 
@@ -159,16 +211,18 @@ async def enter_username(
         )
         return ConversationHandler.END
 
+    package = PACKAGES[package_id]
     user = update.effective_user
     order_id = f"{user.id}-{update.update_id}"
 
     await update.effective_message.reply_text(
         "✅ Заявка создана!\n\n"
         f"Номер: {order_id}\n"
-        f"Пакет: {PACKAGES[package_id]}\n"
+        f"Пакет: {package_text(package_id)}\n"
         f"Получатель: {username}\n\n"
-        "⚠️ Это заявка, а не оплаченный заказ. "
-        "Оплата и доставка ещё не подключены."
+        "⚠️ Это пока только заявка, а не оплаченный заказ.\n"
+        "Не отправляй деньги, пока не подтверждены способ "
+        "оплаты и условия заказа."
     )
 
     if ADMIN_CHAT_ID.isdigit():
@@ -177,13 +231,15 @@ async def enter_username(
                 chat_id=int(ADMIN_CHAT_ID),
                 text=(
                     f"🛒 Новая заявка {order_id}\n"
-                    f"Пакет: {PACKAGES[package_id]}\n"
+                    f"Пакет: {package_text(package_id)}\n"
                     f"Получатель: {username}\n"
                     f"Покупатель: {user.id}"
                 ),
             )
         except Exception:
-            logger.exception("Не удалось отправить заявку администратору")
+            logger.exception(
+                "Не удалось отправить заявку администратору"
+            )
 
     context.user_data.pop("package_id", None)
     return ConversationHandler.END
@@ -191,7 +247,7 @@ async def enter_username(
 
 async def cancel_command(
     update: Update,
-    context: ContextTypes.DEFAULT_TYPE
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     context.user_data.pop("package_id", None)
     await update.effective_message.reply_text("Заказ отменён.")
@@ -210,26 +266,25 @@ async def main():
         entry_points=[
             CommandHandler("buy", buy),
             MessageHandler(
-                filters.Regex("^🛒 Купить звёзды$"),
-                buy
+                filters.Regex("^🛒 Купить звёзды$"), buy
             ),
         ],
         states={
             CHOOSE_PACKAGE: [
                 CallbackQueryHandler(
                     choose_package,
-                    pattern="^(pkg_|cancel_order$)"
-                ),
+                    pattern=r"^(pkg_(50|100|250|500)|cancel_order)$",
+                )
             ],
             ENTER_USERNAME: [
                 MessageHandler(
                     filters.TEXT & ~filters.COMMAND,
-                    enter_username
-                ),
+                    enter_username,
+                )
             ],
         },
         fallbacks=[
-            CommandHandler("cancel", cancel_command),
+            CommandHandler("cancel", cancel_command)
         ],
     )
 
@@ -251,7 +306,6 @@ async def main():
 
     logger.info("Stars Shop 24 запущен!")
 
-    import asyncio
     try:
         await asyncio.Event().wait()
     finally:
@@ -261,5 +315,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(main())

@@ -98,6 +98,7 @@ def init_db():
                 created_at TEXT NOT NULL
             )
         """)
+
         conn.execute("""
             CREATE TABLE IF NOT EXISTS webhook_events (
                 event_id TEXT PRIMARY KEY,
@@ -109,7 +110,8 @@ def init_db():
 def get_order(order_id):
     with db() as conn:
         return conn.execute(
-            "SELECT * FROM orders WHERE id = ?", (order_id,)
+            "SELECT * FROM orders WHERE id = ?",
+            (order_id,),
         ).fetchone()
 
 
@@ -123,7 +125,9 @@ def update_order(order_id, status, ifragment_id=None):
             """, (status, ifragment_id, order_id))
         else:
             conn.execute("""
-                UPDATE orders SET status = ? WHERE id = ?
+                UPDATE orders
+                SET status = ?
+                WHERE id = ?
             """, (status, order_id))
 
 
@@ -150,9 +154,10 @@ def admin_id():
 
 async def send_admin_message(text, reply_markup=None):
     target = admin_id()
+
     if not target:
         logger.error("ADMIN_CHAT_ID не настроен.")
-        return
+        raise RuntimeError("ADMIN_CHAT_ID не настроен.")
 
     await telegram_app.bot.send_message(
         chat_id=target,
@@ -194,7 +199,9 @@ async def ifragment_request(method, path, **kwargs):
             try:
                 return json.loads(body) if body else {}
             except json.JSONDecodeError:
-                raise RuntimeError("iFragment вернул некорректный JSON.")
+                raise RuntimeError(
+                    "iFragment вернул некорректный JSON."
+                )
 
 
 async def check_recipient(username):
@@ -218,7 +225,6 @@ async def check_recipient(username):
 async def create_ifragment_order(order):
     order_id = order["id"]
 
-    # Один и тот же ключ используется при повторе этой заявки.
     result = await ifragment_request(
         "POST",
         "/orders",
@@ -267,13 +273,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/prices — цены\n"
         "/support — поддержка",
         reply_markup=ReplyKeyboardMarkup(
-            keyboard, resize_keyboard=True
+            keyboard,
+            resize_keyboard=True,
         ),
     )
 
 
 async def prices(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lines = ["⭐ Цены Stars Shop 24\n"]
+
     for package_id in PACKAGES:
         lines.append("⭐ " + package_text(package_id))
 
@@ -288,13 +296,17 @@ async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 url=f"https://t.me/{SUPPORT_USERNAME}",
             )
         ]])
-        text = f"🆘 Поддержка Stars Shop 24\n\n@{SUPPORT_USERNAME}"
+        text = (
+            "🆘 Поддержка Stars Shop 24\n\n"
+            f"@{SUPPORT_USERNAME}"
+        )
     else:
         keyboard = None
         text = "Контакт поддержки пока не настроен."
 
     await update.effective_message.reply_text(
-        text, reply_markup=keyboard
+        text,
+        reply_markup=keyboard,
     )
 
 
@@ -305,23 +317,27 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     for package_id, package in PACKAGES.items():
         buttons.append([InlineKeyboardButton(
-            f"⭐ {package['stars']} — {format_price(package['price'])}",
+            f"⭐ {package['stars']} — "
+            f"{format_price(package['price'])}",
             callback_data=f"pkg_{package_id}",
         )])
 
     buttons.append([InlineKeyboardButton(
-        "❌ Отмена", callback_data="cancel_order"
+        "❌ Отмена",
+        callback_data="cancel_order",
     )])
 
     await update.effective_message.reply_text(
         "🛒 Выбери пакет звёзд:",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
+
     return CHOOSE_PACKAGE
 
 
 async def choose_package(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     query = update.callback_query
     await query.answer()
@@ -344,11 +360,13 @@ async def choose_package(
         "Например: @username\n\n"
         "Не отправляй пароль или код входа."
     )
+
     return ENTER_USERNAME
 
 
 async def enter_username(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     username = update.effective_message.text.strip()
 
@@ -375,12 +393,15 @@ async def enter_username(
 
     try:
         eligible, recipient_name = await check_recipient(username)
+
     except Exception:
         logger.exception("Ошибка проверки получателя")
+
         await update.effective_message.reply_text(
             "Не удалось проверить получателя. Попробуй позже "
             "или обратись в поддержку. Деньги пока не отправляй."
         )
+
         return ConversationHandler.END
 
     if not eligible:
@@ -388,6 +409,7 @@ async def enter_username(
             "❌ Этот получатель не найден или не подходит "
             "для получения Stars. Проверь username."
         )
+
         return ConversationHandler.END
 
     package = PACKAGES[package_id]
@@ -397,9 +419,16 @@ async def enter_username(
     with db() as conn:
         conn.execute("""
             INSERT INTO orders (
-                id, buyer_id, username, package_id,
-                quantity, price, status, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                id,
+                buyer_id,
+                username,
+                package_id,
+                quantity,
+                price,
+                status,
+                created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             order_id,
             user.id,
@@ -411,12 +440,26 @@ async def enter_username(
             datetime.now(timezone.utc).isoformat(),
         ))
 
-    payment_text = (
-        "\n\n💳 Способ оплаты:\n" + PAYMENT_DETAILS
-        if PAYMENT_DETAILS
-        else "\n\n⚠️ Способ оплаты ещё не настроен. "
-             "Пока не отправляй деньги."
-    )
+    if PAYMENT_DETAILS:
+        payment_text = (
+            "\n\n💳 Способ оплаты:\n"
+            + PAYMENT_DETAILS
+        )
+
+        buyer_keyboard = InlineKeyboardMarkup([[
+            InlineKeyboardButton(
+                "✅ Я оплатил",
+                callback_data=f"buyer_paid_{order_id}",
+            )
+        ]])
+
+    else:
+        payment_text = (
+            "\n\n⚠️ Оплата пока не настроена. "
+            "Не отправляй деньги."
+        )
+
+        buyer_keyboard = None
 
     await update.effective_message.reply_text(
         "✅ Получатель проверен!\n\n"
@@ -425,9 +468,63 @@ async def enter_username(
         f"Получатель: {username}\n"
         f"Имя получателя: {recipient_name or 'не указано'}"
         + payment_text
-        + "\n\nПосле оплаты администратор проверит перевод. "
-          "Stars отправятся только после подтверждения."
+        + "\n\nПосле перевода нажми «Я оплатил». "
+          "Администратор проверит поступление денег.",
+        reply_markup=buyer_keyboard,
     )
+
+    # ВАЖНО:
+    # Здесь больше нет отправки заявки администратору.
+    # Она придёт только после нажатия покупателем «Я оплатил».
+
+    context.user_data.pop("package_id", None)
+
+    return ConversationHandler.END
+
+
+# ---------------- BUYER PAYMENT BUTTON ----------------
+
+async def buyer_paid_action(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    query = update.callback_query
+    await query.answer()
+
+    order_id = query.data.removeprefix("buyer_paid_")
+    order = get_order(order_id)
+
+    if not order:
+        await query.message.reply_text("Заказ не найден.")
+        return
+
+    if query.from_user.id != order["buyer_id"]:
+        await query.message.reply_text(
+            "Эта кнопка не относится к твоему заказу."
+        )
+        return
+
+    if order["status"] != "WAITING_PAYMENT":
+        await query.message.reply_text(
+            "Заявка уже отправлена или заказ обработан."
+        )
+        return
+
+    # Атомарно меняем статус, чтобы нельзя было
+    # отправить одну заявку администратору несколько раз.
+    with db() as conn:
+        result = conn.execute("""
+            UPDATE orders
+            SET status = 'PAYMENT_REPORTED'
+            WHERE id = ?
+            AND status = 'WAITING_PAYMENT'
+        """, (order_id,))
+
+        if result.rowcount != 1:
+            await query.message.reply_text(
+                "Заявка уже обрабатывается."
+            )
+            return
 
     admin_keyboard = InlineKeyboardMarkup([[
         InlineKeyboardButton(
@@ -440,87 +537,133 @@ async def enter_username(
         ),
     ]])
 
-    await send_admin_message(
-        "🛒 Новая заявка Stars Shop 24\n\n"
-        f"Заказ: {order_id}\n"
-        f"Пакет: {package_text(package_id)}\n"
-        f"Получатель: {username}\n"
-        f"Покупатель Telegram ID: {user.id}\n\n"
-        "Подтверждай оплату только после проверки "
-        "реального поступления денег.",
-        reply_markup=admin_keyboard,
-    )
+    try:
+        await send_admin_message(
+            "💳 Покупатель сообщил об оплате!\n\n"
+            f"Заказ: {order_id}\n"
+            f"Пакет: {order['quantity']} Stars\n"
+            f"Сумма: {format_price(order['price'])}\n"
+            f"Получатель: {order['username']}\n"
+            f"Покупатель Telegram ID: {order['buyer_id']}\n\n"
+            "⚠️ Проверь реальное поступление денег в банке "
+            "перед подтверждением.",
+            reply_markup=admin_keyboard,
+        )
 
-    context.user_data.pop("package_id", None)
-    return ConversationHandler.END
+    except Exception:
+        logger.exception(
+            "Не удалось отправить заявку администратору"
+        )
+
+        update_order(order_id, "WAITING_PAYMENT")
+
+        await query.message.reply_text(
+            "⚠️ Не удалось отправить заявку. "
+            "Попробуй нажать «Я оплатил» ещё раз."
+        )
+
+        return
+
+    # Убираем кнопку, чтобы покупатель не отправлял заявку повторно.
+    try:
+        await query.edit_message_reply_markup(reply_markup=None)
+    except Exception:
+        logger.exception("Не удалось убрать кнопку оплаты")
+
+    await query.message.reply_text(
+        "✅ Заявка на проверку оплаты отправлена.\n"
+        "Ожидай подтверждения администратора."
+    )
 
 
 # ---------------- ADMIN ACTIONS ----------------
 
 async def admin_order_action(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
 ):
     query = update.callback_query
     await query.answer()
 
     if not admin_id() or query.from_user.id != admin_id():
-        await query.answer("Нет доступа.", show_alert=True)
+        await query.message.reply_text("Нет доступа.")
         return
 
     action, order_id = query.data.split("_", 1)
     order = get_order(order_id)
 
     if not order:
-        await query.edit_message_text("Заказ не найден.")
+        await query.message.reply_text("Заказ не найден.")
+        return
+
+    if order["status"] != "PAYMENT_REPORTED":
+        await query.message.reply_text(
+            "Этот заказ ещё не ожидает подтверждения оплаты "
+            "или уже обработан."
+        )
         return
 
     if action == "reject":
-        if order["status"] != "WAITING_PAYMENT":
-            await query.edit_message_text(
-                "Этот заказ уже обработан."
-            )
-            return
-
         update_order(order_id, "REJECTED")
+
         await query.edit_message_text(
             f"❌ Заказ {order_id} отклонён."
         )
+
         await telegram_app.bot.send_message(
             chat_id=order["buyer_id"],
-            text=f"Заказ {order_id} отклонён. "
-                 "Если ты уже оплатил, свяжись с поддержкой.",
+            text=(
+                f"❌ Заказ {order_id} отклонён.\n"
+                "Если ты уже оплатил, свяжись с поддержкой."
+            ),
         )
+
         return
 
     if action == "paid":
-        if order["status"] != "WAITING_PAYMENT":
-            await query.edit_message_text(
-                "Заказ уже обрабатывается или завершён."
-            )
-            return
+        # Защита от повторного нажатия.
+        with db() as conn:
+            result = conn.execute("""
+                UPDATE orders
+                SET status = 'SUBMITTING'
+                WHERE id = ?
+                AND status = 'PAYMENT_REPORTED'
+            """, (order_id,))
 
-        # Блокируем повторное нажатие до обращения к API.
-        update_order(order_id, "SUBMITTING")
+            if result.rowcount != 1:
+                await query.edit_message_text(
+                    "Заказ уже обрабатывается."
+                )
+                return
 
         await query.edit_message_text(
             f"⏳ Отправляю заказ {order_id} в iFragment..."
         )
 
         try:
-            status, supplier_id = await create_ifragment_order(order)
+            status, supplier_id = await create_ifragment_order(
+                order
+            )
+
         except Exception:
-            logger.exception("Не удалось создать заказ iFragment")
+            logger.exception(
+                "Не удалось создать заказ iFragment"
+            )
+
             update_order(order_id, "API_ERROR")
 
-            await query.edit_message_text(
-                "⚠️ Ошибка iFragment. Заказ не подтверждён.\n"
-                "Проверь кабинет и API. Не нажимай повторно, "
-                "пока администратор не проверит статус."
+            await query.message.reply_text(
+                "⚠️ Ошибка iFragment. "
+                "Заказ не подтверждён поставщиком.\n"
+                "Проверь кабинет и статус заказа. "
+                "Не создавай повторный заказ, пока не проверишь "
+                "состояние предыдущего."
             )
+
             return
 
-        await query.edit_message_text(
-            f"Заказ отправлен в iFragment.\n"
+        await query.message.reply_text(
+            "✅ Заказ передан в iFragment.\n"
             f"Статус: {status}\n"
             f"ID поставщика: {supplier_id or 'ожидается'}\n\n"
             "Это ещё не подтверждение доставки."
@@ -548,6 +691,7 @@ def verify_signature(raw_body, header, secret):
             item.split("=", 1)
             for item in header.split(",")
         )
+
         timestamp = parts["t"]
         signature = parts["v1"]
 
@@ -555,6 +699,7 @@ def verify_signature(raw_body, header, secret):
             return False
 
         signed_payload = timestamp.encode() + b"." + raw_body
+
         expected = hmac.new(
             secret.encode(),
             signed_payload,
@@ -562,12 +707,14 @@ def verify_signature(raw_body, header, secret):
         ).hexdigest()
 
         return hmac.compare_digest(expected, signature)
+
     except (ValueError, KeyError, TypeError):
         return False
 
 
 async def process_webhook_event(event):
     event_id = event.get("id")
+
     if not event_id:
         return
 
@@ -580,8 +727,12 @@ async def process_webhook_event(event):
                     datetime.now(timezone.utc).isoformat(),
                 ),
             )
+
         except sqlite3.IntegrityError:
-            logger.info("Повтор webhook event: %s", event_id)
+            logger.info(
+                "Повтор webhook event: %s",
+                event_id,
+            )
             return
 
     event_type = event.get("type")
@@ -589,25 +740,38 @@ async def process_webhook_event(event):
     external_id = data.get("externalId")
 
     if event_type == "supplier_account.health_changed":
-        logger.warning("Supplier Account health: %s", data)
+        logger.warning(
+            "Supplier Account health: %s",
+            data,
+        )
+
         await send_admin_message(
             "⚠️ Изменился статус Supplier Account:\n"
             + json.dumps(data, ensure_ascii=False)
         )
+
         return
 
     if not external_id:
         return
 
     order = get_order(external_id)
+
     if not order:
-        logger.warning("Webhook для неизвестного заказа: %s", external_id)
+        logger.warning(
+            "Webhook для неизвестного заказа: %s",
+            external_id,
+        )
         return
 
     status = data.get("status", "")
 
     if status in ("SUCCEEDED", "FAILED", "NEEDS_REVIEW"):
-        update_order(external_id, status, data.get("id"))
+        update_order(
+            external_id,
+            status,
+            data.get("id"),
+        )
 
     if status == "SUCCEEDED":
         await telegram_app.bot.send_message(
@@ -618,12 +782,14 @@ async def process_webhook_event(event):
                 f"отправлены на {order['username']}."
             ),
         )
+
         await send_admin_message(
             f"✅ Заказ {external_id} успешно выполнен."
         )
 
     elif status == "FAILED":
         failure = data.get("failure") or {}
+
         await telegram_app.bot.send_message(
             chat_id=order["buyer_id"],
             text=(
@@ -631,6 +797,7 @@ async def process_webhook_event(event):
                 "Обратись в поддержку для решения вопроса."
             ),
         )
+
         await send_admin_message(
             f"❌ Заказ {external_id} завершился ошибкой.\n"
             f"Причина: {failure.get('code', 'не указана')}"
@@ -640,10 +807,11 @@ async def process_webhook_event(event):
         await telegram_app.bot.send_message(
             chat_id=order["buyer_id"],
             text=(
-                f"⏳ Заказ {external_id} проверяется поддержкой "
-                "поставщика. Пока ожидаем результат."
+                f"⏳ Заказ {external_id} проверяется "
+                "поддержкой поставщика. Пока ожидаем результат."
             ),
         )
+
         await send_admin_message(
             f"⚠️ Заказ {external_id} требует проверки iFragment."
         )
@@ -651,25 +819,58 @@ async def process_webhook_event(event):
 
 async def webhook_handler(request):
     raw_body = await request.read()
-    signature = request.headers.get("X-IFragment-Signature", "")
+
+    signature = request.headers.get(
+        "X-IFragment-Signature",
+        "",
+    )
 
     if not verify_signature(
-        raw_body, signature, IFRAGMENT_WEBHOOK_SECRET
+        raw_body,
+        signature,
+        IFRAGMENT_WEBHOOK_SECRET,
     ):
-        return web.Response(status=401, text="Invalid signature")
+        return web.Response(
+            status=401,
+            text="Invalid signature",
+        )
 
     try:
         event = json.loads(raw_body)
-    except json.JSONDecodeError:
-        return web.Response(status=400, text="Invalid JSON")
 
-    # Быстро отвечаем iFragment, обработка продолжается отдельно.
+    except json.JSONDecodeError:
+        return web.Response(
+            status=400,
+            text="Invalid JSON",
+        )
+
     asyncio.create_task(process_webhook_event(event))
-    return web.Response(status=200, text="OK")
+
+    return web.Response(
+        status=200,
+        text="OK",
+    )
 
 
 async def health_handler(request):
-    return web.Response(text="Stars Shop 24 is running")
+    return web.Response(
+        text="Stars Shop 24 is running"
+    )
+
+
+# ---------------- CANCEL ----------------
+
+async def cancel_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    context.user_data.pop("package_id", None)
+
+    await update.effective_message.reply_text(
+        "Заказ отменён."
+    )
+
+    return ConversationHandler.END
 
 
 # ---------------- START ----------------
@@ -682,12 +883,19 @@ async def main():
 
     init_db()
 
-    telegram_app = Application.builder().token(BOT_TOKEN).build()
+    telegram_app = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .build()
+    )
 
     conversation = ConversationHandler(
         entry_points=[
             CommandHandler("buy", buy),
-            MessageHandler(filters.Regex("^🛒 Купить звёзды$"), buy),
+            MessageHandler(
+                filters.Regex("^🛒 Купить звёзды$"),
+                buy,
+            ),
         ],
         states={
             CHOOSE_PACKAGE: [
@@ -703,24 +911,53 @@ async def main():
                 )
             ],
         },
-        fallbacks=[CommandHandler("cancel", cancel_command)],
+        fallbacks=[
+            CommandHandler("cancel", cancel_command)
+        ],
     )
 
-    telegram_app.add_handler(CommandHandler("start", start))
-    telegram_app.add_handler(CommandHandler("prices", prices))
-    telegram_app.add_handler(CommandHandler("support", support))
+    telegram_app.add_handler(
+        CommandHandler("start", start)
+    )
+
+    telegram_app.add_handler(
+        CommandHandler("prices", prices)
+    )
+
+    telegram_app.add_handler(
+        CommandHandler("support", support)
+    )
+
     telegram_app.add_handler(conversation)
+
+    # Кнопка «Я оплатил» от покупателя.
+    telegram_app.add_handler(
+        CallbackQueryHandler(
+            buyer_paid_action,
+            pattern=r"^buyer_paid_[a-f0-9]{32}$",
+        )
+    )
+
+    # Кнопки администратора.
     telegram_app.add_handler(
         CallbackQueryHandler(
             admin_order_action,
             pattern=r"^(paid|reject)_[a-f0-9]{32}$",
         )
     )
+
     telegram_app.add_handler(
-        MessageHandler(filters.Regex("^💰 Цены$"), prices)
+        MessageHandler(
+            filters.Regex("^💰 Цены$"),
+            prices,
+        )
     )
+
     telegram_app.add_handler(
-        MessageHandler(filters.Regex("^🆘 Поддержка$"), support)
+        MessageHandler(
+            filters.Regex("^🆘 Поддержка$"),
+            support,
+        )
     )
 
     await telegram_app.initialize()
@@ -728,33 +965,43 @@ async def main():
     await telegram_app.updater.start_polling()
 
     web_app = web.Application()
-    web_app.router.add_post(WEBHOOK_PATH, webhook_handler)
-    web_app.router.add_get("/health", health_handler)
+
+    web_app.router.add_post(
+        WEBHOOK_PATH,
+        webhook_handler,
+    )
+
+    web_app.router.add_get(
+        "/health",
+        health_handler,
+    )
 
     runner = web.AppRunner(web_app)
     await runner.setup()
 
     port = int(os.getenv("PORT", "10000"))
-    site = web.TCPSite(runner, "0.0.0.0", port)
+
+    site = web.TCPSite(
+        runner,
+        "0.0.0.0",
+        port,
+    )
+
     await site.start()
 
-    logger.info("Stars Shop 24 запущен на порту %s", port)
+    logger.info(
+        "Stars Shop 24 запущен на порту %s",
+        port,
+    )
 
     try:
         await asyncio.Event().wait()
+
     finally:
         await runner.cleanup()
         await telegram_app.updater.stop()
         await telegram_app.stop()
         await telegram_app.shutdown()
-
-
-async def cancel_command(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-):
-    context.user_data.pop("package_id", None)
-    await update.effective_message.reply_text("Заказ отменён.")
-    return ConversationHandler.END
 
 
 if __name__ == "__main__":

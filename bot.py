@@ -61,10 +61,10 @@ DB_PATH = os.getenv("DB_PATH", "orders.db")
 WEBHOOK_PATH = "/ifragment/webhook"
 
 PACKAGES = {
-    "50": {"stars": 50, "price": 10000},
-    "100": {"stars": 100, "price": 20000},
-    "250": {"stars": 250, "price": 50000},
-    "500": {"stars": 500, "price": 100000},
+    "50": {"stars": 50, "price": 10500},
+    "100": {"stars": 100, "price": 21000},
+    "250": {"stars": 250, "price": 52000},
+    "500": {"stars": 500, "price": 105000},
 }
 
 CHOOSE_PACKAGE, ENTER_USERNAME = range(2)

@@ -565,7 +565,24 @@ function closePurchase() {
   document.getElementById("shopPage").scrollIntoView({ behavior: "smooth" });
 }
 
-function normalizeUsername(value) {
+function useMyAccount() {
+  const user = tg?.initDataUnsafe?.user;
+
+  if (!user || !user.username) {
+    alert("У твоего Telegram аккаунта нет username.");
+    return;
+  }
+
+  document.getElementById("username").value = "@" + user.username;
+
+  recipientChecked = false;
+  recipientUsername = "";
+
+  document.getElementById("checkMessage").classList.add("hidden");
+  document.getElementById("createOrderButton").classList.add("hidden");
+  document.getElementById("profilePreview").classList.add("hidden");
+}
+  function normalizeUsername(value) {
   return value.trim().replace(/^@+/, "");
 }
 

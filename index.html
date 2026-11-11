@@ -7,10 +7,10 @@
 <meta name="theme-color" content="#101522">
 <title>Stars Shop 27</title>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -20,13 +20,8 @@ body {
   font-family: Arial, sans-serif;
 }
 
-button, input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
+button, input { font: inherit; }
+button { cursor: pointer; }
 
 .app {
   max-width: 480px;
@@ -35,8 +30,6 @@ button {
   padding: 18px 16px 100px;
 }
 
-/* HEADER */
-
 .header {
   display: flex;
   align-items: center;
@@ -44,35 +37,12 @@ button {
   margin-bottom: 28px;
 }
 
-.brand {
-  font-size: 21px;
-  font-weight: bold;
-}
+.brand { font-size: 21px; font-weight: bold; }
+.header-label { color: #55d6a7; font-size: 12px; }
 
-.header-label {
-  color: #55d6a7;
-  font-size: 12px;
-}
-
-/* TITLES */
-
-h1 {
-  font-size: 27px;
-  margin: 8px 0;
-}
-
-.subtitle {
-  color: #aeb9d0;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.section-title {
-  font-size: 18px;
-  margin: 26px 0 14px;
-}
-
-/* PRODUCTS */
+h1 { font-size: 27px; margin: 8px 0; }
+.subtitle { color: #aeb9d0; font-size: 14px; line-height: 1.5; }
+.section-title { font-size: 18px; margin: 26px 0 14px; }
 
 .products {
   display: grid;
@@ -88,22 +58,9 @@ h1 {
   text-align: center;
 }
 
-.star {
-  font-size: 29px;
-}
-
-.amount {
-  font-size: 22px;
-  font-weight: bold;
-  margin: 9px 0;
-}
-
-.price {
-  color: #55d6a7;
-  font-size: 16px;
-  font-weight: bold;
-  margin: 12px 0;
-}
+.star { font-size: 29px; }
+.amount { font-size: 22px; font-weight: bold; margin: 9px 0; }
+.price { color: #55d6a7; font-size: 16px; font-weight: bold; margin: 12px 0; }
 
 .primary-button {
   width: 100%;
@@ -116,16 +73,19 @@ h1 {
   transition: .2s;
 }
 
-.primary-button:active {
-  transform: scale(.98);
-}
+.primary-button:active { transform: scale(.98); }
+.primary-button:disabled { opacity: .5; cursor: not-allowed; }
 
-.primary-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
+.secondary-button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #43536e;
+  border-radius: 12px;
+  color: #dce8fa;
+  background: #26334a;
+  font-weight: bold;
+  margin-top: 10px;
 }
-
-/* PANELS */
 
 .panel {
   background: #1b2436;
@@ -135,11 +95,7 @@ h1 {
   margin-top: 17px;
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* INPUT */
+.hidden { display: none !important; }
 
 .input-label {
   display: block;
@@ -159,9 +115,7 @@ input {
   font-size: 16px;
 }
 
-input:focus {
-  border-color: #2688ff;
-}
+input:focus { border-color: #2688ff; }
 
 .help {
   font-size: 12px;
@@ -169,8 +123,6 @@ input:focus {
   line-height: 1.6;
   margin-top: 10px;
 }
-
-/* PROFILE */
 
 .profile {
   display: flex;
@@ -189,17 +141,8 @@ input:focus {
   font-size: 23px;
 }
 
-.profile-name {
-  font-weight: bold;
-}
-
-.profile-username {
-  color: #aeb9d0;
-  font-size: 13px;
-  margin-top: 5px;
-}
-
-/* ORDER */
+.profile-name { font-weight: bold; }
+.profile-username { color: #aeb9d0; font-size: 13px; margin-top: 5px; }
 
 .order-price {
   color: #55d6a7;
@@ -222,9 +165,7 @@ input:focus {
   font-size: 14px;
 }
 
-.order-step:last-child {
-  border-bottom: 0;
-}
+.order-step:last-child { border-bottom: 0; }
 
 .step-description {
   color: #aeb9d0;
@@ -232,28 +173,39 @@ input:focus {
   margin-top: 5px;
 }
 
-/* UNAVAILABLE */
-
-.unavailable {
-  text-align: center;
-  padding: 65px 15px;
-}
-
-.unavailable-icon {
-  font-size: 55px;
-  margin-bottom: 18px;
-}
-
-.unavailable h2 {
-  font-size: 24px;
-}
-
-.unavailable p {
-  color: #aeb9d0;
+.notice {
+  padding: 12px;
+  border-radius: 11px;
+  background: #26334a;
+  color: #c5d3eb;
+  font-size: 13px;
   line-height: 1.5;
+  margin-top: 13px;
+  overflow-wrap: anywhere;
 }
 
-/* NAVIGATION */
+.notice.error {
+  background: #472b35;
+  color: #ffc2c2;
+}
+
+.notice.success {
+  background: #1d4038;
+  color: #a8f0d2;
+}
+
+.back-button {
+  background: transparent;
+  border: 0;
+  color: #55aaff;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.unavailable { text-align: center; padding: 65px 15px; }
+.unavailable-icon { font-size: 55px; margin-bottom: 18px; }
+.unavailable h2 { font-size: 24px; }
+.unavailable p { color: #aeb9d0; line-height: 1.5; }
 
 .bottom-nav {
   position: fixed;
@@ -278,18 +230,8 @@ input:focus {
   font-size: 12px;
 }
 
-.nav-button.active {
-  color: #55aaff;
-  font-weight: bold;
-}
-
-.nav-icon {
-  display: block;
-  font-size: 21px;
-  margin-bottom: 5px;
-}
-
-/* SUPPORT */
+.nav-button.active { color: #55aaff; font-weight: bold; }
+.nav-icon { display: block; font-size: 21px; margin-bottom: 5px; }
 
 .support {
   text-align: center;
@@ -298,29 +240,42 @@ input:focus {
   font-size: 13px;
 }
 
-a {
-  color: #55aaff;
-  text-decoration: none;
+a { color: #55aaff; text-decoration: none; }
+
+.order-card {
+  background: #101522;
+  border: 1px solid #303c53;
+  border-radius: 12px;
+  padding: 13px;
+  margin-top: 12px;
 }
 
-/* NOTICE */
-
-.notice {
-  padding: 12px;
-  border-radius: 11px;
-  background: #26334a;
-  color: #c5d3eb;
+.order-card p {
+  color: #aeb9d0;
   font-size: 13px;
-  line-height: 1.5;
-  margin-top: 13px;
+  margin: 7px 0;
+  overflow-wrap: anywhere;
 }
 
-.back-button {
-  background: transparent;
-  border: 0;
-  color: #55aaff;
-  padding: 10px 0;
+.payment-details {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #101522;
+  border: 1px solid #394760;
+  border-radius: 11px;
+  padding: 13px;
   font-size: 14px;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+.small-button {
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 12px;
+  background: #303c53;
+  color: white;
+  margin-top: 9px;
 }
 </style>
 </head>
@@ -329,285 +284,241 @@ a {
 
 <div class="app">
 
-  <!-- HEADER -->
-
   <header class="header">
     <div class="brand">⭐ Stars Shop 27</div>
     <div class="header-label">ONLINE SHOP</div>
   </header>
 
-  <!-- STARS PAGE -->
-
   <section id="starsPage">
 
     <h1>Telegram Stars ⭐</h1>
-    <div class="subtitle">
-      Выбирай пакет и пополняй свой Telegram.
-    </div>
+    <div class="subtitle">Выбирай пакет и пополняй свой Telegram.</div>
 
     <h2 class="section-title">Выбери количество</h2>
 
     <div class="products">
-
       <div class="card">
         <div class="star">⭐</div>
         <div class="amount">50 Stars</div>
         <div class="price">10 500 сум</div>
-        <button class="primary-button"
-          onclick="selectPackage(50)">
-          Купить
-        </button>
+        <button class="primary-button" onclick="selectPackage(50)">Купить</button>
       </div>
 
       <div class="card">
         <div class="star">⭐</div>
         <div class="amount">100 Stars</div>
         <div class="price">21 000 сум</div>
-        <button class="primary-button"
-          onclick="selectPackage(100)">
-          Купить
-        </button>
+        <button class="primary-button" onclick="selectPackage(100)">Купить</button>
       </div>
 
       <div class="card">
         <div class="star">⭐</div>
         <div class="amount">250 Stars</div>
         <div class="price">52 000 сум</div>
-        <button class="primary-button"
-          onclick="selectPackage(250)">
-          Купить
-        </button>
+        <button class="primary-button" onclick="selectPackage(250)">Купить</button>
       </div>
 
       <div class="card">
         <div class="star">⭐</div>
         <div class="amount">500 Stars</div>
         <div class="price">105 000 сум</div>
-        <button class="primary-button"
-          onclick="selectPackage(500)">
-          Купить
-        </button>
+        <button class="primary-button" onclick="selectPackage(500)">Купить</button>
       </div>
-
     </div>
 
-    <!-- PURCHASE FORM -->
-
     <div id="purchasePanel" class="panel hidden">
-
-      <button class="back-button"
-        onclick="closePurchase()">
-        ← Назад к пакетам
-      </button>
+      <button class="back-button" onclick="closePurchase()">← Назад к пакетам</button>
 
       <h2>Оформление заказа</h2>
-
       <div id="selectedPackage"></div>
 
       <div style="margin-top:20px">
-        <label class="input-label">
-          Telegram username получателя
-        </label>
-
-        <input
-          id="username"
-          type="text"
-          placeholder="@username"
-          maxlength="33"
-          autocomplete="off"
-        >
+        <label class="input-label">Telegram username получателя</label>
+        <input id="username" type="text" placeholder="@username"
+               maxlength="33" autocomplete="off">
 
         <div class="help">
-          Как правильно указать аккаунт?
-
-          <br>1. Открой Telegram.
-          <br>2. Перейди в свой профиль.
-          <br>3. Найди имя пользователя.
-          <br>4. Скопируй его вместе с @ и вставь сюда.
+          1. Открой Telegram.<br>
+          2. Перейди в профиль получателя.<br>
+          3. Скопируй имя пользователя и вставь сюда.
         </div>
       </div>
 
-      <div id="profilePreview"
-        class="panel hidden">
-
+      <div id="profilePreview" class="panel hidden">
         <div class="profile">
           <div class="avatar">👤</div>
           <div>
-            <div class="profile-name">
-              Аккаунт для проверки
-            </div>
-            <div id="profileUsername"
-              class="profile-username"></div>
+            <div id="profileName" class="profile-name">Получатель</div>
+            <div id="profileUsername" class="profile-username"></div>
           </div>
         </div>
-
-        <div class="notice">
-          Это предварительный вид профиля.
-          Реальная проверка и аватарка подключаются
-          через сервер магазина.
-        </div>
-
+        <div id="profileMessage" class="notice"></div>
       </div>
 
-      <button class="primary-button"
-        style="margin-top:18px"
-        onclick="checkUsername()">
+      <button id="checkButton" class="primary-button"
+              style="margin-top:18px" onclick="checkUsername()">
         Проверить username
       </button>
 
-      <div id="integrationNotice"
-        class="notice hidden">
-        Подключение проверки аккаунта будет включено
-        после интеграции с сервером Render.
-      </div>
+      <div id="checkMessage" class="notice hidden"></div>
 
+      <button id="createOrderButton" class="primary-button hidden"
+              style="margin-top:12px" onclick="createOrder()">
+        Перейти к оплате
+      </button>
     </div>
 
-    <!-- ORDER STATUS -->
-
-    <div id="orderPanel" class="panel hidden">
-
-      <button class="back-button"
-        onclick="backToShop()">
-        ← В магазин
-      </button>
-
-      <h2>Мои заказы</h2>
+    <div id="paymentPanel" class="panel hidden">
+      <h2>Оплата заказа</h2>
+      <div id="paymentOrderInfo" class="subtitle"></div>
 
       <div class="notice">
-        Здесь будут отображаться реальные заказы,
-        их оплата и доставка Stars.
+        Переведи точную сумму по указанным реквизитам. После перевода нажми «Я оплатил».
+        Заказ будет передан администратору для проверки.
       </div>
 
-      <div class="order-step">
-        <strong>1. Заказ создан</strong>
-        <div class="step-description">
-          После оформления заказа
-        </div>
-      </div>
+      <div id="paymentDetails" class="payment-details"></div>
 
-      <div class="order-step">
-        <strong>2. Ожидает оплаты</strong>
-        <div class="step-description">
-          После подключения оплаты
-        </div>
-      </div>
+      <button class="small-button" onclick="copyPaymentDetails()">
+        Скопировать реквизиты
+      </button>
 
-      <div class="order-step">
-        <strong>3. Проверка оплаты</strong>
-        <div class="step-description">
-          Администратор проверяет перевод
-        </div>
-      </div>
+      <button id="paidButton" class="primary-button"
+              style="margin-top:16px" onclick="reportPayment()">
+        Я оплатил
+      </button>
 
-      <div class="order-step">
-        <strong>4. Отправка Stars</strong>
-        <div class="step-description">
-          Передача заказа поставщику
-        </div>
-      </div>
+      <div id="paymentMessage" class="notice hidden"></div>
+    </div>
 
-      <div class="order-step">
-        <strong>5. Заказ завершён</strong>
-        <div class="step-description">
-          Stars доставлены
-        </div>
+    <div id="orderPanel" class="panel hidden">
+      <button class="back-button" onclick="backToShop()">← В магазин</button>
+      <h2>Мои заказы</h2>
+      <button class="secondary-button" onclick="loadOrders()">Обновить список</button>
+      <div id="ordersList">
+        <div class="notice">Загружаю заказы...</div>
       </div>
-
     </div>
 
   </section>
 
-  <!-- PREMIUM PAGE -->
-
   <section id="premiumPage" class="hidden">
-
-    <button class="back-button" onclick="showPage('stars')">
-      ← Назад
-    </button>
-
+    <button class="back-button" onclick="showPage('stars')">← Назад</button>
     <div class="unavailable">
       <div class="unavailable-icon">💎</div>
       <h2>Telegram Premium</h2>
       <p>Пока недоступно</p>
     </div>
-
   </section>
 
-  <!-- NFT PAGE -->
-
   <section id="nftPage" class="hidden">
-
-    <button class="back-button" onclick="showPage('stars')">
-      ← Назад
-    </button>
-
+    <button class="back-button" onclick="showPage('stars')">← Назад</button>
     <div class="unavailable">
       <div class="unavailable-icon">🎁</div>
       <h2>NFT подарки</h2>
       <p>Пока недоступно</p>
     </div>
-
   </section>
-
-  <!-- SUPPORT -->
 
   <div class="support">
     🆘 Нужна помощь?
     <br>
-    <a href="https://t.me/JonDayviHar1s"
-       target="_blank"
-       rel="noopener noreferrer">
+    <a href="https://t.me/JonDayviHar1s" target="_blank" rel="noopener noreferrer">
       Написать в поддержку
     </a>
   </div>
 
 </div>
 
-<!-- BOTTOM NAVIGATION -->
-
 <nav class="bottom-nav">
-
-  <button id="navStars"
-    class="nav-button active"
-    onclick="showPage('stars')">
-    <span class="nav-icon">⭐</span>
-    Звёзды
+  <button id="navStars" class="nav-button active" onclick="showPage('stars')">
+    <span class="nav-icon">⭐</span>Звёзды
   </button>
-
-  <button id="navPremium"
-    class="nav-button"
-    onclick="showPage('premium')">
-    <span class="nav-icon">💎</span>
-    Premium
+  <button id="navPremium" class="nav-button" onclick="showPage('premium')">
+    <span class="nav-icon">💎</span>Premium
   </button>
-
-  <button id="navNFT"
-    class="nav-button"
-    onclick="showPage('nft')">
-    <span class="nav-icon">🎁</span>
-    NFT подарки
+  <button id="navNFT" class="nav-button" onclick="showPage('nft')">
+    <span class="nav-icon">🎁</span>NFT подарки
   </button>
-
 </nav>
 
 <script>
-
-// PACKAGE PRICES
+const API_BASE = "https://starsshopbot27.onrender.com";
 
 const packages = {
-  50: 10500,
-  100: 21000,
-  250: 52000,
-  500: 105000
+  50:  { id: "50", price: 10500 },
+  100: { id: "100", price: 21000 },
+  250: { id: "250", price: 52000 },
+  500: { id: "500", price: 105000 }
 };
 
-let selectedStars = null;
+const tg = window.Telegram && window.Telegram.WebApp
+  ? window.Telegram.WebApp
+  : null;
 
-// NAVIGATION
+let selectedStars = null;
+let checkedUsername = null;
+let currentOrderId = null;
+let currentPaymentDetails = "";
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
+
+function showMessage(id, message, type = "") {
+  const el = document.getElementById(id);
+  el.textContent = message;
+  el.className = "notice";
+  if (type) el.classList.add(type);
+  el.classList.remove("hidden");
+}
+
+function hideMessage(id) {
+  document.getElementById(id).classList.add("hidden");
+}
+
+function requireTelegram() {
+  if (!tg || !tg.initData) {
+    alert("Открой Stars Shop 27 через Telegram Mini App.");
+    return false;
+  }
+  return true;
+}
+
+async function apiRequest(path, options = {}) {
+  if (!requireTelegram()) {
+    throw new Error("Открой магазин внутри Telegram.");
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": "tma " + tg.initData,
+    ...(options.headers || {})
+  };
+
+  const response = await fetch(API_BASE + path, {
+    ...options,
+    headers
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("Сервер вернул некорректный ответ.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.error || data.message || "Ошибка сервера (" + response.status + ")."
+    );
+  }
+
+  return data;
+}
 
 function showPage(page) {
-
   const pages = {
     stars: "starsPage",
     premium: "premiumPage",
@@ -618,115 +529,300 @@ function showPage(page) {
     document.getElementById(id).classList.add("hidden");
   });
 
-  document.getElementById(pages[page])
-    .classList.remove("hidden");
+  document.getElementById(pages[page]).classList.remove("hidden");
 
-  document.getElementById("navStars")
-    .classList.toggle("active", page === "stars");
-
-  document.getElementById("navPremium")
-    .classList.toggle("active", page === "premium");
-
-  document.getElementById("navNFT")
-    .classList.toggle("active", page === "nft");
+  document.getElementById("navStars").classList.toggle("active", page === "stars");
+  document.getElementById("navPremium").classList.toggle("active", page === "premium");
+  document.getElementById("navNFT").classList.toggle("active", page === "nft");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// SELECT PACKAGE
-
 function selectPackage(stars) {
-
-  if (!Object.prototype.hasOwnProperty.call(packages, stars)) {
-    return;
-  }
+  if (!packages[stars]) return;
 
   selectedStars = stars;
+  checkedUsername = null;
+  currentOrderId = null;
 
-  document.getElementById("purchasePanel")
-    .classList.remove("hidden");
-
-  document.getElementById("orderPanel")
-    .classList.add("hidden");
+  document.getElementById("purchasePanel").classList.remove("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
+  document.getElementById("orderPanel").classList.add("hidden");
 
   document.getElementById("selectedPackage").innerHTML = `
-    <div class="order-price">
-      ⭐ ${stars} Stars
-    </div>
-    <p class="subtitle">
-      Стоимость: ${packages[stars].toLocaleString("ru-RU")} сум
-    </p>
+    <div class="order-price">⭐ ${stars} Stars</div>
+    <p class="subtitle">Стоимость: ${packages[stars].price.toLocaleString("ru-RU")} сум</p>
   `;
 
   document.getElementById("username").value = "";
-  document.getElementById("profilePreview")
-    .classList.add("hidden");
+  document.getElementById("profilePreview").classList.add("hidden");
+  document.getElementById("createOrderButton").classList.add("hidden");
+  hideMessage("checkMessage");
 
-  document.getElementById("integrationNotice")
-    .classList.add("hidden");
-
-  document.getElementById("purchasePanel")
-    .scrollIntoView({ behavior: "smooth" });
+  document.getElementById("purchasePanel").scrollIntoView({ behavior: "smooth" });
 }
 
-// USERNAME VALIDATION
-
-function checkUsername() {
-
+async function checkUsername() {
   const input = document.getElementById("username");
   const username = input.value.trim().replace(/^@/, "");
 
-  const valid = /^[a-zA-Z0-9_]{5,32}$/.test(username);
-
-  if (!valid) {
-    alert("Проверь username. Введи корректное имя пользователя Telegram.");
+  if (!/^[a-zA-Z0-9_]{5,32}$/.test(username)) {
+    alert("Введи корректный Telegram username.");
     input.focus();
     return;
   }
 
-  document.getElementById("profileUsername").textContent =
-    "@" + username;
+  const button = document.getElementById("checkButton");
+  button.disabled = true;
+  button.textContent = "Проверяю...";
 
-  document.getElementById("profilePreview")
-    .classList.remove("hidden");
+  checkedUsername = null;
+  document.getElementById("createOrderButton").classList.add("hidden");
+  document.getElementById("profilePreview").classList.add("hidden");
+  hideMessage("checkMessage");
 
-  document.getElementById("integrationNotice")
-    .classList.remove("hidden");
+  try {
+    const data = await apiRequest("/api/recipient/check", {
+      method: "POST",
+      body: JSON.stringify({ username })
+    });
 
-  /*
-    REAL ACCOUNT LOOKUP WILL BE CONNECTED
-    THROUGH THE EXISTING RENDER SERVER.
+    if (!data.eligible) {
+      showMessage(
+        "checkMessage",
+        data.error || "Не удалось подтвердить получателя.",
+        "error"
+      );
+      return;
+    }
 
-    No fake account verification is performed here.
-  */
+    checkedUsername = data.username || username;
+
+    document.getElementById("profileName").textContent =
+      data.name || "Получатель найден";
+
+    document.getElementById("profileUsername").textContent =
+      "@" + checkedUsername.replace(/^@/, "");
+
+    document.getElementById("profileMessage").textContent =
+      data.message || "Получатель проверен поставщиком.";
+
+    document.getElementById("profilePreview").classList.remove("hidden");
+    document.getElementById("createOrderButton").classList.remove("hidden");
+
+    showMessage("checkMessage", "Username успешно проверен.", "success");
+
+  } catch (error) {
+    showMessage("checkMessage", error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Проверить username";
+  }
 }
 
-// CLOSE PURCHASE
+async function createOrder() {
+  if (!selectedStars || !checkedUsername) {
+    alert("Сначала выбери пакет и проверь username.");
+    return;
+  }
+
+  const button = document.getElementById("createOrderButton");
+  button.disabled = true;
+  button.textContent = "Создаю заказ...";
+
+  try {
+    const data = await apiRequest("/api/orders", {
+      method: "POST",
+      body: JSON.stringify({
+        package_id: packages[selectedStars].id,
+        username: checkedUsername
+      })
+    });
+
+    if (!data.success || !data.order || !data.order.id) {
+      throw new Error(data.message || "Сервер не подтвердил создание заказа.");
+    }
+
+    currentOrderId = data.order.id;
+    currentPaymentDetails = formatPaymentDetails(data.payment_details);
+
+    document.getElementById("purchasePanel").classList.add("hidden");
+    document.getElementById("paymentPanel").classList.remove("hidden");
+
+    document.getElementById("paymentOrderInfo").textContent =
+      "Заказ: " + currentOrderId +
+      " · " + data.order.quantity + " Stars · " +
+      Number(data.order.price).toLocaleString("ru-RU") + " сум";
+
+    document.getElementById("paymentDetails").textContent =
+      currentPaymentDetails || "Реквизиты не переданы сервером. Обратись в поддержку.";
+
+    document.getElementById("paidButton").disabled = false;
+    document.getElementById("paidButton").textContent = "Я оплатил";
+    hideMessage("paymentMessage");
+
+    document.getElementById("paymentPanel").scrollIntoView({ behavior: "smooth" });
+
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Перейти к оплате";
+  }
+}
+
+function formatPaymentDetails(details) {
+  if (!details) return "";
+  if (typeof details === "string") return details;
+
+  if (typeof details === "object") {
+    return Object.entries(details)
+      .map(([key, value]) => key + ": " + value)
+      .join("\n");
+  }
+
+  return String(details);
+}
+
+async function reportPayment() {
+  if (!currentOrderId) return;
+
+  const button = document.getElementById("paidButton");
+  button.disabled = true;
+  button.textContent = "Отправляю...";
+
+  try {
+    const data = await apiRequest(
+      "/api/orders/" + encodeURIComponent(currentOrderId) + "/paid",
+      { method: "POST", body: JSON.stringify({}) }
+    );
+
+    showMessage(
+      "paymentMessage",
+      data.message || "Сообщение об оплате отправлено администратору.",
+      "success"
+    );
+
+    button.textContent = "Оплата заявлена";
+    await loadOrders();
+
+  } catch (error) {
+    showMessage("paymentMessage", error.message, "error");
+    button.disabled = false;
+    button.textContent = "Я оплатил";
+  }
+}
+
+function copyPaymentDetails() {
+  if (!currentPaymentDetails) return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(currentPaymentDetails)
+      .then(() => alert("Реквизиты скопированы."))
+      .catch(() => alert("Не удалось скопировать реквизиты."));
+  } else {
+    alert("Скопируй реквизиты вручную.");
+  }
+}
+
+const statusLabels = {
+  WAITING_PAYMENT: "Ожидает оплаты",
+  PAYMENT_REPORTED: "Проверка оплаты",
+  SUBMITTING: "Передаётся поставщику",
+  API_ERROR: "Ошибка поставщика",
+  REJECTED: "Оплата отклонена",
+  SUCCEEDED: "Выполнен",
+  COMPLETED: "Выполнен",
+  DELIVERED: "Stars доставлены",
+  FAILED: "Ошибка доставки",
+  NEEDS_REVIEW: "Требуется проверка"
+};
+
+function statusText(status) {
+  return statusLabels[String(status || "").toUpperCase()] ||
+    String(status || "Статус уточняется");
+}
+
+function renderOrders(orders) {
+  const container = document.getElementById("ordersList");
+  container.innerHTML = "";
+
+  if (!Array.isArray(orders) || orders.length === 0) {
+    container.textContent = "У тебя пока нет заказов.";
+    return;
+  }
+
+  orders.forEach(order => {
+    const card = document.createElement("div");
+    card.className = "order-card";
+
+    const title = document.createElement("strong");
+    title.textContent = "⭐ " + order.quantity + " Stars";
+
+    const username = document.createElement("p");
+    username.textContent = "Получатель: @" +
+      String(order.username || "").replace(/^@/, "");
+
+    const price = document.createElement("p");
+    price.textContent = "Сумма: " +
+      Number(order.price || 0).toLocaleString("ru-RU") + " сум";
+
+    const status = document.createElement("span");
+    status.className = "status";
+    status.textContent = statusText(order.status);
+
+    const date = document.createElement("p");
+    date.textContent = order.created_at
+      ? "Дата: " + order.created_at
+      : "";
+
+    card.append(title, username, price, status, date);
+    container.appendChild(card);
+  });
+}
+
+async function loadOrders() {
+  const container = document.getElementById("ordersList");
+  container.textContent = "Загружаю заказы...";
+
+  try {
+    const data = await apiRequest("/api/orders", { method: "GET" });
+    renderOrders(data.orders || []);
+  } catch (error) {
+    container.textContent = error.message;
+  }
+}
+
+async function openOrderHistory() {
+  document.getElementById("purchasePanel").classList.add("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
+  document.getElementById("orderPanel").classList.remove("hidden");
+  await loadOrders();
+  document.getElementById("orderPanel").scrollIntoView({ behavior: "smooth" });
+}
 
 function closePurchase() {
-
-  document.getElementById("purchasePanel")
-    .classList.add("hidden");
-
-  document.getElementById("orderPanel")
-    .classList.add("hidden");
-
+  document.getElementById("purchasePanel").classList.add("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
 }
-
-// ORDER HISTORY SCREEN
 
 function backToShop() {
-
-  document.getElementById("orderPanel")
-    .classList.add("hidden");
-
-  document.getElementById("purchasePanel")
-    .classList.add("hidden");
-
+  document.getElementById("orderPanel").classList.add("hidden");
+  document.getElementById("purchasePanel").classList.add("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
-
 }
 
+if (tg && tg.initData) {
+  const historyButton = document.createElement("button");
+  historyButton.className = "secondary-button";
+  historyButton.textContent = "📦 Мои заказы";
+  historyButton.onclick = openOrderHistory;
+
+  const starsPage = document.getElementById("starsPage");
+  const title = starsPage.querySelector("h1");
+  title.insertAdjacentElement("afterend", historyButton);
+}
 </script>
 
 </body>

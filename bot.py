@@ -1363,23 +1363,25 @@ async def main():
             ),
         ],
         states={
-            CHOOSE_PACKAGE: [
-                CallbackQueryHandler(
-                    choose_package,
-                    pattern=r"^(pkg_(50|100|250|500)|cancel_order)$",
-                )
-            ],
-            ENTER_USERNAME: [
-                MessageHandler(
-                    filters.TEXT & ~filters.COMMAND,
-                    enter_username,
-                )
-            ],
-        },
-        fallbacks=[
-            CommandHandler("cancel", cancel_command)
-        ],
-    )
+    CHOOSE_PACKAGE: [
+        CallbackQueryHandler(
+            choose_package,
+            pattern=r"^(pkg_(50|100|250|500)|cancel_order)$"
+        )
+    ],
+    ENTER_USERNAME: [
+        MessageHandler(filters.TEXT & ~filters.COMMAND, enter_username)
+    ],
+    CHOOSE_PREMIUM: [
+        CallbackQueryHandler(
+            choose_premium,
+            pattern=r"^(premium_(3|6|12)|cancel_premium)$"
+        )
+    ],
+    ENTER_PREMIUM_USERNAME: [
+        MessageHandler(filters.TEXT & ~filters.COMMAND, enter_premium_username)
+    ],
+},
 
     telegram_app.add_handler(CommandHandler("start", start))
     telegram_app.add_handler(CommandHandler("prices", prices))

@@ -1,4 +1,3 @@
-
 import os
 import re
 import json
@@ -9,35 +8,22 @@ import hashlib
 import logging
 import asyncio
 import sqlite3
-
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qsl
 
 import aiohttp
 from aiohttp import web
-
 from telegram import (
-    Update,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-    WebAppInfo,
+    Update, InlineKeyboardButton, InlineKeyboardMarkup,
+    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo,
 )
 from telegram.ext import (
-    Application,
-    CommandHandler,
-    CallbackQueryHandler,
-    MessageHandler,
-    ConversationHandler,
-    ContextTypes,
-    filters,
+    Application, CommandHandler, CallbackQueryHandler, MessageHandler,
+    ConversationHandler, ContextTypes, filters,
 )
 
-
 # ---------------- CONFIG ----------------
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -46,22 +32,15 @@ logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID", "")
-SUPPORT_USERNAME = os.getenv(
-    "SUPPORT_USERNAME", "JonDayviHar1s"
-).lstrip("@")
-
+SUPPORT_USERNAME = os.getenv("SUPPORT_USERNAME", "JonDayviHar1s").lstrip("@")
 IFRAGMENT_API_KEY = os.getenv("IFRAGMENT_API_KEY", "")
 IFRAGMENT_WEBHOOK_SECRET = os.getenv("IFRAGMENT_WEBHOOK_SECRET", "")
 IFRAGMENT_BASE_URL = os.getenv(
-    "IFRAGMENT_BASE_URL",
-    "https://api.ifragment.com/v1",
+    "IFRAGMENT_BASE_URL", "https://api.ifragment.com/v1"
 ).rstrip("/")
-
 PAYMENT_DETAILS = os.getenv("PAYMENT_DETAILS", "")
-
 SHOP_URL = "https://8chjnbpm2p-ui.github.io/stars-shop-27/"
 SHOP_ORIGIN = "https://8chjnbpm2p-ui.github.io"
-
 DB_PATH = os.getenv("DB_PATH", "orders.db")
 WEBHOOK_PATH = "/ifragment/webhook"
 
@@ -72,12 +51,16 @@ PACKAGES = {
     "500": {"stars": 500, "price": 105000},
 }
 
+PREMIUM_PACKAGES = {
+    "3": {"months": 3, "price": 165000, "package_id": "premium_3"},
+    "6": {"months": 6, "price": 225000, "package_id": "premium_6"},
+    "12": {"months": 12, "price": 399000, "package_id": "premium_12"},
+}
+
 CHOOSE_PACKAGE, ENTER_USERNAME = range(2)
 telegram_app = None
 
-
 # ---------------- DATABASE ----------------
-
 def db():
     connection = sqlite3.connect(DB_PATH, timeout=20)
     connection.row_factory = sqlite3.Row
@@ -104,6 +87,22 @@ def init_db():
                 created_at TEXT NOT NULL
             )
         """)
+
+        # Миграция: старые заказы Stars сохраняются.
+        columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(orders)").fetchall()
+        }
+
+        if "product" not in columns:
+            conn.execute(
+                "ALTER TABLE orders ADD COLUMN product TEXT NOT NULL DEFAULT 'STARS'"
+            )
+
+        if "months" not in columns:
+            conn.execute(
+                "ALTER TABLE orders ADD COLUMN months INTEGER"
+            )
 
         conn.execute("""
             CREATE TABLE IF NOT EXISTS webhook_events (
@@ -138,11 +137,15 @@ def update_order(order_id, status, ifragment_id=None):
 
 
 def order_to_dict(order):
+    product = (order["product"] or "STARS").upper()
+
     return {
         "id": order["id"],
         "username": order["username"],
         "package_id": order["package_id"],
-        "quantity": order["quantity"],
+        "product": product,
+        "quantity": order["quantity"] if product == "STARS" else None,
+        "months": order["months"],
         "price": order["price"],
         "status": order["status"],
         "ifragment_id": order["ifragment_id"],
@@ -151,7 +154,6 @@ def order_to_dict(order):
 
 
 # ---------------- HELPERS ----------------
-
 def format_price(price):
     return f"{price:,}".replace(",", " ") + " сум"
 
@@ -162,6 +164,15 @@ def package_text(package_id):
         f"{package['stars']} Telegram Stars — "
         f"{format_price(package['price'])}"
     )
+
+
+def product_text(order):
+    product = (order["product"] or "STARS").upper()
+
+    if product == "PREMIUM":
+        return f"Telegram Premium — {order['months']} мес."
+
+    return f"{order['quantity']} Telegram Stars"
 
 
 def admin_id():
@@ -199,13 +210,7 @@ def valid_order_id(value):
 
 
 # ---------------- TELEGRAM WEB APP AUTH ----------------
-
 def verify_telegram_init_data(init_data):
-    """
-    Проверяет подпись Telegram Web App initData.
-    Не доверяет buyer_id, присланному сайтом отдельно.
-    """
-
     if not BOT_TOKEN or not init_data:
         return None
 
@@ -239,7 +244,6 @@ def verify_telegram_init_data(init_data):
         auth_date = int(parsed.get("auth_date", "0"))
         now = int(time.time())
 
-        # Не принимаем слишком старые или будущие данные.
         if auth_date <= 0 or auth_date > now + 60:
             return None
 
@@ -279,7 +283,6 @@ def get_webapp_user(request):
 
 
 # ---------------- HTTP / CORS ----------------
-
 @web.middleware
 async def api_middleware(request, handler):
     origin = request.headers.get("Origin", "")
@@ -335,24 +338,23 @@ def api_user_or_error(request):
 async def read_json(request):
     try:
         data = await request.json()
+
         if not isinstance(data, dict):
             raise ValueError("JSON должен быть объектом")
+
         return data
+
     except (json.JSONDecodeError, ValueError, TypeError):
-        raise web.HTTPBadRequest(
-            text="Некорректный JSON"
-        )
+        raise web.HTTPBadRequest(text="Некорректный JSON")
 
 
 # ---------------- IFRAGMENT API ----------------
-
 async def ifragment_request(method, path, **kwargs):
     if not IFRAGMENT_API_KEY:
         raise RuntimeError("Не настроен IFRAGMENT_API_KEY.")
 
     headers = kwargs.pop("headers", {})
     headers["X-API-Key"] = IFRAGMENT_API_KEY
-
     timeout = aiohttp.ClientTimeout(total=20)
 
     async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -377,31 +379,53 @@ async def ifragment_request(method, path, **kwargs):
             try:
                 return json.loads(body) if body else {}
             except json.JSONDecodeError:
-                raise RuntimeError(
-                    "iFragment вернул некорректный JSON."
-                )
+                raise RuntimeError("iFragment вернул некорректный JSON.")
 
 
-async def check_recipient(username):
+async def check_recipient(username, product="STARS", months=None):
+    product = str(product or "STARS").upper()
+
+    params = {
+        "username": username.lstrip("@"),
+        "product": product,
+    }
+
+    if product == "PREMIUM":
+        if months not in (3, 6, 12):
+            raise ValueError("Для Premium выбери 3, 6 или 12 месяцев.")
+        params["months"] = months
+
+    elif product != "STARS":
+        raise ValueError("Неизвестный продукт.")
+
     result = await ifragment_request(
         "GET",
         "/recipients/lookup",
-        params={
-            "username": username.lstrip("@"),
-            "product": "STARS",
-        },
+        params=params,
     )
 
     data = result.get("data", result)
 
-    if not data.get("found") or not data.get("eligible"):
-        return False, data.get("name")
-
-    return True, data.get("name")
+    return (
+        bool(data.get("found") and data.get("eligible")),
+        data.get("name"),
+    )
 
 
 async def create_ifragment_order(order):
     order_id = order["id"]
+    product = (order["product"] or "STARS").upper()
+
+    payload = {
+        "product": product,
+        "username": order["username"].lstrip("@"),
+        "externalId": order_id,
+    }
+
+    if product == "PREMIUM":
+        payload["months"] = int(order["months"])
+    else:
+        payload["quantity"] = int(order["quantity"])
 
     result = await ifragment_request(
         "POST",
@@ -410,25 +434,18 @@ async def create_ifragment_order(order):
             "Idempotency-Key": f"stars-shop-{order_id}",
             "Content-Type": "application/json",
         },
-        json={
-            "product": "STARS",
-            "quantity": order["quantity"],
-            "username": order["username"].lstrip("@"),
-            "externalId": order_id,
-        },
+        json=payload,
     )
 
     data = result.get("data", result)
     supplier_order_id = data.get("id")
-    status = data.get("status", "QUEUED")
+    status = str(data.get("status", "QUEUED")).upper()
 
     update_order(order_id, status, supplier_order_id)
 
     return status, supplier_order_id
-
-
-# ---------------- MINI APP API ----------------
-
+    
+    # ---------------- MINI APP API ----------------
 async def api_check_recipient(request):
     user, error = api_user_or_error(request)
     if error:
@@ -436,6 +453,8 @@ async def api_check_recipient(request):
 
     body = await read_json(request)
     username = valid_username(body.get("username"))
+    product = str(body.get("product", "STARS")).upper()
+    months = body.get("months")
 
     if not username:
         return web.json_response(
@@ -443,8 +462,30 @@ async def api_check_recipient(request):
             status=400,
         )
 
+    if product not in ("STARS", "PREMIUM"):
+        return web.json_response(
+            {"error": "Неизвестный продукт."},
+            status=400,
+        )
+
+    if product == "PREMIUM":
+        try:
+            months = int(months)
+        except (TypeError, ValueError):
+            months = 0
+
+        if str(months) not in PREMIUM_PACKAGES:
+            return web.json_response(
+                {"error": "Выбери Premium на 3, 6 или 12 месяцев."},
+                status=400,
+            )
+
     try:
-        eligible, recipient_name = await check_recipient(username)
+        eligible, recipient_name = await check_recipient(
+            username,
+            product,
+            months,
+        )
     except Exception:
         logger.exception("Ошибка проверки получателя через Mini App")
         return web.json_response(
@@ -453,12 +494,21 @@ async def api_check_recipient(request):
         )
 
     if not eligible:
+        message = (
+            "Premium нельзя подарить этому аккаунту. "
+            "Возможно, Premium уже активен или аккаунт не подходит."
+            if product == "PREMIUM"
+            else "Получатель не найден или не подходит для Stars."
+        )
+
         return web.json_response(
             {
                 "eligible": False,
                 "username": username,
                 "name": recipient_name,
-                "error": "Получатель не найден или не подходит для Stars.",
+                "product": product,
+                "months": months,
+                "error": message,
             },
             status=404,
         )
@@ -467,6 +517,8 @@ async def api_check_recipient(request):
         "eligible": True,
         "username": username,
         "name": recipient_name,
+        "product": product,
+        "months": months,
         "message": "Получатель проверен.",
     })
 
@@ -483,15 +535,8 @@ async def api_create_order(request):
         )
 
     body = await read_json(request)
-
-    package_id = str(body.get("package_id", ""))
+    product = str(body.get("product", "STARS")).upper()
     username = valid_username(body.get("username"))
-
-    if package_id not in PACKAGES:
-        return web.json_response(
-            {"error": "Неизвестный пакет Stars."},
-            status=400,
-        )
 
     if not username:
         return web.json_response(
@@ -499,56 +544,136 @@ async def api_create_order(request):
             status=400,
         )
 
-    # Повторная проверка на сервере перед созданием заказа.
+    if product == "STARS":
+        package_id = str(body.get("package_id", ""))
+
+        if package_id not in PACKAGES:
+            return web.json_response(
+                {"error": "Неизвестный пакет Stars."},
+                status=400,
+            )
+
+        package = PACKAGES[package_id]
+        quantity = package["stars"]
+        months = None
+        price = package["price"]
+
+    elif product == "PREMIUM":
+        try:
+            months = int(body.get("months", 0))
+        except (TypeError, ValueError):
+            months = 0
+
+        if months not in (3, 6, 12):
+            return web.json_response(
+                {"error": "Выбери Premium на 3, 6 или 12 месяцев."},
+                status=400,
+            )
+
+        package = PREMIUM_PACKAGES[str(months)]
+        package_id = package["package_id"]
+        quantity = 0
+        price = package["price"]
+
+    else:
+        return web.json_response(
+            {"error": "Неизвестный продукт."},
+            status=400,
+        )
+
+    # Повторная проверка получателя на сервере.
     try:
-        eligible, recipient_name = await check_recipient(username)
+        eligible, recipient_name = await check_recipient(
+            username,
+            product,
+            months,
+        )
     except Exception:
-        logger.exception("Ошибка проверки получателя при создании заказа")
+        logger.exception(
+            "Ошибка проверки получателя при создании заказа"
+        )
         return web.json_response(
             {"error": "Не удалось проверить получателя. Заказ не создан."},
             status=502,
         )
 
     if not eligible:
+        message = (
+            "Premium нельзя подарить этому аккаунту. "
+            "Возможно, Premium уже активен или аккаунт не подходит."
+            if product == "PREMIUM"
+            else "Получатель не найден или не подходит для Stars."
+        )
+
         return web.json_response(
-            {"error": "Получатель не найден или не подходит для Stars."},
+            {"error": message},
             status=400,
         )
 
-    package = PACKAGES[package_id]
     order_id = uuid.uuid4().hex
 
     with db() as conn:
         conn.execute("""
             INSERT INTO orders (
-                id, buyer_id, username, package_id,
-                quantity, price, status, created_at
+                id, buyer_id, username, package_id, quantity, price,
+                status, created_at, product, months
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             order_id,
             user["id"],
             username,
             package_id,
-            package["stars"],
-            package["price"],
+            quantity,
+            price,
             "WAITING_PAYMENT",
             datetime.now(timezone.utc).isoformat(),
+            product,
+            months,
         ))
+
+    order_info = {
+        "id": order_id,
+        "username": username,
+        "product": product,
+        "quantity": quantity if product == "STARS" else None,
+        "months": months,
+        "price": price,
+        "status": "WAITING_PAYMENT",
+        "recipient_name": recipient_name,
+    }
 
     return web.json_response({
         "success": True,
-        "order": {
-            "id": order_id,
-            "username": username,
-            "quantity": package["stars"],
-            "price": package["price"],
-            "status": "WAITING_PAYMENT",
-            "recipient_name": recipient_name,
-        },
+        "order": order_info,
         "payment_details": PAYMENT_DETAILS,
         "message": "Заказ создан. После перевода сообщи об оплате.",
     }, status=201)
+
+
+async def notify_admin_payment(order):
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton(
+            "✅ Оплата получена — выполнить заказ",
+            callback_data=f"paid_{order['id']}",
+        ),
+        InlineKeyboardButton(
+            "❌ Отклонить",
+            callback_data=f"reject_{order['id']}",
+        ),
+    ]])
+
+    await send_admin_message(
+        "💳 Покупатель сообщил об оплате!\n\n"
+        f"Заказ: {order['id']}\n"
+        f"Товар: {product_text(order)}\n"
+        f"Сумма: {format_price(order['price'])}\n"
+        f"Получатель: {order['username']}\n"
+        f"Покупатель Telegram ID: {order['buyer_id']}\n\n"
+        "⚠️ Проверь реальное поступление денег в банке "
+        "перед подтверждением.",
+        reply_markup=keyboard,
+    )
 
 
 async def api_report_payment(request):
@@ -583,6 +708,7 @@ async def api_report_payment(request):
 
         if result.rowcount != 1:
             current = get_order(order_id)
+
             return web.json_response(
                 {
                     "error": "Заявка уже отправлена или заказ обработан.",
@@ -591,32 +717,12 @@ async def api_report_payment(request):
                 status=409,
             )
 
-    admin_keyboard = InlineKeyboardMarkup([[
-        InlineKeyboardButton(
-            "✅ Оплата получена — отправить Stars",
-            callback_data=f"paid_{order_id}",
-        ),
-        InlineKeyboardButton(
-            "❌ Отклонить",
-            callback_data=f"reject_{order_id}",
-        ),
-    ]])
-
     try:
-        await send_admin_message(
-            "💳 Покупатель сообщил об оплате!\n\n"
-            f"Заказ: {order_id}\n"
-            f"Пакет: {order['quantity']} Stars\n"
-            f"Сумма: {format_price(order['price'])}\n"
-            f"Получатель: {order['username']}\n"
-            f"Покупатель Telegram ID: {order['buyer_id']}\n\n"
-            "⚠️ Проверь реальное поступление денег в банке "
-            "перед подтверждением.",
-            reply_markup=admin_keyboard,
-        )
-
+        await notify_admin_payment(get_order(order_id))
     except Exception:
-        logger.exception("Не удалось отправить заявку администратору")
+        logger.exception(
+            "Не удалось отправить заявку администратору"
+        )
         update_order(order_id, "WAITING_PAYMENT")
 
         return web.json_response(
@@ -683,7 +789,6 @@ async def api_order_status(request):
 
 
 # ---------------- TELEGRAM MENU ----------------
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
@@ -718,6 +823,13 @@ async def prices(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for package_id in PACKAGES:
         lines.append("⭐ " + package_text(package_id))
 
+    lines += ["", "⭐ Telegram Premium"]
+
+    for months, package in PREMIUM_PACKAGES.items():
+        lines.append(
+            f"⭐ {months} мес. — {format_price(package['price'])}"
+        )
+
     await update.effective_message.reply_text("\n".join(lines))
 
 
@@ -729,6 +841,7 @@ async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 url=f"https://t.me/{SUPPORT_USERNAME}",
             )
         ]])
+
         text = (
             "🆘 Поддержка Stars Shop 27\n\n"
             f"@{SUPPORT_USERNAME}"
@@ -741,24 +854,25 @@ async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text,
         reply_markup=keyboard,
     )
-
-
-# ---------------- OPTIONAL BOT PURCHASE FLOW ----------------
-
+    
+    # ---------------- OPTIONAL BOT PURCHASE FLOW (STARS ONLY) ----------------
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     buttons = []
 
     for package_id, package in PACKAGES.items():
-        buttons.append([InlineKeyboardButton(
-            f"⭐ {package['stars']} — "
-            f"{format_price(package['price'])}",
-            callback_data=f"pkg_{package_id}",
-        )])
+        buttons.append([
+            InlineKeyboardButton(
+                f"⭐ {package['stars']} — {format_price(package['price'])}",
+                callback_data=f"pkg_{package_id}",
+            )
+        ])
 
-    buttons.append([InlineKeyboardButton(
-        "❌ Отмена",
-        callback_data="cancel_order",
-    )])
+    buttons.append([
+        InlineKeyboardButton(
+            "❌ Отмена",
+            callback_data="cancel_order",
+        )
+    ])
 
     await update.effective_message.reply_text(
         "🛒 Выбери пакет звёзд:",
@@ -768,10 +882,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return CHOOSE_PACKAGE
 
 
-async def choose_package(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
+async def choose_package(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
@@ -797,10 +908,7 @@ async def choose_package(
     return ENTER_USERNAME
 
 
-async def enter_username(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
+async def enter_username(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = valid_username(update.effective_message.text)
 
     if not username:
@@ -822,7 +930,10 @@ async def enter_username(
     )
 
     try:
-        eligible, recipient_name = await check_recipient(username)
+        eligible, recipient_name = await check_recipient(
+            username,
+            "STARS",
+        )
     except Exception:
         logger.exception("Ошибка проверки получателя")
         await update.effective_message.reply_text(
@@ -844,18 +955,17 @@ async def enter_username(
 
     package = PACKAGES[package_id]
     order_id = uuid.uuid4().hex
-    user = update.effective_user
 
     with db() as conn:
         conn.execute("""
             INSERT INTO orders (
-                id, buyer_id, username, package_id,
-                quantity, price, status, created_at
+                id, buyer_id, username, package_id, quantity,
+                price, status, created_at, product, months
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'STARS', NULL)
         """, (
             order_id,
-            user.id,
+            update.effective_user.id,
             username,
             package_id,
             package["stars"],
@@ -888,10 +998,7 @@ async def enter_username(
     return ConversationHandler.END
 
 
-async def buyer_paid_action(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
+async def buyer_paid_action(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
@@ -917,28 +1024,8 @@ async def buyer_paid_action(
             )
             return
 
-    admin_keyboard = InlineKeyboardMarkup([[
-        InlineKeyboardButton(
-            "✅ Оплата получена — отправить Stars",
-            callback_data=f"paid_{order_id}",
-        ),
-        InlineKeyboardButton(
-            "❌ Отклонить",
-            callback_data=f"reject_{order_id}",
-        ),
-    ]])
-
     try:
-        await send_admin_message(
-            "💳 Покупатель сообщил об оплате!\n\n"
-            f"Заказ: {order_id}\n"
-            f"Пакет: {order['quantity']} Stars\n"
-            f"Сумма: {format_price(order['price'])}\n"
-            f"Получатель: {order['username']}\n"
-            f"Покупатель Telegram ID: {order['buyer_id']}\n\n"
-            "⚠️ Проверь реальное поступление денег в банке.",
-            reply_markup=admin_keyboard,
-        )
+        await notify_admin_payment(get_order(order_id))
     except Exception:
         logger.exception("Не удалось отправить заявку администратору")
         update_order(order_id, "WAITING_PAYMENT")
@@ -959,11 +1046,7 @@ async def buyer_paid_action(
 
 
 # ---------------- ADMIN ACTIONS ----------------
-
-async def admin_order_action(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
+async def admin_order_action(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
@@ -1026,8 +1109,7 @@ async def admin_order_action(
             update_order(order_id, "API_ERROR")
 
             await query.message.reply_text(
-                "⚠️ Ошибка iFragment. Заказ не подтверждён поставщиком.\n"
-                "Проверь кабинет и статус заказа. "
+                "⚠️ Ошибка iFragment. Проверь кабинет и статус заказа. "
                 "Не создавай повторный заказ, пока не проверишь "
                 "состояние предыдущего."
             )
@@ -1044,6 +1126,7 @@ async def admin_order_action(
             chat_id=order["buyer_id"],
             text=(
                 f"⏳ Оплата заказа {order_id} подтверждена.\n"
+                f"Товар: {product_text(order)}\n"
                 "Заказ передан поставщику.\n"
                 f"Текущий статус: {status}\n\n"
                 "Мы сообщим, когда доставка будет подтверждена."
@@ -1052,7 +1135,6 @@ async def admin_order_action(
 
 
 # ---------------- IFRAGMENT WEBHOOK ----------------
-
 def verify_signature(raw_body, header, secret):
     if not secret or not header:
         return False
@@ -1105,6 +1187,7 @@ async def process_webhook_event(event):
 
     if event_type == "supplier_account.health_changed":
         logger.warning("Supplier Account health: %s", data)
+
         await send_admin_message(
             "⚠️ Изменился статус Supplier Account:\n"
             + json.dumps(data, ensure_ascii=False)
@@ -1128,7 +1211,6 @@ async def process_webhook_event(event):
 
         status = str(data.get("status", "")).upper()
 
-        # Учитываем события, выбранные в кабинете iFragment.
         if event_type.endswith(".succeeded"):
             status = "SUCCEEDED"
         elif event_type.endswith(".failed"):
@@ -1143,18 +1225,22 @@ async def process_webhook_event(event):
                 data.get("id"),
             )
 
+        item_text = product_text(order)
+
         if status == "SUCCEEDED":
+            buyer_text = (
+                f"🎉 Заказ {external_id} успешно выполнен!\n"
+                f"⭐ {item_text} отправлен(о) на {order['username']}."
+            )
+
             await telegram_app.bot.send_message(
                 chat_id=order["buyer_id"],
-                text=(
-                    f"🎉 Заказ {external_id} успешно выполнен!\n"
-                    f"⭐ {order['quantity']} Telegram Stars "
-                    f"отправлены на {order['username']}."
-                ),
+                text=buyer_text,
             )
 
             await send_admin_message(
-                f"✅ Заказ {external_id} успешно выполнен."
+                f"✅ Заказ {external_id} успешно выполнен: "
+                f"{item_text} для {order['username']}."
             )
 
         elif status == "FAILED":
@@ -1164,12 +1250,14 @@ async def process_webhook_event(event):
                 chat_id=order["buyer_id"],
                 text=(
                     f"❌ Не удалось выполнить заказ {external_id}.\n"
+                    f"Товар: {item_text}. "
                     "Обратись в поддержку для решения вопроса."
                 ),
             )
 
             await send_admin_message(
                 f"❌ Заказ {external_id} завершился ошибкой.\n"
+                f"Товар: {item_text}\n"
                 f"Причина: {failure.get('code', 'не указана')}"
             )
 
@@ -1178,15 +1266,16 @@ async def process_webhook_event(event):
                 chat_id=order["buyer_id"],
                 text=(
                     f"⏳ Заказ {external_id} проверяется "
-                    "поддержкой поставщика. Пока ожидаем результат."
+                    "поддержкой поставщика. "
+                    f"Товар: {item_text}. Пока ожидаем результат."
                 ),
             )
 
             await send_admin_message(
-                f"⚠️ Заказ {external_id} требует проверки iFragment."
+                f"⚠️ Заказ {external_id} требует проверки iFragment "
+                f"({item_text})."
             )
 
-    # Сохраняем event id после успешной обработки.
     with db() as conn:
         conn.execute(
             "INSERT OR IGNORE INTO webhook_events VALUES (?, ?)",
@@ -1236,7 +1325,6 @@ async def webhook_handler(request):
 
 
 # ---------------- HEALTH / CANCEL ----------------
-
 async def health_handler(request):
     return web.json_response({
         "status": "ok",
@@ -1244,10 +1332,11 @@ async def health_handler(request):
     })
 
 
-async def cancel_command(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
+async def options_handler(request):
+    return web.Response(status=204)
+
+
+async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("package_id", None)
 
     await update.effective_message.reply_text(
@@ -1258,7 +1347,6 @@ async def cancel_command(
 
 
 # ---------------- START SERVER ----------------
-
 async def main():
     global telegram_app
 
@@ -1336,36 +1424,42 @@ async def main():
         client_max_size=1024 * 1024,
     )
 
-    # API Mini App
     web_app.router.add_route(
-        "OPTIONS", "/api/{tail:.*}", lambda request: web.Response(status=204)
+        "OPTIONS",
+        "/api/{tail:.*}",
+        options_handler,
     )
+
     web_app.router.add_post(
         "/api/recipient/check",
         api_check_recipient,
     )
+
     web_app.router.add_post(
         "/api/orders",
         api_create_order,
     )
+
     web_app.router.add_post(
         "/api/orders/{order_id}/paid",
         api_report_payment,
     )
+
     web_app.router.add_get(
         "/api/orders",
         api_order_history,
     )
+
     web_app.router.add_get(
         "/api/orders/{order_id}",
         api_order_status,
     )
 
-    # iFragment webhook и health check
     web_app.router.add_post(
         WEBHOOK_PATH,
         webhook_handler,
     )
+
     web_app.router.add_get(
         "/health",
         health_handler,

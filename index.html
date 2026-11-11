@@ -336,9 +336,16 @@ a { color: #55aaff; text-decoration: none; }
   <div id="selectedPackage"></div>
 
   <div style="margin-top:20px">
-    <label class="input-label">Telegram username получателя</label>
-    <input id="username" type="text" placeholder="@username"
-           maxlength="33" autocomplete="off">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+  <label class="input-label" style="margin:0">Telegram username получателя</label>
+  <button type="button" onclick="useMyAccount()"
+    style="background:none;border:0;color:#55d6a7;font-size:13px;font-weight:bold;padding:0">
+    Этот аккаунт
+  </button>
+</div>
+
+<input id="username" type="text" placeholder="@username"
+       maxlength="33" autocomplete="off">
     <div class="help">
       1. Открой Telegram.<br>
       2. Перейди в профиль получателя.<br>

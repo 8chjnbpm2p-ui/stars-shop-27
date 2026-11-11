@@ -2,14 +2,20 @@
 "use strict";
 
 /* =========================================
-   MERGE WORLDS — ОСНОВНАЯ ЛОГИКА
+   MERGE WORLDS — GAME.JS
 ========================================= */
 
 const SAVE_KEY = "merge_worlds_save_v3";
+
+const BOARD_SIZE = 9;
 const SUMMON_COST = 10;
+const ANTI_SUMMON_COST = 1;
 
 const PASSIVE_SKINT_PER_MINUTE = 10;
-const PASSIVE_INTERVAL = 10000;
+
+/* =========================================
+   ПРЕДМЕТЫ
+========================================= */
 
 const items = {
   ice_scale: {
@@ -143,54 +149,99 @@ const items = {
    РЕЦЕПТЫ ОБЪЕДИНЕНИЯ
 ========================================= */
 
-function pair(a, b) {
-  return [a, b].sort().join("+");
+function makePair(first, second) {
+  return [first, second].sort().join("+");
 }
 
 const recipes = {
-  [pair("ice_scale", "ice_scale")]: "dim_crystal",
-  [pair("ice_scale", "dim_crystal")]: "key_core",
-  [pair("key_core", "rune_cloth")]: "key",
+  [makePair("ice_scale", "ice_scale")]: "dim_crystal",
+  [makePair("ice_scale", "dim_crystal")]: "key_core",
+  [makePair("key_core", "rune_cloth")]: "key",
 
-  [pair("stone_fragment", "glowing_dust")]: "tablet_core",
-  [pair("metal_plate", "tablet_core")]: "tablet",
+  [makePair("stone_fragment", "glowing_dust")]: "tablet_core",
+  [makePair("metal_plate", "tablet_core")]: "tablet",
 
-  [pair("beast_leather", "dense_cloth")]: "cloak_core",
-  [pair("cloak_core", "stable_stone")]: "cloak",
+  [makePair("beast_leather", "dense_cloth")]: "cloak_core",
+  [makePair("cloak_core", "stable_stone")]: "cloak",
 
-  [pair("strange_glass", "copper_wire")]: "anomaly_core",
-  [pair("anomaly_core", "weak_energy")]: "anomaly_stabilizer",
+  [makePair("strange_glass", "copper_wire")]: "anomaly_core",
+  [makePair("anomaly_core", "weak_energy")]: "anomaly_stabilizer",
 
-  [pair("amulet_fragment", "silver_thread")]: "amulet_core",
-  [pair("amulet_core", "magic_essence")]: "eola_amulet",
+  [makePair("amulet_fragment", "silver_thread")]: "amulet_core",
+  [makePair("amulet_core", "magic_essence")]: "eola_amulet",
 
-  [pair("tree_bark", "dark_feather")]: "order_core",
-  [pair("order_core", "stone_symbol")]: "order_sign"
+  [makePair("tree_bark", "dark_feather")]: "order_core",
+  [makePair("order_core", "stone_symbol")]: "order_sign"
 };
 
 /* =========================================
-   УЛУЧШЕНИЕ ОДИНАКОВЫХ ПРЕДМЕТОВ
+   УЛУЧШЕННЫЕ ПРЕДМЕТЫ
 ========================================= */
 
-const upgradedItems = {};
-
-function getUpgradeId(id) {
-  if (upgradedItems[id]) {
-    return upgradedItems[id];
-  }
-
-  const newId = "refined_" + id;
+function getUpgradeId(itemId) {
+  const newId = "refined_" + itemId;
 
   if (!items[newId]) {
     items[newId] = {
-      name: "Улучшенный: " + (items[id]?.name || id),
+      name: "Улучшенный: " + items[itemId].name,
       icon: "✨"
     };
   }
 
-  upgradedItems[id] = newId;
   return newId;
 }
+
+/* =========================================
+   МИРЫ
+========================================= */
+
+const worlds = [
+  {
+    number: 1,
+    name: "Новое Поколение",
+    description: "Мир, где всё только начинается. Древние драконы, забытые артефакты и первый шаг в неизвестность. Здесь ещё никто не знает, кем ты можешь стать."
+  },
+  {
+    number: 2,
+    name: "Игра Бога",
+    description: "Мир аномалий и полубогов. Здесь силы выше смертных начинают вмешиваться в судьбы, а обычные правила больше не работают."
+  },
+  {
+    number: 3,
+    name: "Идеальный МИР",
+    description: "Мир, который кажется слишком правильным. Под идеальной поверхностью скрывается система, которая решает, кому жить, а кому исчезнуть."
+  },
+  {
+    number: 4,
+    name: "Голос Времени",
+    description: "Междумирье и пустота между мирами. Здесь время течёт иначе, а каждый выбор может переписать то, что уже произошло."
+  },
+  {
+    number: 5,
+    name: "Тринадцать Огней",
+    description: "Жаркий пустынный мир богов и древних культов. Здесь сила измеряется верой, а боги никогда не бывают добрыми просто так."
+  },
+  {
+    number: 6,
+    name: "Последняя Реальность",
+    description: "Мир, где реальность даёт трещины. Альтернативные версии событий и людей начинают пересекаться, и становится всё сложнее понять, что настоящее."
+  },
+  {
+    number: 7,
+    name: "Сердце Вселенной",
+    description: "Глубокий и странный мир, связанный с самой основой существования. Здесь вопросы уже не про выживание, а про то, что вообще держит всё вместе."
+  },
+  {
+    number: 8,
+    name: "Точка Невозврата",
+    description: "Мир, из которого уже почти нельзя выйти прежним. Каждый шаг окончательный, а цена ошибок становится слишком высокой."
+  },
+  {
+    number: 9,
+    name: "Мастерская 47",
+    description: "Искусственный, созданный мир-симуляция. Здесь всё подчиняется правилам, которые можно понять… или сломать."
+  }
+];
 
 /* =========================================
    КВЕСТЫ
@@ -227,7 +278,7 @@ const questData = [
 ];
 
 /* =========================================
-   СОХРАНЕНИЕ
+   НАЧАЛЬНОЕ СОХРАНЕНИЕ
 ========================================= */
 
 function createInitialState() {
@@ -247,10 +298,21 @@ function createInitialState() {
       null
     ],
 
+    boardValues: [10, 10, 0, 0, 0, 0, 0, 0, 0],
+
     completedQuests: [],
     acceptedQuests: [],
+
     tutorialDone: false,
 
+    mergedCount: 0,
+    soldCount: 0,
+    summonedCount: 0,
+
+    unlockedWorld: 1,
+
+    playTimeMs: 0,
+    lastSessionStart: Date.now(),
     lastSkintUpdate: Date.now()
   };
 }
@@ -259,26 +321,32 @@ function loadState() {
   try {
     const saved = localStorage.getItem(SAVE_KEY);
 
-    if (!saved) {
-      return createInitialState();
-    }
+    if (!saved) return createInitialState();
 
     const parsed = JSON.parse(saved);
     const initial = createInitialState();
 
-    const loadedBoard = Array.isArray(parsed.board)
-      ? parsed.board.slice(0, 9)
-      : initial.board;
+    const board = Array.isArray(parsed.board)
+      ? parsed.board.slice(0, BOARD_SIZE)
+      : initial.board.slice();
 
-    while (loadedBoard.length < 9) {
-      loadedBoard.push(null);
+    while (board.length < BOARD_SIZE) {
+      board.push(null);
     }
 
-    const loadedState = {
+    const boardValues = Array.isArray(parsed.boardValues)
+      ? parsed.boardValues.slice(0, BOARD_SIZE)
+      : board.map(item => item ? SUMMON_COST : 0);
+
+    while (boardValues.length < BOARD_SIZE) {
+      boardValues.push(0);
+    }
+
+    return {
       ...initial,
       ...parsed,
-
-      board: loadedBoard,
+      board,
+      boardValues,
 
       completedQuests: Array.isArray(parsed.completedQuests)
         ? parsed.completedQuests
@@ -286,25 +354,13 @@ function loadState() {
 
       acceptedQuests: Array.isArray(parsed.acceptedQuests)
         ? parsed.acceptedQuests
-        : []
+        : [],
+
+      unlockedWorld: Math.min(
+        9,
+        Math.max(1, Number(parsed.unlockedWorld) || 1)
+      )
     };
-
-    /*
-      Старым сохранениям добавляем таймер.
-      Это не начисляет деньги задним числом.
-    */
-
-    if (
-      typeof loadedState.lastSkintUpdate !== "number" ||
-      !Number.isFinite(loadedState.lastSkintUpdate)
-    ) {
-      loadedState.lastSkintUpdate = Date.now();
-    }
-
-    applyPassiveIncome(loadedState);
-
-    return loadedState;
-
   } catch (error) {
     console.error("Ошибка загрузки сохранения:", error);
     return createInitialState();
@@ -317,77 +373,54 @@ function saveState() {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error("Не удалось сохранить игру:", error);
+    console.error("Ошибка сохранения:", error);
   }
 }
 
 /* =========================================
    ПАССИВНЫЙ ДОХОД
-   +10 Скинтов за каждую полную минуту
 ========================================= */
 
-function applyPassiveIncome(targetState) {
+function updatePassiveIncome() {
   const now = Date.now();
 
-  if (
-    typeof targetState.lastSkintUpdate !== "number" ||
-    !Number.isFinite(targetState.lastSkintUpdate)
-  ) {
-    targetState.lastSkintUpdate = now;
-    return 0;
+  if (!state.lastSkintUpdate) {
+    state.lastSkintUpdate = now;
+    return;
   }
 
-  /*
-    Если системные часы перевели назад,
-    начинаем отсчёт заново.
-  */
+  const elapsed = now - state.lastSkintUpdate;
+  const minutes = Math.floor(elapsed / 60000);
 
-  if (now < targetState.lastSkintUpdate) {
-    targetState.lastSkintUpdate = now;
-    return 0;
-  }
+  if (minutes <= 0) return;
 
-  const elapsed = now - targetState.lastSkintUpdate;
-  const fullMinutes = Math.floor(elapsed / 60000);
+  state.skint += minutes * PASSIVE_SKINT_PER_MINUTE;
+  state.lastSkintUpdate += minutes * 60000;
 
-  if (fullMinutes <= 0) {
-    return 0;
-  }
-
-  const earned = fullMinutes * PASSIVE_SKINT_PER_MINUTE;
-
-  targetState.skint += earned;
-
-  /*
-    Сохраняем остаток секунд,
-    чтобы не терять время между начислениями.
-  */
-
-  targetState.lastSkintUpdate += fullMinutes * 60000;
-
-  return earned;
-}
-
-function updatePassiveIncome() {
-  const earned = applyPassiveIncome(state);
-
-  if (earned > 0) {
-    saveState();
-    renderCurrencies();
-  }
+  saveState();
 }
 
 /* =========================================
-   ЭЛЕМЕНТЫ СТРАНИЦЫ
+   HTML-ЭЛЕМЕНТЫ
 ========================================= */
 
 const boardElement = document.getElementById("mergeBoard");
+
 const summonButton = document.getElementById("summonButton");
+const antiSummonButton = document.getElementById("antiSummonButton");
 
 const skintElement = document.getElementById("skint");
 const antiSkintElement = document.getElementById("antiSkint");
 
 const questListElement = document.getElementById("questList");
+
+const sellOverlay = document.getElementById("sellOverlay");
+const sellItemIcon = document.getElementById("sellItemIcon");
+const sellItemName = document.getElementById("sellItemName");
+const sellItemDescription = document.getElementById("sellItemDescription");
+const sellItemPrice = document.getElementById("sellItemPrice");
+const sellConfirmButton = document.getElementById("sellConfirmButton");
+const sellCancelButton = document.getElementById("sellCancelButton");
 
 const tutorialOverlay = document.getElementById("tutorialOverlay");
 const tutorialTitle = document.getElementById("tutorialTitle");
@@ -407,18 +440,27 @@ const restartTutorialButton =
   document.getElementById("restartTutorialButton");
 
 /* =========================================
-   ТЕКУЩИЙ РЕЖИМ ИГРЫ
+   ПОЛЕ И ОБУЧЕНИЕ
 ========================================= */
 
 let tutorialMode = false;
-let tutorialBoard = Array(9).fill(null);
+let tutorialBoard = Array(BOARD_SIZE).fill(null);
 let tutorialStep = 0;
 let tutorialMerged = false;
 
-let selectedCell = null;
 let dragSource = null;
 let pointerStart = null;
 let pointerMoved = false;
+
+let itemToSellIndex = null;
+
+function getCurrentBoard() {
+  return tutorialMode ? tutorialBoard : state.board;
+}
+
+/* =========================================
+   ПРЕДМЕТЫ ДЛЯ ПРИЗЫВА
+========================================= */
 
 const randomItems = [
   "ice_scale",
@@ -432,45 +474,18 @@ const randomItems = [
   "stable_stone"
 ];
 
-function getCurrentBoard() {
-  return tutorialMode ? tutorialBoard : state.board;
-}
-
-/* =========================================
-   ВЫБОР ПРЕДМЕТА ДЛЯ ПРИЗЫВА
-========================================= */
-
 function getRandomSummonItem() {
-  /*
-    С вероятностью 75% выбираем предмет,
-    который уже есть на поле.
+  const existing = randomItems.filter(id => state.board.includes(id));
 
-    Это повышает шанс получить пару
-    для объединения.
-  */
-
-  const existingBaseItems = randomItems.filter(itemId =>
-    state.board.includes(itemId)
-  );
-
-  if (
-    existingBaseItems.length > 0 &&
-    Math.random() < 0.75
-  ) {
-    const chosen = existingBaseItems[
-      Math.floor(Math.random() * existingBaseItems.length)
-    ];
-
-    return chosen;
+  if (existing.length && Math.random() < 0.75) {
+    return existing[Math.floor(Math.random() * existing.length)];
   }
 
-  return randomItems[
-    Math.floor(Math.random() * randomItems.length)
-  ];
+  return randomItems[Math.floor(Math.random() * randomItems.length)];
 }
 
 /* =========================================
-   ОТОБРАЖЕНИЕ ВАЛЮТ
+   ВАЛЮТА
 ========================================= */
 
 function renderCurrencies() {
@@ -484,11 +499,29 @@ function renderCurrencies() {
 }
 
 /* =========================================
-   ОТОБРАЖЕНИЕ ИГРОВОГО ПОЛЯ
+   КНОПКИ ПРИЗЫВА
+========================================= */
+
+function updateSummonButtons() {
+  const occupied = state.board.filter(Boolean).length;
+  const full = occupied >= BOARD_SIZE;
+
+  if (summonButton) {
+    summonButton.disabled = full || state.skint < SUMMON_COST;
+  }
+
+  if (antiSummonButton) {
+    antiSummonButton.disabled =
+      full || state.antiSkint < ANTI_SUMMON_COST;
+  }
+}
+
+/* =========================================
+   ОТОБРАЖЕНИЕ ПОЛЯ
 ========================================= */
 
 function renderBoard() {
-  if (!boardElement || !summonButton) return;
+  if (!boardElement) return;
 
   const board = getCurrentBoard();
 
@@ -508,86 +541,196 @@ function renderBoard() {
       icon.textContent = items[itemId].icon;
 
       cell.appendChild(icon);
-
       cell.title = items[itemId].name;
-      cell.setAttribute("aria-label", items[itemId].name);
-      cell.draggable = false;
-    }
-
-    if (selectedCell === index) {
-      cell.classList.add("selected");
     }
 
     boardElement.appendChild(cell);
   });
 
-  if (tutorialMode) {
-    summonButton.textContent = "✨ Призвать пару";
-  } else {
-    summonButton.textContent =
-      `✨ Призвать предмет · ${SUMMON_COST} Скинта`;
-  }
+  updateSummonButtons();
 }
 
 /* =========================================
-   ПРИЗЫВ ПРЕДМЕТОВ
+   ДОБАВЛЕНИЕ ПРЕДМЕТА
 ========================================= */
 
-function getEmptyCell(board) {
-  return board.findIndex(item => item === null);
+function addItemToBoard(itemId, value = SUMMON_COST) {
+  const emptyIndex = state.board.indexOf(null);
+
+  if (emptyIndex === -1) return false;
+
+  state.board[emptyIndex] = itemId;
+  state.boardValues[emptyIndex] = value;
+
+  return true;
 }
+
+/* =========================================
+   ОБЫЧНЫЙ ПРИЗЫВ
+========================================= */
 
 function summonMainItem() {
   updatePassiveIncome();
 
-  if (state.skint < SUMMON_COST) {
-    showMessage("Недостаточно Скинта!");
+  if (state.board.filter(Boolean).length >= BOARD_SIZE) {
+    showMessage("Поле заполнено!");
     return;
   }
 
-  const empty = getEmptyCell(state.board);
-
-  if (empty === -1) {
-    showMessage("Игровое поле заполнено!");
+  if (state.skint < SUMMON_COST) {
+    showMessage("Недостаточно Скинтов!");
     return;
   }
 
   const itemId = getRandomSummonItem();
 
   state.skint -= SUMMON_COST;
-  state.board[empty] = itemId;
+
+  addItemToBoard(itemId, SUMMON_COST);
+  state.summonedCount++;
 
   saveState();
   renderAll();
+
+  showMessage("Получен предмет: " + items[itemId].name);
 }
 
-function summonTutorialPair() {
-  tutorialBoard = Array(9).fill(null);
+/* =========================================
+   АНТИ-СКИНТ
+   ЗАПОЛНЕНИЕ ДО 9/9
+========================================= */
 
-  tutorialBoard[3] = "ice_scale";
-  tutorialBoard[5] = "ice_scale";
+function summonAntiItems() {
+  updatePassiveIncome();
 
-  renderBoard();
+  const occupied = state.board.filter(Boolean).length;
+  const freeCells = BOARD_SIZE - occupied;
 
-  tutorialStep = 2;
-  showTutorialStep();
+  if (freeCells <= 0) {
+    showMessage("Поле уже заполнено!");
+    return;
+  }
+
+  if (state.antiSkint < ANTI_SUMMON_COST) {
+    showMessage("Недостаточно Анти-скинтов!");
+    return;
+  }
+
+  state.antiSkint -= ANTI_SUMMON_COST;
+
+  for (let i = 0; i < freeCells; i++) {
+    const itemId = getRandomSummonItem();
+
+    if (!addItemToBoard(itemId, SUMMON_COST)) break;
+
+    state.summonedCount++;
+  }
+
+  saveState();
+  renderAll();
+
+  showMessage(`Поле заполнено! Добавлено предметов: ${freeCells}`);
 }
 
 if (summonButton) {
   summonButton.addEventListener("click", () => {
-    if (tutorialMode) {
-      if (tutorialStep === 1) {
-        summonTutorialPair();
-      }
-      return;
-    }
-
+    if (tutorialMode) return;
     summonMainItem();
   });
 }
 
+if (antiSummonButton) {
+  antiSummonButton.addEventListener("click", () => {
+    if (tutorialMode) return;
+    summonAntiItems();
+  });
+}
+
 /* =========================================
-   ОБЪЕДИНЕНИЕ
+   ПРОДАЖА ПРЕДМЕТОВ
+========================================= */
+
+function openSellWindow(index) {
+  const itemId = state.board[index];
+
+  if (!itemId || !items[itemId] || !sellOverlay) return;
+
+  itemToSellIndex = index;
+
+  const value = state.boardValues[index] || SUMMON_COST;
+  const price = Math.floor(value * 0.5);
+
+  if (sellItemIcon) {
+    sellItemIcon.textContent = items[itemId].icon;
+  }
+
+  if (sellItemName) {
+    sellItemName.textContent = items[itemId].name;
+  }
+
+  if (sellItemDescription) {
+    sellItemDescription.textContent =
+      "Ты получишь половину стоимости предмета.";
+  }
+
+  if (sellItemPrice) {
+    sellItemPrice.textContent = price + " Скинтов";
+  }
+
+  sellOverlay.classList.remove("hidden");
+}
+
+function closeSellWindow() {
+  itemToSellIndex = null;
+
+  if (sellOverlay) {
+    sellOverlay.classList.add("hidden");
+  }
+}
+
+function confirmSellItem() {
+  if (itemToSellIndex === null) return;
+
+  const index = itemToSellIndex;
+  const itemId = state.board[index];
+
+  if (!itemId) {
+    closeSellWindow();
+    return;
+  }
+
+  const value = state.boardValues[index] || SUMMON_COST;
+  const price = Math.floor(value * 0.5);
+
+  state.skint += price;
+  state.board[index] = null;
+  state.boardValues[index] = 0;
+  state.soldCount++;
+
+  closeSellWindow();
+
+  saveState();
+  renderAll();
+
+  showMessage("Продано за " + price + " Скинтов");
+}
+
+if (sellConfirmButton) {
+  sellConfirmButton.addEventListener("click", confirmSellItem);
+}
+
+if (sellCancelButton) {
+  sellCancelButton.addEventListener("click", closeSellWindow);
+}
+
+if (sellOverlay) {
+  sellOverlay.addEventListener("click", event => {
+    if (event.target === sellOverlay) closeSellWindow();
+  });
+}
+
+/* =========================================
+   ОБЪЕДИНЕНИЕ ПРЕДМЕТОВ
 ========================================= */
 
 function mergeItems(sourceIndex, targetIndex) {
@@ -600,9 +743,7 @@ function mergeItems(sourceIndex, targetIndex) {
 
   if (!first || !second) return false;
 
-  const recipe = recipes[pair(first, second)];
-
-  let result = recipe;
+  let result = recipes[makePair(first, second)];
 
   if (!result && first === second) {
     result = getUpgradeId(first);
@@ -616,29 +757,32 @@ function mergeItems(sourceIndex, targetIndex) {
   board[targetIndex] = result;
   board[sourceIndex] = null;
 
-  selectedCell = null;
-
-  if (!tutorialMode) {
-    saveState();
-  } else {
+  if (tutorialMode) {
     tutorialMerged = true;
     tutorialStep = 3;
     showTutorialStep();
+  } else {
+    const firstValue = state.boardValues[sourceIndex] || SUMMON_COST;
+    const secondValue = state.boardValues[targetIndex] || SUMMON_COST;
+
+    state.boardValues[targetIndex] = firstValue + secondValue;
+    state.boardValues[sourceIndex] = 0;
+
+    state.mergedCount++;
+
+    saveState();
+    renderQuests();
+    renderProfile();
   }
 
   renderBoard();
-
-  if (!tutorialMode) {
-    renderQuests();
-  }
-
   showMessage("Получено: " + items[result].name);
 
   return true;
 }
 
 /* =========================================
-   ПЕРЕТАСКИВАНИЕ ПАЛЬЦЕМ И МЫШКОЙ
+   ПЕРЕТАСКИВАНИЕ И НАЖАТИЯ
 ========================================= */
 
 if (boardElement) {
@@ -655,8 +799,6 @@ if (boardElement) {
     };
 
     pointerMoved = false;
-
-    cell.classList.add("dragging");
   });
 
   boardElement.addEventListener("pointermove", event => {
@@ -667,9 +809,7 @@ if (boardElement) {
       event.clientY - pointerStart.y
     );
 
-    if (distance > 8) {
-      pointerMoved = true;
-    }
+    if (distance > 8) pointerMoved = true;
   });
 
   boardElement.addEventListener("pointerup", event => {
@@ -677,46 +817,22 @@ if (boardElement) {
 
     const sourceIndex = dragSource;
 
-    const sourceCell = boardElement.querySelector(
-      `[data-index="${sourceIndex}"]`
-    );
-
-    if (sourceCell) {
-      sourceCell.classList.remove("dragging");
-    }
-
     const targetCell = document.elementFromPoint(
       event.clientX,
       event.clientY
     )?.closest(".board-cell");
 
-    if (targetCell && pointerMoved) {
+    if (pointerMoved && targetCell) {
       const targetIndex = Number(targetCell.dataset.index);
 
       if (sourceIndex !== targetIndex) {
         mergeItems(sourceIndex, targetIndex);
       }
     } else if (!pointerMoved) {
-      handleCellTap(sourceIndex);
-    }
-
-    dragSource = null;
-    pointerStart = null;
-    pointerMoved = false;
-
-    boardElement.querySelectorAll(".drag-over").forEach(cell => {
-      cell.classList.remove("drag-over");
-    });
-  });
-
-  boardElement.addEventListener("pointercancel", () => {
-    if (dragSource !== null) {
-      const cell = boardElement.querySelector(
-        `[data-index="${dragSource}"]`
-      );
-
-      if (cell) {
-        cell.classList.remove("dragging");
+      if (tutorialMode) {
+        handleTutorialTap(sourceIndex);
+      } else {
+        openSellWindow(sourceIndex);
       }
     }
 
@@ -725,66 +841,36 @@ if (boardElement) {
     pointerMoved = false;
   });
 
-  boardElement.addEventListener("pointerover", event => {
-    if (dragSource === null) return;
-
-    const cell = event.target.closest(".board-cell");
-
-    if (!cell) return;
-
-    cell.classList.add("drag-over");
-  });
-
-  boardElement.addEventListener("pointerout", event => {
-    const cell = event.target.closest(".board-cell");
-
-    if (cell) {
-      cell.classList.remove("drag-over");
-    }
+  boardElement.addEventListener("pointercancel", () => {
+    dragSource = null;
+    pointerStart = null;
+    pointerMoved = false;
   });
 }
 
-/* =========================================
-   ВЫБОР ПРЕДМЕТОВ КАСАНИЕМ
-========================================= */
+function handleTutorialTap(index) {
+  if (!tutorialBoard[index]) return;
 
-function handleCellTap(index) {
-  const board = getCurrentBoard();
-  const itemId = board[index];
-
-  if (selectedCell === null) {
-    if (!itemId) return;
-
-    selectedCell = index;
-    renderBoard();
+  if (selectedTutorialCell === null) {
+    selectedTutorialCell = index;
     return;
   }
 
-  if (selectedCell === index) {
-    selectedCell = null;
-    renderBoard();
+  if (selectedTutorialCell === index) {
+    selectedTutorialCell = null;
     return;
   }
 
-  if (!itemId) {
-    selectedCell = null;
-    renderBoard();
-    return;
-  }
+  const previous = selectedTutorialCell;
+  selectedTutorialCell = null;
 
-  const previous = selectedCell;
-  selectedCell = null;
-
-  const merged = mergeItems(previous, index);
-
-  if (!merged) {
-    selectedCell = index;
-    renderBoard();
-  }
+  mergeItems(previous, index);
 }
 
+let selectedTutorialCell = null;
+
 /* =========================================
-   МЕНЮ И ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+   ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
 ========================================= */
 
 const navButtons = document.querySelectorAll(".nav-button");
@@ -801,23 +887,23 @@ function openPage(pageId) {
       button.dataset.page === pageId
     );
   });
+
+  renderAll();
 }
 
 navButtons.forEach(button => {
   button.addEventListener("click", () => {
     if (tutorialMode) return;
 
-    openPage(button.dataset.page);
+    const pageId = button.dataset.page;
+
+    if (pageId) openPage(pageId);
   });
 });
 
 /* =========================================
    КВЕСТЫ
 ========================================= */
-
-function hasItem(itemId) {
-  return state.board.includes(itemId);
-}
 
 function renderQuests() {
   if (!questListElement) return;
@@ -827,14 +913,10 @@ function renderQuests() {
   questData.forEach(quest => {
     const completed = state.completedQuests.includes(quest.id);
     const accepted = state.acceptedQuests.includes(quest.id);
-    const hasTarget = hasItem(quest.target);
+    const hasTarget = state.board.includes(quest.target);
 
     const card = document.createElement("article");
     card.className = "quest-card";
-
-    if (completed) {
-      card.classList.add("completed");
-    }
 
     const title = document.createElement("h3");
     title.textContent = quest.title;
@@ -848,7 +930,7 @@ function renderQuests() {
     const reward = document.createElement("div");
     reward.className = "quest-reward";
     reward.textContent =
-      `Награда: ${quest.rewardSkint} Скинта · ${quest.rewardAnti} Анти-скинт`;
+      `Награда: ${quest.rewardSkint} Скинтов · ${quest.rewardAnti} Анти-скинтов`;
 
     const button = document.createElement("button");
     button.className = "primary-button";
@@ -867,22 +949,13 @@ function renderQuests() {
     } else if (hasTarget) {
       button.textContent = "Сдать предмет";
 
-      button.addEventListener("click", () => {
-        completeQuest(quest);
-      });
+      button.addEventListener("click", () => completeQuest(quest));
     } else {
       button.textContent = "Предмет ещё не найден";
       button.disabled = true;
     }
 
-    card.append(
-      title,
-      character,
-      description,
-      reward,
-      button
-    );
-
+    card.append(title, character, description, reward, button);
     questListElement.appendChild(card);
   });
 }
@@ -896,9 +969,9 @@ function completeQuest(quest) {
   }
 
   state.board[index] = null;
+  state.boardValues[index] = 0;
 
   state.completedQuests.push(quest.id);
-
   state.skint += quest.rewardSkint;
   state.antiSkint += quest.rewardAnti;
 
@@ -909,6 +982,78 @@ function completeQuest(quest) {
 }
 
 /* =========================================
+   МИРЫ
+========================================= */
+
+function renderWorlds() {
+  const cards = document.querySelectorAll(".world-card");
+
+  cards.forEach(card => {
+    const number = Number(card.dataset.world);
+    const locked = number > state.unlockedWorld;
+
+    card.classList.toggle("locked", locked);
+  });
+}
+
+document.querySelectorAll(".world-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const number = Number(card.dataset.world);
+
+    if (!number) return;
+
+    if (number > state.unlockedWorld) {
+      showMessage("Сначала открой предыдущий мир!");
+      return;
+    }
+
+    showMessage("Выбран мир: " + worlds[number - 1].name);
+  });
+});
+
+/* =========================================
+   ПРОФИЛЬ
+========================================= */
+
+function formatPlayTime(milliseconds) {
+  const totalMinutes = Math.floor(milliseconds / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${hours} ч. ${minutes} мин.`;
+}
+
+function getPlayTime() {
+  const currentSession = Math.max(
+    0,
+    Date.now() - (state.lastSessionStart || Date.now())
+  );
+
+  return state.playTimeMs + currentSession;
+}
+
+function renderProfile() {
+  const values = {
+    profileName: "Мироходец",
+    profileStatus: "Начинающий",
+    profileRank: "—",
+    profileWorld: worlds[state.unlockedWorld - 1]?.name || worlds[0].name,
+    playTime: formatPlayTime(getPlayTime()),
+    mergedCount: state.mergedCount,
+    soldCount: state.soldCount,
+    summonedCount: state.summonedCount,
+    profileSkint: Math.floor(state.skint),
+    profileAntiSkint: Math.floor(state.antiSkint)
+  };
+
+  Object.entries(values).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+
+    if (element) element.textContent = value;
+  });
+}
+
+/* =========================================
    ОБУЧЕНИЕ
 ========================================= */
 
@@ -916,179 +1061,166 @@ const tutorialSteps = [
   {
     title: "Добро пожаловать!",
     text: "Это Merge Worlds. Здесь ты будешь получать предметы, объединять их и открывать новые миры.",
-    button: "Начать обучение"
+    button: "Начать"
   },
   {
     title: "Призыв предметов",
-    text: "Нажми кнопку ниже, чтобы получить два одинаковых предмета. В обычной игре призыв стоит Скинт.",
-    button: "Призвать пару"
+    text: "Обычный призыв стоит 10 Скинтов. Нажми кнопку, чтобы получить предметы.",
+    button: "Далее"
   },
   {
     title: "Объединение",
-    text: "Перетащи один ледяной осколок на другой. Если перетаскивание неудобно, можешь сначала коснуться одного предмета, а потом второго.",
-    button: "Жду объединения"
-  },
-  {
-    title: "Квесты",
-    text: "На вкладке «Квесты» персонажи будут просить тебя создавать определённые предметы. За выполнение ты получишь награды.",
+    text: "Перетащи один предмет на другой. Два подходящих предмета объединятся в один новый.",
     button: "Далее"
   },
   {
-    title: "Миры",
-    text: "На вкладке «Миры» находятся сезоны вселенной. Следующий мир откроется после прохождения предыдущего.",
+    title: "Продажа",
+    text: "Нажми на предмет, чтобы открыть окно продажи. Ты получишь половину его стоимости.",
     button: "Далее"
   },
   {
-    title: "Профиль",
-    text: "В профиле можно снова запустить обучение. Оно всегда проходит отдельно и не стирает твои основные предметы.",
-    button: "Завершить обучение"
+    title: "Анти-скинт",
+    text: "Анти-скинт заполняет все свободные клетки поля. Он стоит 1 Анти-скинт.",
+    button: "Далее"
+  },
+  {
+    title: "Квесты и миры",
+    text: "Выполняй задания персонажей и открывай новые миры.",
+    button: "Завершить"
   }
 ];
-
-function startTutorial() {
-  tutorialMode = true;
-  tutorialBoard = Array(9).fill(null);
-  tutorialStep = 0;
-  tutorialMerged = false;
-  selectedCell = null;
-
-  openPage("homePage");
-
-  tutorialCompleteOverlay.classList.add("hidden");
-  tutorialOverlay.classList.remove("hidden");
-
-  tutorialOverlay.style.pointerEvents = "none";
-
-  const tooltip = tutorialOverlay.querySelector(".tutorial-tooltip");
-
-  if (tooltip) {
-    tooltip.style.pointerEvents = "auto";
-  }
-
-  showTutorialStep();
-  renderBoard();
-}
 
 function showTutorialStep() {
   const step = tutorialSteps[tutorialStep];
 
   if (!step) return;
 
-  tutorialTitle.textContent = step.title;
-  tutorialText.textContent = step.text;
-  tutorialButton.textContent = step.button;
+  if (tutorialTitle) tutorialTitle.textContent = step.title;
+  if (tutorialText) tutorialText.textContent = step.text;
+  if (tutorialButton) tutorialButton.textContent = step.button;
 
-  tutorialStepLabel.textContent =
-    `ОБУЧЕНИЕ · ${tutorialStep + 1}/${tutorialSteps.length}`;
-
-  tutorialProgress.style.width =
-    `${((tutorialStep + 1) / tutorialSteps.length) * 100}%`;
-
-  tutorialButton.disabled = false;
-
-  if (tutorialStep === 2 && !tutorialMerged) {
-    tutorialButton.disabled = true;
-    tutorialButton.textContent = "Сначала объедини предметы";
+  if (tutorialStepLabel) {
+    tutorialStepLabel.textContent =
+      `ОБУЧЕНИЕ · ${tutorialStep + 1}/${tutorialSteps.length}`;
   }
 
-  if (tutorialStep === 1) {
-    summonButton.classList.add("tutorial-highlight");
-  } else {
-    summonButton.classList.remove("tutorial-highlight");
-  }
-
-  if (tutorialStep === 2) {
-    boardElement.classList.add("tutorial-highlight");
-  } else {
-    boardElement.classList.remove("tutorial-highlight");
+  if (tutorialProgress) {
+    tutorialProgress.style.width =
+      `${((tutorialStep + 1) / tutorialSteps.length) * 100}%`;
   }
 }
 
-tutorialButton.addEventListener("click", () => {
-  if (!tutorialMode) return;
+function startTutorial() {
+  tutorialMode = true;
+  tutorialStep = 0;
 
-  if (tutorialStep === 1) {
-    summonTutorialPair();
-    return;
+  tutorialBoard = [
+    "ice_scale",
+    "ice_scale",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ];
+
+  tutorialMerged = false;
+  selectedTutorialCell = null;
+
+  if (tutorialOverlay) {
+    tutorialOverlay.classList.remove("hidden");
   }
 
-  if (tutorialStep === 2 && !tutorialMerged) {
-    return;
+  if (tutorialCompleteOverlay) {
+    tutorialCompleteOverlay.classList.add("hidden");
   }
 
+  showTutorialStep();
+  renderBoard();
+}
+
+function finishTutorial() {
+  tutorialMode = false;
+  state.tutorialDone = true;
+
+  if (tutorialOverlay) {
+    tutorialOverlay.classList.add("hidden");
+  }
+
+  if (tutorialCompleteOverlay) {
+    tutorialCompleteOverlay.classList.remove("hidden");
+  }
+
+  saveState();
+  renderAll();
+}
+
+function nextTutorialStep() {
   if (tutorialStep < tutorialSteps.length - 1) {
     tutorialStep++;
     showTutorialStep();
   } else {
     finishTutorial();
   }
-});
-
-function finishTutorial() {
-  tutorialMode = false;
-  tutorialBoard = Array(9).fill(null);
-  tutorialMerged = false;
-  selectedCell = null;
-
-  state.tutorialDone = true;
-  saveState();
-
-  tutorialOverlay.classList.add("hidden");
-  tutorialCompleteOverlay.classList.remove("hidden");
-
-  summonButton.classList.remove("tutorial-highlight");
-  boardElement.classList.remove("tutorial-highlight");
-
-  renderAll();
 }
 
-function exitTutorial() {
-  tutorialMode = false;
-  tutorialBoard = Array(9).fill(null);
-  tutorialMerged = false;
-  selectedCell = null;
+if (tutorialButton) {
+  tutorialButton.addEventListener("click", () => {
+    if (!tutorialMode) return;
 
-  tutorialOverlay.classList.add("hidden");
-  tutorialCompleteOverlay.classList.add("hidden");
+    if (tutorialStep === 2 && !tutorialMerged) {
+      showMessage("Сначала объедини два предмета!");
+      return;
+    }
 
-  summonButton.classList.remove("tutorial-highlight");
-  boardElement.classList.remove("tutorial-highlight");
-
-  renderAll();
+    nextTutorialStep();
+  });
 }
 
-tutorialSkipButton.addEventListener("click", exitTutorial);
+if (tutorialSkipButton) {
+  tutorialSkipButton.addEventListener("click", finishTutorial);
+}
 
-tutorialCompleteButton.addEventListener("click", () => {
-  tutorialCompleteOverlay.classList.add("hidden");
-  openPage("homePage");
-  renderAll();
-});
+if (tutorialCompleteButton) {
+  tutorialCompleteButton.addEventListener("click", () => {
+    if (tutorialCompleteOverlay) {
+      tutorialCompleteOverlay.classList.add("hidden");
+    }
 
-restartTutorialButton.addEventListener("click", startTutorial);
+    tutorialMode = false;
+    renderAll();
+  });
+}
+
+if (restartTutorialButton) {
+  restartTutorialButton.addEventListener("click", startTutorial);
+}
 
 /* =========================================
-   УВЕДОМЛЕНИЯ
+   СООБЩЕНИЯ
 ========================================= */
 
-let messageTimer = null;
+let messageTimeout = null;
 
 function showMessage(message) {
-  let element = document.querySelector(".game-message");
+  let element = document.getElementById("gameMessage");
 
   if (!element) {
     element = document.createElement("div");
+    element.id = "gameMessage";
     element.className = "game-message";
     document.body.appendChild(element);
   }
 
   element.textContent = message;
-  element.style.display = "block";
+  element.classList.add("visible");
 
-  clearTimeout(messageTimer);
+  clearTimeout(messageTimeout);
 
-  messageTimer = setTimeout(() => {
-    element.style.display = "none";
+  messageTimeout = setTimeout(() => {
+    element.classList.remove("visible");
   }, 2200);
 }
 
@@ -1097,41 +1229,74 @@ function showMessage(message) {
 ========================================= */
 
 function renderAll() {
-  renderCurrencies();
   renderBoard();
+  renderCurrencies();
   renderQuests();
+  renderProfile();
+  renderWorlds();
+  updateSummonButtons();
 }
+
+/* =========================================
+   УЧЁТ ВРЕМЕНИ
+========================================= */
+
+function savePlayTime() {
+  if (!state.lastSessionStart) {
+    state.lastSessionStart = Date.now();
+    return;
+  }
+
+  const now = Date.now();
+
+  state.playTimeMs += Math.max(
+    0,
+    now - state.lastSessionStart
+  );
+
+  state.lastSessionStart = now;
+
+  saveState();
+  renderProfile();
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    savePlayTime();
+  } else {
+    state.lastSessionStart = Date.now();
+    saveState();
+  }
+});
+
+window.addEventListener("pagehide", savePlayTime);
+
+setInterval(() => {
+  updatePassiveIncome();
+  renderCurrencies();
+  renderProfile();
+}, 10000);
 
 /* =========================================
    ЗАПУСК
 ========================================= */
 
+state.lastSessionStart = Date.now();
+
 renderAll();
-openPage("homePage");
 
-/*
-  Проверяем доход каждые 10 секунд.
-  Начисление рассчитывается по времени,
-  поэтому закрытие игры не останавливает доход.
-*/
+if (!state.tutorialDone) {
+  startTutorial();
+} else {
+  tutorialMode = false;
 
-updatePassiveIncome();
-
-setInterval(() => {
-  updatePassiveIncome();
-}, PASSIVE_INTERVAL);
-
-/*
-  При возвращении во вкладку сразу
-  проверяем накопившийся доход.
-*/
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    updatePassiveIncome();
+  if (tutorialOverlay) {
+    tutorialOverlay.classList.add("hidden");
   }
-});
 
-window.addEventListener("pageshow", () => {
-  updatePassiveIncome();
-});
+  if (tutorialCompleteOverlay) {
+    tutorialCompleteOverlay.classList.add("hidden");
+  }
+}
+
+saveState();

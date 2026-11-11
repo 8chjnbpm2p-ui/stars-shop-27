@@ -141,12 +141,11 @@ button {
 }
 
 .currency-icon {
-  font-size: 25px;
-  color: var(--purple-light);
-}
-
-.currency.anti .currency-icon {
-  color: #ff9ce6;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
 }
 
 .currency small {
@@ -495,8 +494,9 @@ button {
   z-index: 110;
   outline: 3px solid #c2aaff !important;
   outline-offset: 4px;
-  box-shadow: 0 0 0 7px rgba(152, 117, 255, 0.2),
-              0 0 25px rgba(152, 117, 255, 0.75) !important;
+  box-shadow:
+    0 0 0 7px rgba(152, 117, 255, 0.2),
+    0 0 25px rgba(152, 117, 255, 0.75) !important;
   animation: tutorialPulse 1.1s infinite alternate;
 }
 

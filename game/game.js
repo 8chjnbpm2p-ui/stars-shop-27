@@ -162,14 +162,29 @@ document.querySelectorAll(".nav-button").forEach(button => {
       item.classList.remove("active")
     );
 
-    document.querySelectorAll(".page").forEach(page =>
-      page.classList.remove("active")
-    );
+    
+document.querySelectorAll(".nav-button").forEach(button => {
+  button.addEventListener("click", () => {
+    const targetPage = button.dataset.page;
+
+    document.querySelectorAll(".nav-button").forEach(nav => {
+      nav.classList.remove("active");
+    });
+
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
 
     button.classList.add("active");
-    document.getElementById(button.dataset.page).classList.add("active");
+
+    const page = document.getElementById(targetPage);
+
+    if (page) {
+      page.classList.add("active");
+    }
   });
 });
+
 
 updateCurrencies();
 renderBoard();

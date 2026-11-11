@@ -1,0 +1,146 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #f5efff;
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 10%, #493078 0, transparent 40%),
+    radial-gradient(ellipse at 90% 70%, #164d59 0, transparent 40%),
+    #100e20;
+}
+
+.game {
+  width: min(100%, 620px);
+  margin: auto;
+  padding: 24px 18px 50px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  color: #b9a1ff;
+  font-size: 11px;
+  letter-spacing: 4px;
+}
+
+h1 {
+  margin: 5px 0;
+  font-size: 32px;
+  background: linear-gradient(90deg, #f5d58b, #c5a2ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: #b8adc9;
+  margin: 5px 0;
+}
+
+.rank {
+  background: #30244c;
+  border: 1px solid #8563bb;
+  border-radius: 20px;
+  padding: 10px 13px;
+  font-size: 12px;
+}
+
+.currencies {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.currency {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  padding: 15px 12px;
+  border: 1px solid #51416d;
+  border-radius: 16px;
+  background: #211b35;
+}
+
+.currency span {
+  color: #c9bedb;
+  font-size: 12px;
+}
+
+.currency b {
+  width: 100%;
+  font-size: 21px;
+  color: #f4d48c;
+}
+
+h2 {
+  font-size: 21px;
+  margin-bottom: 7px;
+}
+
+.board-section > p {
+  color: #aaa0bd;
+  font-size: 13px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.slot {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid #594878;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #302746, #1b1830);
+  font-size: 35px;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #24172f;
+  font-size: 15px;
+  font-weight: bold;
+  background: linear-gradient(100deg, #f4d48c, #bd9aff);
+}
+
+.quests {
+  margin-top: 32px;
+}
+
+.quests article {
+  display: block;
+  padding: 16px;
+  margin-top: 11px;
+  border: 1px solid #51416d;
+  border-radius: 14px;
+  background: #211b35;
+}
+
+.quests article b {
+  font-size: 14px;
+}
+
+.quests small {
+  display: block;
+  margin: 9px 0 0 29px;
+  color: #b8a9d0;
+}

@@ -1,58 +1,157 @@
 
-const SAVE_KEY = "merge_worlds_save_v2";
+const SAVE_KEY = "merge_worlds_save_v3";
 
-const recipes = {
-  1: {
+const items = {
+  ice_scale: {
+    name: "Осколок ледяной чешуи",
+    icon: "❄️"
+  },
+  dim_crystal: {
     name: "Тусклый кристалл",
-    icon: "💎",
-    next: 2
+    icon: "💎"
   },
-  2: {
-    name: "Светящийся кристалл",
-    icon: "🔷",
-    next: 3
+  rune_cloth: {
+    name: "Кусок ткани с рунами",
+    icon: "🧵"
   },
-  3: {
-    name: "Магический кристалл",
-    icon: "🔮",
-    next: 4
+  stone_fragment: {
+    name: "Каменный осколок с древними символами",
+    icon: "🪨"
   },
-  4: {
-    name: "Кристалл энергии",
-    icon: "💠",
-    next: 5
+  glowing_dust: {
+    name: "Светящаяся пыль",
+    icon: "✨"
   },
-  5: {
-    name: "Сердце кристалла",
-    icon: "🌟",
-    next: null
+  metal_plate: {
+    name: "Тонкая металлическая пластина",
+    icon: "🔩"
+  },
+  dense_cloth: {
+    name: "Плотная ткань",
+    icon: "🧶"
+  },
+  beast_leather: {
+    name: "Прочная кожа местного зверя",
+    icon: "🐾"
+  },
+  stable_stone: {
+    name: "Небольшой стабильный магический камень",
+    icon: "🔮"
+  },
+  key_core: {
+    name: "Основа Ключа Расшифровки",
+    icon: "🗝️"
+  },
+  tablet_core: {
+    name: "Основа Фрагмента Скрижали",
+    icon: "📜"
+  },
+  cloak_core: {
+    name: "Основа путевого плаща",
+    icon: "🧥"
+  },
+  key: {
+    name: "Ключ Расшифровки",
+    icon: "🗝️"
+  },
+  tablet: {
+    name: "Фрагмент Скрижали",
+    icon: "📜"
+  },
+  cloak: {
+    name: "Укреплённый путевой плащ",
+    icon: "🛡️"
   }
 };
+
+const recipes = {
+  "ice_scale+dim_crystal": "key_core",
+  "key_core+rune_cloth": "key",
+
+  "stone_fragment+glowing_dust": "tablet_core",
+  "metal_plate+tablet_core": "tablet",
+
+  "beast_leather+dense_cloth": "cloak_core",
+  "cloak_core+stable_stone": "cloak"
+};
+
+const questData = [
+  {
+    id: "key",
+    giver: "Лефтарион",
+    title: "Ключ Расшифровки",
+    description: "Брат оставил записку. Мне нужен способ её прочесть.",
+    item: "key",
+    skint: 25,
+    anti: 1
+  },
+  {
+    id: "tablet",
+    giver: "Лефтарион",
+    title: "Фрагмент Скрижали",
+    description: "Собери целый фрагмент древней Скрижали.",
+    item: "tablet",
+    skint: 40,
+    anti: 1
+  },
+  {
+    id: "cloak",
+    giver: "Горбатик",
+    title: "Укреплённый путевой плащ",
+    description: "Подготовь защиту для дальнейшего путешествия.",
+    item: "cloak",
+    skint: 35,
+    anti: 2
+  }
+];
 
 const initialState = {
   skint: 100,
   antiSkint: 0,
   board: [
-    1, 1, 2,
-    2, 1, null,
-    1, null, null
+    "ice_scale",
+    "dim_crystal",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
   ],
   acceptedQuests: [],
   completedQuests: [],
+  tutorialStep: 0,
   tutorialDone: false
 };
 
-let state;
+function loadGame() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
 
-try {
-  state = JSON.parse(localStorage.getItem(SAVE_KEY)) || initialState;
-} catch {
-  state = initialState;
+    if (!saved || !Array.isArray(saved.board)) {
+      return structuredClone(initialState);
+    }
+
+    return {
+      ...structuredClone(initialState),
+      ...saved,
+      board: saved.board.slice(0, 9)
+    };
+  } catch {
+    return structuredClone(initialState);
+  }
 }
+
+let state = loadGame();
 
 const boardElement = document.getElementById("mergeBoard");
 const skintElement = document.getElementById("skint");
 const antiElement = document.getElementById("antiSkint");
+const summonButton = document.getElementById("summonButton");
+
+let dragSource = null;
+let dragTarget = null;
 
 function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -64,70 +163,105 @@ function updateCurrencies() {
   saveGame();
 }
 
+function getRecipe(first, second) {
+  return recipes[`${first}+${second}`] ||
+         recipes[`${second}+${first}`] ||
+         null;
+}
+
 function renderBoard() {
   boardElement.innerHTML = "";
 
-  state.board.forEach((level, index) => {
+  state.board.forEach((itemId, index) => {
     const cell = document.createElement("button");
+
     cell.className = "board-cell";
     cell.type = "button";
+    cell.dataset.index = index;
 
-    if (level !== null) {
-      const item = recipes[level];
-      cell.innerHTML = `
-        <span>${item.icon}</span>
-        <small>${item.name}</small>
-      `;
+    if (itemId && items[itemId]) {
+      cell.innerHTML = `<span>${items[itemId].icon}</span>`;
+      cell.title = items[itemId].name;
+      cell.setAttribute("aria-label", items[itemId].name);
+    } else {
+      cell.innerHTML = "";
+      cell.setAttribute("aria-label", "Пустая клетка");
     }
 
-    cell.addEventListener("click", () => selectCell(index));
+    cell.addEventListener("pointerdown", event => {
+      if (!itemId) return;
+
+      event.preventDefault();
+
+      dragSource = index;
+      cell.classList.add("dragging");
+    });
+
     boardElement.appendChild(cell);
   });
 }
 
-let selectedCell = null;
+function mergeItems(from, to) {
+  if (from === to) return false;
 
-function selectCell(index) {
-  const level = state.board[index];
+  const first = state.board[from];
+  const second = state.board[to];
 
-  if (selectedCell === null) {
-    if (level === null) return;
+  if (!first || !second) return false;
 
-    selectedCell = index;
-    renderBoard();
-    boardElement.children[index].style.borderColor = "#f1d18a";
-    return;
+  const result = getRecipe(first, second);
+
+  if (!result) {
+    return false;
   }
 
-  if (selectedCell === index) {
-    selectedCell = null;
-    renderBoard();
-    return;
-  }
+  state.board[to] = result;
+  state.board[from] = null;
 
-  const first = state.board[selectedCell];
-  const second = state.board[index];
+  state.skint += 5;
 
-  if (second === null) {
-    state.board[index] = first;
-    state.board[selectedCell] = null;
-  } else if (first === second && recipes[first].next !== null) {
-    state.board[index] = recipes[first].next;
-    state.board[selectedCell] = null;
-    state.skint += first * 5;
-  } else {
-    selectedCell = index;
-    renderBoard();
-    boardElement.children[index].style.borderColor = "#f1d18a";
-    return;
-  }
-
-  selectedCell = null;
   updateCurrencies();
+  renderBoard();
+
+  return true;
+}
+
+function finishDrag(event) {
+  if (dragSource === null) return;
+
+  const source = dragSource;
+  const targetElement = document.elementFromPoint(
+    event.clientX,
+    event.clientY
+  );
+
+  const targetCell = targetElement?.closest(".board-cell");
+  const target = targetCell
+    ? Number(targetCell.dataset.index)
+    : null;
+
+  dragSource = null;
+  dragTarget = null;
+
+  if (target !== null && target !== source) {
+    const merged = mergeItems(source, target);
+
+    if (merged && state.tutorialStep === 1) {
+      nextTutorialStep();
+    }
+  }
+
   renderBoard();
 }
 
-document.getElementById("summonButton").addEventListener("click", () => {
+document.addEventListener("pointerup", finishDrag);
+document.addEventListener("pointercancel", () => {
+  dragSource = null;
+  dragTarget = null;
+  renderBoard();
+});
+
+summonButton.addEventListener("click", () => {
   if (state.skint < 10) {
     alert("Недостаточно Скинта!");
     return;
@@ -140,62 +274,71 @@ document.getElementById("summonButton").addEventListener("click", () => {
     return;
   }
 
+  const availableItems = [
+    "ice_scale",
+    "dim_crystal",
+    "rune_cloth",
+    "stone_fragment",
+    "glowing_dust",
+    "metal_plate",
+    "dense_cloth",
+    "beast_leather",
+    "stable_stone"
+  ];
+
   state.skint -= 10;
-  state.board[emptyIndex] = 1;
+
+  // Во время обучения выдаём нужный предмет.
+  // После обучения предметы выбираются случайно.
+  if (state.tutorialStep === 0) {
+    state.board[emptyIndex] = "rune_cloth";
+  } else {
+    const randomIndex = Math.floor(
+      Math.random() * availableItems.length
+    );
+
+    state.board[emptyIndex] = availableItems[randomIndex];
+  }
 
   updateCurrencies();
   renderBoard();
+
+  if (state.tutorialStep === 0) {
+    nextTutorialStep();
+  }
 });
 
-const quests = [
-  {
-    id: "key",
-    giver: "Лефтарион",
-    title: "Ключ Расшифровки",
-    description: "Собери ключ, чтобы прочитать оставленную записку.",
-    required: 5,
-    rewardSkint: 25,
-    rewardAnti: 1
-  },
-  {
-    id: "tablet",
-    giver: "Лефтарион",
-    title: "Фрагмент Скрижали",
-    description: "Создай фрагмент древней Скрижали.",
-    required: 4,
-    rewardSkint: 40,
-    rewardAnti: 1
-  },
-  {
-    id: "cloak",
-    giver: "Горбатик",
-    title: "Укреплённый путевой плащ",
-    description: "Подготовь защиту для путешествия.",
-    required: 3,
-    rewardSkint: 35,
-    rewardAnti: 2
-  }
-];
+/* Квесты */
 
 function renderQuests() {
   const list = document.getElementById("questList");
-
   list.innerHTML = "";
 
-  quests.forEach(quest => {
+  questData.forEach(quest => {
     const accepted = state.acceptedQuests.includes(quest.id);
     const completed = state.completedQuests.includes(quest.id);
 
     const card = document.createElement("article");
     card.className = "quest-card";
 
+    let buttonText = "Принять задание";
+
+    if (completed) {
+      buttonText = "Выполнено";
+    } else if (accepted) {
+      buttonText = "Сдать задание";
+    }
+
     card.innerHTML = `
       <small>${quest.giver}</small>
       <h3>${quest.title}</h3>
       <p>${quest.description}</p>
-      <p>Награда: ${quest.rewardSkint} Скинта и ${quest.rewardAnti} Анти-скинта</p>
-      <button class="primary-button">
-        ${completed ? "Выполнено" : accepted ? "Сдать задание" : "Принять задание"}
+      <p>
+        Награда: ${quest.skint} Скинта
+        и ${quest.anti} Анти-скинта
+      </p>
+      <button class="primary-button" type="button">
+        ${buttonText}
       </button>
     `;
 
@@ -209,61 +352,228 @@ function renderQuests() {
         return;
       }
 
-      const itemIndex = state.board.indexOf(quest.required);
+      const itemIndex = state.board.indexOf(quest.item);
 
       if (itemIndex === -1) {
-        alert("У тебя пока нет нужного предмета. Собери его на игровом поле!");
+        alert(
+          `На поле пока нет предмета «${quest.title}». ` +
+          "Сначала собери его!"
+        );
         return;
       }
 
       state.board[itemIndex] = null;
       state.completedQuests.push(quest.id);
-      state.skint += quest.rewardSkint;
-      state.antiSkint += quest.rewardAnti;
+
+      state.skint += quest.skint;
+      state.antiSkint += quest.anti;
 
       updateCurrencies();
       renderBoard();
       renderQuests();
+      renderWorlds();
     });
 
     list.appendChild(card);
   });
 }
 
-document.querySelectorAll(".nav-button").forEach(button => {
+/* Миры */
+
+function renderWorlds() {
+  const worldCards = document.querySelectorAll(".world-card");
+
+  const firstWorldComplete = questData.every(quest =>
+    state.completedQuests.includes(quest.id)
+  );
+
+  if (worldCards.length > 1 && firstWorldComplete) {
+    worldCards[1].classList.remove("locked");
+
+    const label = worldCards[1].querySelector("span");
+    const description = worldCards[1].querySelector("p");
+    const lock = worldCards[1].querySelector(".lock");
+
+    if (label) label.textContent = "МИР 02 · ДОСТУПЕН";
+    if (description) {
+      description.textContent = "Мир открыт. Скоро здесь начнётся новое путешествие.";
+    }
+    if (lock) lock.remove();
+  }
+}
+
+/* Переключение экранов */
+
+const navButtons = document.querySelectorAll(".nav-button");
+const pages = document.querySelectorAll(".page");
+
+function openPage(pageId) {
+  pages.forEach(page => {
+    page.classList.toggle("active", page.id === pageId);
+  });
+
+  navButtons.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === pageId
+    );
+  });
+}
+
+navButtons.forEach(button => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".nav-button").forEach(nav =>
-      nav.classList.remove("active")
-    );
+    openPage(button.dataset.page);
 
-    document.querySelectorAll(".page").forEach(page =>
-      page.classList.remove("active")
-    );
+    const expectedPages = {
+      2: "questsPage",
+      3: "worldPage",
+      4: "profilePage"
+    };
 
-    button.classList.add("active");
-
-    const target = document.getElementById(button.dataset.page);
-
-    if (target) target.classList.add("active");
+    if (
+      !state.tutorialDone &&
+      expectedPages[state.tutorialStep] === button.dataset.page
+    ) {
+      nextTutorialStep();
+    }
   });
 });
 
-function startTutorial() {
-  if (state.tutorialDone) return;
+/* Интерактивное обучение */
 
-  alert(
-    "Добро пожаловать в Merge Worlds!\n\n" +
-    "1. Нажми «Призвать предмет».\n" +
-    "2. Выбери предмет на поле.\n" +
-    "3. Перетащи его на такой же предмет, выбрав сначала один, затем другой.\n" +
-    "4. Одинаковые предметы объединяются в следующий уровень."
-  );
+const tutorialOverlay = document.getElementById("tutorialOverlay");
+const tutorialTitle = document.getElementById("tutorialTitle");
+const tutorialText = document.getElementById("tutorialText");
+const tutorialProgress = document.getElementById("tutorialProgress");
+const tutorialButton = document.getElementById("tutorialButton");
 
-  state.tutorialDone = true;
+const tutorialSteps = [
+  {
+    title: "Призови предмет",
+    text: "Нажми на кнопку «Призвать предмет». За это потребуется 10 Скинта.",
+    target: "#summonButton"
+  },
+  {
+    title: "Объедини предметы",
+    text: "Зажми первый предмет и перетащи его на подходящий второй предмет.",
+    target: "#mergeBoard"
+  },
+  {
+    title: "Твои задания",
+    text: "Здесь находятся задания персонажей. Выполняй их, чтобы получать награды и открывать новые миры.",
+    target: '[data-page="questsPage"]'
+  },
+  {
+    title: "Миры",
+    text: "Здесь собраны все миры. Следующие миры открываются после выполнения заданий предыдущего.",
+    target: '[data-page="worldPage"]'
+  },
+  {
+    title: "Твой профиль",
+    text: "Здесь находится информация о твоём путешественнике и его прогрессе.",
+    target: '[data-page="profilePage"]'
+  }
+];
+
+let arrowElement = null;
+
+function clearTutorialHighlight() {
+  document.querySelectorAll(".tutorial-highlight").forEach(element => {
+    element.classList.remove("tutorial-highlight");
+  });
+
+  if (arrowElement) {
+    arrowElement.remove();
+    arrowElement = null;
+  }
+
+  document.querySelector(".game-tabs").style.zIndex = "";
+}
+
+function showTutorial() {
+  if (state.tutorialDone) {
+    tutorialOverlay.classList.add("hidden");
+    clearTutorialHighlight();
+    return;
+  }
+
+  const step = tutorialSteps[state.tutorialStep];
+
+  if (!step) {
+    finishTutorial();
+    return;
+  }
+
+  clearTutorialHighlight();
+
+  tutorialOverlay.classList.remove("hidden");
+
+  tutorialTitle.textContent = step.title;
+  tutorialText.textContent = step.text;
+
+  tutorialProgress.style.width =
+    `${((state.tutorialStep + 1) / tutorialSteps.length) * 100}%`;
+
+  tutorialButton.style.display = "none";
+
+  const target = document.querySelector(step.target);
+
+  if (target) {
+    target.classList.add("tutorial-highlight");
+
+    if (target.closest(".game-tabs")) {
+      document.querySelector(".game-tabs").style.zIndex = "102";
+    }
+
+    arrowElement = document.createElement("div");
+    arrowElement.className = "tutorial-arrow";
+    arrowElement.textContent = "⬇";
+
+    document.body.appendChild(arrowElement);
+
+    const rect = target.getBoundingClientRect();
+
+    arrowElement.style.left =
+      `${rect.left + rect.width / 2 - 14}px`;
+
+    arrowElement.style.top =
+      `${Math.max(5, rect.top - 38)}px`;
+  }
+
   saveGame();
 }
+
+function nextTutorialStep() {
+  state.tutorialStep++;
+
+  if (state.tutorialStep >= tutorialSteps.length) {
+    finishTutorial();
+    return;
+  }
+
+  showTutorial();
+}
+
+function finishTutorial() {
+  state.tutorialDone = true;
+
+  tutorialOverlay.classList.add("hidden");
+  clearTutorialHighlight();
+
+  saveGame();
+
+  alert("Обучение завершено! Удачного путешествия, мироходец.");
+}
+
+tutorialButton.addEventListener("click", () => {
+  finishTutorial();
+});
+
+/* Запуск */
 
 updateCurrencies();
 renderBoard();
 renderQuests();
-startTutorial();
+renderWorlds();
+openPage("homePage");
+showTutorial();

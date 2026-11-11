@@ -11,12 +11,34 @@
 <body>
   <main class="game">
 
+    <nav class="game-tabs">
+      <button class="nav-button active" data-page="homePage">
+        <span>⚒</span>
+        Главная
+      </button>
+      <button class="nav-button" data-page="worldPage">
+        <span>🌌</span>
+        Миры
+      </button>
+      <button class="nav-button" data-page="questsPage">
+        <span>📜</span>
+        Квесты
+      </button>
+      <button class="nav-button" data-page="profilePage">
+        <span>👤</span>
+        Профиль
+      </button>
+    </nav>
+
     <header class="top">
       <div>
         <div class="logo">MERGE WORLDS</div>
         <div class="subtitle">Путь мироходца</div>
       </div>
-      <div class="world-label">МИР 1<br>НОВОЕ ПОКОЛЕНИЕ</div>
+      <div class="world-label">
+        МИР 1<br>
+        НОВОЕ ПОКОЛЕНИЕ
+      </div>
     </header>
 
     <section class="currencies">
@@ -27,6 +49,7 @@
           <strong id="skint">100</strong>
         </div>
       </div>
+
       <div class="currency anti">
         <div class="currency-icon">✧</div>
         <div>
@@ -36,6 +59,7 @@
       </div>
     </section>
 
+    <!-- ГЛАВНАЯ -->
     <section class="page active" id="homePage">
       <div class="section-heading">
         <div>
@@ -51,9 +75,12 @@
         ✨ Призвать предмет · 10 Скинта
       </button>
 
-      <p class="hint">Объединяй два одинаковых предмета</p>
+      <p class="hint" id="boardHint">
+        Объединяй два одинаковых предмета
+      </p>
     </section>
 
+    <!-- МИРЫ -->
     <section class="page" id="worldPage">
       <div class="section-heading">
         <div>
@@ -125,6 +152,7 @@
       </article>
     </section>
 
+    <!-- КВЕСТЫ -->
     <section class="page" id="questsPage">
       <div class="section-heading">
         <div>
@@ -132,9 +160,11 @@
           <p>Помогай персонажам и получай награды</p>
         </div>
       </div>
+
       <div id="questList"></div>
     </section>
 
+    <!-- ПРОФИЛЬ -->
     <section class="page" id="profilePage">
       <div class="section-heading">
         <div>
@@ -148,39 +178,61 @@
         <h2>Путник</h2>
         <p>Начало твоего путешествия</p>
         <p>Текущий мир: Новое Поколение</p>
+
+        <button class="primary-button" id="restartTutorialButton">
+          🎓 Пройти обучение
+        </button>
+
+        <p class="hint">
+          Обучение можно проходить повторно.
+          Твой игровой прогресс при этом не изменится.
+        </p>
       </div>
     </section>
 
   </main>
 
-  <nav class="game-tabs">
-    <button class="nav-button active" data-page="homePage">
-      <span>⚒</span>
-      Главная
-    </button>
-    <button class="nav-button" data-page="worldPage">
-      <span>🌌</span>
-      Миры
-    </button>
-    <button class="nav-button" data-page="questsPage">
-      <span>📜</span>
-      Квесты
-    </button>
-    <button class="nav-button" data-page="profilePage">
-      <span>👤</span>
-      Профиль
-    </button>
-  </nav>
-
+  <!-- ОКНО ОБУЧЕНИЯ -->
   <div class="tutorial-overlay hidden" id="tutorialOverlay">
     <div class="tutorial-tooltip">
-      <h3 id="tutorialTitle">Обучение</h3>
-      <p id="tutorialText"></p>
+      <div class="tutorial-step-label" id="tutorialStepLabel">
+        ОБУЧЕНИЕ
+      </div>
+
+      <h3 id="tutorialTitle">Добро пожаловать!</h3>
+
+      <p id="tutorialText">
+        Сейчас ты познакомишься с основами игры.
+      </p>
+
       <div class="tutorial-progress">
         <div class="tutorial-progress-fill" id="tutorialProgress"></div>
       </div>
+
       <button class="primary-button" id="tutorialButton">
         Далее
+      </button>
+
+      <button class="tutorial-skip" id="tutorialSkipButton">
+        Выйти из обучения
+      </button>
+    </div>
+  </div>
+
+  <!-- СООБЩЕНИЕ О ЗАВЕРШЕНИИ -->
+  <div class="tutorial-overlay hidden" id="tutorialCompleteOverlay">
+    <div class="tutorial-tooltip">
+      <div class="profile-symbol">🏆</div>
+
+      <h3>Поздравляем!</h3>
+
+      <p>
+        Ты прошёл обучение и освоил основы Merge Worlds.
+        Теперь можешь продолжить своё настоящее путешествие!
+      </p>
+
+      <button class="primary-button" id="tutorialCompleteButton">
+        Вернуться в игру
       </button>
     </div>
   </div>

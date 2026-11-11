@@ -729,14 +729,26 @@ if (sellOverlay) {
   });
 }
 
-/* =========================================
-   ОБЪЕДИНЕНИЕ ПРЕДМЕТОВ
-========================================= */
 
 function mergeItems(sourceIndex, targetIndex) {
-  if (sourceIndex === targetIndex) return false;
+  if (
+    !Number.isInteger(sourceIndex) ||
+    !Number.isInteger(targetIndex) ||
+    sourceIndex === targetIndex
+  ) {
+    return false;
+  }
 
   const board = getCurrentBoard();
+
+  if (
+    sourceIndex < 0 ||
+    targetIndex < 0 ||
+    sourceIndex >= board.length ||
+    targetIndex >= board.length
+  ) {
+    return false;
+  }
 
   const first = board[sourceIndex];
   const second = board[targetIndex];
@@ -745,6 +757,7 @@ function mergeItems(sourceIndex, targetIndex) {
 
   let result = recipes[makePair(first, second)];
 
+  // Два одинаковых предмета создают улучшенный предмет
   if (!result && first === second) {
     result = getUpgradeId(first);
   }
@@ -754,8 +767,9 @@ function mergeItems(sourceIndex, targetIndex) {
     return false;
   }
 
-  board[targetIndex] = result;
+  // Удаляем исходные предметы и помещаем результат
   board[sourceIndex] = null;
+  board[targetIndex] = result;
 
   if (tutorialMode) {
     tutorialMerged = true;
@@ -765,8 +779,8 @@ function mergeItems(sourceIndex, targetIndex) {
     const firstValue = state.boardValues[sourceIndex] || SUMMON_COST;
     const secondValue = state.boardValues[targetIndex] || SUMMON_COST;
 
-    state.boardValues[targetIndex] = firstValue + secondValue;
     state.boardValues[sourceIndex] = 0;
+    state.boardValues[targetIndex] = firstValue + secondValue;
 
     state.mergedCount++;
 
@@ -776,6 +790,7 @@ function mergeItems(sourceIndex, targetIndex) {
   }
 
   renderBoard();
+
   showMessage("Получено: " + items[result].name);
 
   return true;
@@ -1281,22 +1296,25 @@ setInterval(() => {
    ЗАПУСК
 ========================================= */
 
+document.title = "Приключение Lo";
+
+const gameTitle = document.querySelector(".game-title");
+if (gameTitle) {
+  gameTitle.textContent = "Приключение Lo";
+}
+
+// Не блокируем игру обучением при запуске
+tutorialMode = false;
+
+if (tutorialOverlay) {
+  tutorialOverlay.classList.remove("active");
+}
+
+if (tutorialCompleteOverlay) {
+  tutorialCompleteOverlay.classList.remove("active");
+}
+
 state.lastSessionStart = Date.now();
 
 renderAll();
-
-if (!state.tutorialDone) {
-  startTutorial();
-} else {
-  tutorialMode = false;
-
-  if (tutorialOverlay) {
-    tutorialOverlay.classList.add("hidden");
-  }
-
-  if (tutorialCompleteOverlay) {
-    tutorialCompleteOverlay.classList.add("hidden");
-  }
-}
-
 saveState();

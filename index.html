@@ -354,14 +354,21 @@ a { color: #55aaff; text-decoration: none; }
   </div>
 
   <div id="profilePreview" class="panel hidden">
-    <div class="profile">
-      <div class="avatar">👤</div>
-      <div>
-        <div id="profileName" class="profile-name">Получатель</div>
-        <div id="profileUsername" class="profile-username"></div>
-      </div>
+  <div class="profile">
+    <div class="avatar" id="recipientAvatar">👤</div>
+    <div>
+      <div id="profileName" class="profile-name">Получатель</div>
+      <div id="profileUsername" class="profile-username"></div>
     </div>
-    <div id="profileMessage" class="notice"></div>
+  </div>
+  <div id="profileMessage" class="notice"></div>
+</div>
+
+<button id="checkButton" class="primary-button"
+        style="margin-top:18px" onclick="checkUsername()">
+  Проверить username
+</button>
+<div id="checkMessage" class="notice hidden"></div>
   </div>
 
   <button id="checkButton" class="primary-button"
@@ -425,6 +432,30 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
+}
+
+function showRecipientAvatar(username) {
+  const avatar = document.getElementById("recipientAvatar");
+  const user = tg?.initDataUnsafe?.user;
+
+  const currentUsername = user?.username
+    ? "@" + user.username.toLowerCase()
+    : "";
+
+  const selectedUsername = username.startsWith("@")
+    ? username.toLowerCase()
+    : "@" + username.toLowerCase();
+
+  if (user?.photo_url && selectedUsername === currentUsername) {
+    avatar.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = user.photo_url;
+    img.alt = "Аватар получателя";
+    img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;";
+    avatar.appendChild(img);
+  } else {
+    avatar.textContent = "👤";
+  }
 }
 
 let selectedProduct = "STARS";
@@ -642,6 +673,8 @@ async function checkUsername() {
     recipientChecked = true;
 
     document.getElementById("profilePreview").classList.remove("hidden");
+    showRecipientAvatar(username);
+    
     document.getElementById("profileName").textContent =
       data.name || data.first_name || username;
     document.getElementById("profileUsername").textContent = "@" + username;

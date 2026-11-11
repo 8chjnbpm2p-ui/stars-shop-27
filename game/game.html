@@ -3,243 +3,439 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#100d20">
-  <title>Приключение Lo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100d1b">
+  <title>Merge Worlds</title>
   <link rel="stylesheet" href="game.css">
 </head>
-<body>
-  <main class="game">
-    <nav class="game-tabs">
-      <button class="nav-button active" data-page="homePage">
-        <span>⚒</span>
-        Главная
-      </button>
-      <button class="nav-button" data-page="worldPage">
-        <span>🌌</span>
-        Миры
-      </button>
-      <button class="nav-button" data-page="questsPage">
-        <span>📜</span>
-        Квесты
-      </button>
-      <button class="nav-button" data-page="profilePage">
-        <span>👤</span>
-        Профиль
-      </button>
-    </nav>
 
+<body>
+
+  <div class="game-container">
+
+    <!-- ШАПКА -->
     <header class="top">
-      <div>
-        <div class="logo">ПРИКЛЮЧЕНИЕ LO</div>
-        <div class="subtitle">Путь мироходца</div>
-      </div>
-      <div class="world-label">
-        МИР 1<br>
-        НОВОЕ ПОКОЛЕНИЕ
+      <div class="top-title">
+        <h1>MERGE WORLDS</h1>
+        <p>Объединяй. Развивайся. Открывай миры.</p>
       </div>
     </header>
 
     <!-- ВАЛЮТЫ -->
     <section class="currencies">
-      <div class="currency skint">
+      <div class="currency">
         <img
-          src="https://i.postimg.cc/VLRYxRHq/IMG-1746.webp"
           class="currency-icon"
+          src="https://i.postimg.cc/VLRYxRHq/IMG-1746.webp"
           alt="Скинт"
         >
-        <div>
-          <small>СКИНТ</small>
-          <strong id="skint">100</strong>
-        </div>
+        <span id="skint">100</span>
       </div>
 
-      <div class="currency anti">
+      <div class="currency">
         <img
-          src="https://i.postimg.cc/VNSmbcs2/IMG-1745.png"
-          class="currency-icon"
+          class="currency-icon anti-currency-icon"
+          src="https://i.postimg.cc/0jvL2THf/IMG-1749.webp"
           alt="Анти-скинт"
         >
-        <div>
-          <small>АНТИ-СКИНТ</small>
-          <strong id="antiSkint">0</strong>
-        </div>
+        <span id="antiSkint">0</span>
       </div>
     </section>
 
-    <!-- ГЛАВНАЯ -->
-    <section class="page active" id="homePage">
-      <div class="section-heading">
-        <div>
+    <!-- НАВИГАЦИЯ -->
+    <nav class="game-tabs">
+      <button class="nav-button active" data-page="homePage">
+        <span>⚒️</span>
+        <span>Игра</span>
+      </button>
+
+      <button class="nav-button" data-page="worldsPage">
+        <span>🌌</span>
+        <span>Миры</span>
+      </button>
+
+      <button class="nav-button" data-page="questsPage">
+        <span>📜</span>
+        <span>Квесты</span>
+      </button>
+
+      <button class="nav-button" data-page="profilePage">
+        <span>👤</span>
+        <span>Профиль</span>
+      </button>
+    </nav>
+
+    <!-- ИГРА -->
+    <main>
+
+      <section class="page active" id="homePage">
+
+        <div class="section-heading">
           <h2>Игровое поле</h2>
-          <p>Объединяй предметы и открывай новые</p>
+          <p>Объединяй одинаковые предметы или создавай новые.</p>
         </div>
-        <div class="level">ПУТНИК</div>
-      </div>
 
-      <div class="board" id="mergeBoard"></div>
-
-      <button class="primary-button" id="summonButton">
-        ✨ Призвать предмет · 10 Скинта
-      </button>
-      <p class="hint" id="boardHint">
-        Объединяй два одинаковых предмета
-      </p>
-    </section>
-
-    <!-- МИРЫ -->
-    <section class="page" id="worldPage">
-      <div class="section-heading">
-        <div>
-          <h2>Миры</h2>
-          <p>Каждый следующий мир открывается после прохождения предыдущего</p>
+        <div class="board-wrapper">
+          <div class="board" id="mergeBoard"></div>
         </div>
-      </div>
 
-      <article class="world-card">
-        <span>МИР 01 · ДОСТУПЕН</span>
-        <h3>Новое Поколение</h3>
-        <p>Твой путь мироходца начинается здесь.</p>
-      </article>
+        <div class="summon-buttons">
 
-      <article class="world-card locked">
-        <span>МИР 02</span>
-        <span class="lock">🔒</span>
-        <h3>Игра Бога</h3>
-        <p>Заверши задания мира «Новое Поколение».</p>
-      </article>
+          <button
+            class="primary-button summon-button"
+            id="summonButton"
+            type="button"
+          >
+            <span class="summon-icon">✨</span>
+            <span>Призыв</span>
+            <small>10 Скинтов</small>
+          </button>
 
-      <article class="world-card locked">
-        <span>МИР 03</span>
-        <span class="lock">🔒</span>
-        <h3>Идеальный МИР</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
+          <button
+            class="primary-button anti-summon-button"
+            id="antiSummonButton"
+            type="button"
+          >
+            <span class="summon-icon">🌑</span>
+            <span>Анти-скинт</span>
+            <small>1 Анти-скинт</small>
+            <b class="summon-multiplier">10×</b>
+          </button>
 
-      <article class="world-card locked">
-        <span>МИР 04</span>
-        <span class="lock">🔒</span>
-        <h3>Голос Времени</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-
-      <article class="world-card locked">
-        <span>МИР 05</span>
-        <span class="lock">🔒</span>
-        <h3>Тринадцать Огней</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-
-      <article class="world-card locked">
-        <span>МИР 06</span>
-        <span class="lock">🔒</span>
-        <h3>Последняя Реальность</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-
-      <article class="world-card locked">
-        <span>МИР 07</span>
-        <span class="lock">🔒</span>
-        <h3>Сердце Вселенной</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-
-      <article class="world-card locked">
-        <span>МИР 08</span>
-        <span class="lock">🔒</span>
-        <h3>Точка Невозврата</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-
-      <article class="world-card locked">
-        <span>МИР 09</span>
-        <span class="lock">🔒</span>
-        <h3>Мастерская 47</h3>
-        <p>Сначала пройди предыдущие миры.</p>
-      </article>
-    </section>
-
-    <!-- КВЕСТЫ -->
-    <section class="page" id="questsPage">
-      <div class="section-heading">
-        <div>
-          <h2>Задания</h2>
-          <p>Помогай персонажам и получай награды</p>
         </div>
-      </div>
-      <div id="questList"></div>
-    </section>
 
-    <!-- ПРОФИЛЬ -->
-    <section class="page" id="profilePage">
-      <div class="section-heading">
-        <div>
-          <h2>Профиль</h2>
-          <p>Твой путь мироходца</p>
-        </div>
-      </div>
-
-      <div class="profile-card">
-        <div class="profile-symbol">✦</div>
-        <h2>Путник</h2>
-        <p>Начало твоего путешествия</p>
-        <p>Текущий мир: Новое Поколение</p>
-
-        <button class="primary-button" id="restartTutorialButton">
-          🎓 Пройти обучение
-        </button>
-        <p class="hint">
-          Обучение можно проходить повторно.
-          Твой игровой прогресс при этом не изменится.
+        <p class="hint" id="boardHint">
+          Нажми на предмет, чтобы продать его, или перетащи на другой для объединения.
         </p>
-      </div>
-    </section>
-  </main>
 
-  <!-- ОКНО ОБУЧЕНИЯ -->
-  <div class="tutorial-overlay hidden" id="tutorialOverlay">
-    <div class="tutorial-tooltip">
-      <div class="tutorial-step-label" id="tutorialStepLabel">
-        ОБУЧЕНИЕ
-      </div>
+      </section>
 
-      <h3 id="tutorialTitle">Добро пожаловать!</h3>
-      <p id="tutorialText">
-        Сейчас ты познакомишься с основами игры.
-      </p>
+      <!-- МИРЫ -->
+      <section class="page" id="worldsPage">
 
-      <div class="tutorial-progress">
-        <div class="tutorial-progress-fill" id="tutorialProgress"></div>
-      </div>
+        <div class="section-heading">
+          <h2>Миры</h2>
+          <p>Девять миров. Девять разных историй.</p>
+        </div>
 
-      <button class="primary-button" id="tutorialButton">
-        Далее
-      </button>
+        <div class="world-list">
 
-      <button class="tutorial-skip" id="tutorialSkipButton">
-        Выйти из обучения
-      </button>
-    </div>
+          <article class="world-card" data-world="1">
+            <div class="world-number">01</div>
+            <div class="world-content">
+              <h3>Новое Поколение</h3>
+              <p>Мир, где всё только начинается. Древние драконы, забытые артефакты и первый шаг в неизвестность. Здесь ещё никто не знает, кем ты можешь стать.</p>
+            </div>
+            <span class="world-status">Открыт</span>
+          </article>
+
+          <article class="world-card locked" data-world="2">
+            <div class="world-number">02</div>
+            <div class="world-content">
+              <h3>Игра Бога</h3>
+              <p>Мир аномалий и полубогов. Здесь силы выше смертных начинают вмешиваться в судьбы, а обычные правила больше не работают.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="3">
+            <div class="world-number">03</div>
+            <div class="world-content">
+              <h3>Идеальный МИР</h3>
+              <p>Мир, который кажется слишком правильным. Под идеальной поверхностью скрывается система, которая решает, кому жить, а кому исчезнуть.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="4">
+            <div class="world-number">04</div>
+            <div class="world-content">
+              <h3>Голос Времени</h3>
+              <p>Междумирье и пустота между мирами. Здесь время течёт иначе, а каждый выбор может переписать то, что уже произошло.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="5">
+            <div class="world-number">05</div>
+            <div class="world-content">
+              <h3>Тринадцать Огней</h3>
+              <p>Жаркий пустынный мир богов и древних культов. Здесь сила измеряется верой, а боги никогда не бывают добрыми просто так.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="6">
+            <div class="world-number">06</div>
+            <div class="world-content">
+              <h3>Последняя Реальность</h3>
+              <p>Мир, где реальность даёт трещины. Альтернативные версии событий и людей начинают пересекаться, и становится всё сложнее понять, что настоящее.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="7">
+            <div class="world-number">07</div>
+            <div class="world-content">
+              <h3>Сердце Вселенной</h3>
+              <p>Глубокий и странный мир, связанный с самой основой существования. Здесь вопросы уже не про выживание, а про то, что вообще держит всё вместе.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="8">
+            <div class="world-number">08</div>
+            <div class="world-content">
+              <h3>Точка Невозврата</h3>
+              <p>Мир, из которого уже почти нельзя выйти прежним. Каждый шаг окончательный, а цена ошибок становится слишком высокой.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+          <article class="world-card locked" data-world="9">
+            <div class="world-number">09</div>
+            <div class="world-content">
+              <h3>Мастерская 47</h3>
+              <p>Искусственный, созданный мир-симуляция. Здесь всё подчиняется правилам, которые можно понять… или сломать.</p>
+            </div>
+            <span class="world-status">🔒</span>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- КВЕСТЫ -->
+      <section class="page" id="questsPage">
+
+        <div class="section-heading">
+          <h2>Квесты</h2>
+          <p>Персонажи миров будут просить тебя найти определённые предметы.</p>
+        </div>
+
+        <div id="questList"></div>
+
+      </section>
+
+      <!-- ПРОФИЛЬ -->
+      <section class="page" id="profilePage">
+
+        <div class="section-heading">
+          <h2>Мой профиль</h2>
+          <p>Твоя статистика в Merge Worlds.</p>
+        </div>
+
+        <div class="profile-card">
+
+          <div class="profile-avatar">🌌</div>
+
+          <h2 id="profileName">Мироходец</h2>
+          <p id="profileStatus">Начинающий</p>
+
+          <div class="profile-divider"></div>
+
+          <div class="profile-stat">
+            <span>Статус</span>
+            <strong id="profileRank">—</strong>
+          </div>
+
+          <div class="profile-stat">
+            <span>Текущий мир</span>
+            <strong id="profileWorld">Новое Поколение</strong>
+          </div>
+
+          <div class="profile-stat">
+            <span>Время в игре</span>
+            <strong id="playTime">0 ч. 0 мин.</strong>
+          </div>
+
+          <div class="profile-divider"></div>
+
+          <h3>Статистика</h3>
+
+          <div class="profile-stat">
+            <span>Объединено предметов</span>
+            <strong id="mergedCount">0</strong>
+          </div>
+
+          <div class="profile-stat">
+            <span>Продано предметов</span>
+            <strong id="soldCount">0</strong>
+          </div>
+
+          <div class="profile-stat">
+            <span>Призвано предметов</span>
+            <strong id="summonedCount">0</strong>
+          </div>
+
+          <div class="profile-divider"></div>
+
+          <h3>Мои валюты</h3>
+
+          <div class="profile-stat">
+            <span>🟡 Скинты</span>
+            <strong id="profileSkint">100</strong>
+          </div>
+
+          <div class="profile-stat">
+            <span>🌑 Анти-скинты</span>
+            <strong id="profileAntiSkint">0</strong>
+          </div>
+
+        </div>
+
+        <button
+          class="secondary-button"
+          id="restartTutorialButton"
+          type="button"
+        >
+          Повторить обучение
+        </button>
+
+      </section>
+
+    </main>
+
   </div>
 
-  <!-- СООБЩЕНИЕ О ЗАВЕРШЕНИИ -->
-  <div class="tutorial-overlay hidden" id="tutorialCompleteOverlay">
-    <div class="tutorial-tooltip">
-      <div class="profile-symbol">🏆</div>
+  <!-- ОКНО ПРОДАЖИ -->
+  <div class="modal-overlay hidden" id="sellOverlay">
 
-      <h3>Поздравляем!</h3>
+    <div class="modal-card">
 
-      <p>
-        Ты прошёл обучение и освоил основы Merge Worlds.
-        Теперь можешь продолжить своё настоящее путешествие!
+      <button
+        class="modal-close"
+        id="sellCancelButton"
+        type="button"
+        aria-label="Закрыть"
+      >
+        ×
+      </button>
+
+      <h2>Продать предмет?</h2>
+
+      <div class="sell-item-icon" id="sellItemIcon">❄️</div>
+
+      <h3 id="sellItemName">Предмет</h3>
+
+      <p id="sellItemDescription">
+        Ты получишь половину стоимости предмета.
       </p>
 
-      <button class="primary-button" id="tutorialCompleteButton">
-        Вернуться в игру
+      <div class="sell-price" id="sellItemPrice">
+        5 Скинтов
+      </div>
+
+      <button
+        class="primary-button"
+        id="sellConfirmButton"
+        type="button"
+      >
+        Продать
       </button>
+
+      <button
+        class="secondary-button"
+        id="sellCancelButtonSecondary"
+        type="button"
+      >
+        Отмена
+      </button>
+
     </div>
+
+  </div>
+
+  <!-- ОБУЧЕНИЕ -->
+  <div class="tutorial-overlay hidden" id="tutorialOverlay">
+
+    <div class="tutorial-tooltip">
+
+      <div class="tutorial-step-label" id="tutorialStepLabel">
+        ОБУЧЕНИЕ · 1/6
+      </div>
+
+      <div class="tutorial-progress-track">
+        <div
+          class="tutorial-progress"
+          id="tutorialProgress"
+          style="width: 16.6%"
+        ></div>
+      </div>
+
+      <h2 id="tutorialTitle">Добро пожаловать!</h2>
+
+      <p id="tutorialText">
+        Добро пожаловать в Merge Worlds.
+      </p>
+
+      <button
+        class="primary-button"
+        id="tutorialButton"
+        type="button"
+      >
+        Начать
+      </button>
+
+      <button
+        class="secondary-button"
+        id="tutorialSkipButton"
+        type="button"
+      >
+        Пропустить обучение
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ЗАВЕРШЕНИЕ ОБУЧЕНИЯ -->
+  <div
+    class="modal-overlay hidden"
+    id="tutorialCompleteOverlay"
+  >
+
+    <div class="modal-card">
+
+      <div class="sell-item-icon">🌌</div>
+
+      <h2>Обучение завершено!</h2>
+
+      <p>
+        Теперь ты готов начать своё путешествие по мирам.
+      </p>
+
+      <button
+        class="primary-button"
+        id="tutorialCompleteButton"
+        type="button"
+      >
+        Начать игру
+      </button>
+
+    </div>
+
   </div>
 
   <script src="game.js"></script>
+
+  <!-- Кнопка отмены продажи -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const secondaryCancel = document.getElementById(
+        "sellCancelButtonSecondary"
+      );
+
+      const primaryCancel = document.getElementById(
+        "sellCancelButton"
+      );
+
+      if (secondaryCancel && primaryCancel) {
+        secondaryCancel.addEventListener("click", function () {
+          primaryCancel.click();
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>

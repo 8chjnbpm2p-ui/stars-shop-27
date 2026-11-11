@@ -703,11 +703,13 @@ async function createOrder() {
       username: recipientUsername
     };
 
-    if (selectedProduct === "STARS") {
+    
+if (selectedProduct === "STARS") {
   payload.package_id = String(selectedQuantity);
 } else {
   payload.months = selectedMonths;
 }
+
 
     const response = await fetch(`${API_BASE}/api/orders`, {
       method: "POST",

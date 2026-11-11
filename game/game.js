@@ -8,6 +8,9 @@
 const SAVE_KEY = "merge_worlds_save_v3";
 const SUMMON_COST = 10;
 
+const PASSIVE_SKINT_PER_MINUTE = 10;
+const PASSIVE_INTERVAL = 10000;
+
 const items = {
   ice_scale: {
     name: "Осколок ледяной чешуи",
@@ -165,10 +168,9 @@ const recipes = {
   [pair("order_core", "stone_symbol")]: "order_sign"
 };
 
-/*
-  Если два одинаковых предмета не имеют специального
-  рецепта, они всё равно объединяются в улучшенную версию.
-*/
+/* =========================================
+   УЛУЧШЕНИЕ ОДИНАКОВЫХ ПРЕДМЕТОВ
+========================================= */
 
 const upgradedItems = {};
 
@@ -232,6 +234,7 @@ function createInitialState() {
   return {
     skint: 100,
     antiSkint: 0,
+
     board: [
       "ice_scale",
       "ice_scale",
@@ -243,9 +246,12 @@ function createInitialState() {
       null,
       null
     ],
+
     completedQuests: [],
     acceptedQuests: [],
-    tutorialDone: false
+    tutorialDone: false,
+
+    lastSkintUpdate: Date.now()
   };
 }
 
@@ -268,17 +274,37 @@ function loadState() {
       loadedBoard.push(null);
     }
 
-    return {
+    const loadedState = {
       ...initial,
       ...parsed,
+
       board: loadedBoard,
+
       completedQuests: Array.isArray(parsed.completedQuests)
         ? parsed.completedQuests
         : [],
+
       acceptedQuests: Array.isArray(parsed.acceptedQuests)
         ? parsed.acceptedQuests
         : []
     };
+
+    /*
+      Старым сохранениям добавляем таймер.
+      Это не начисляет деньги задним числом.
+    */
+
+    if (
+      typeof loadedState.lastSkintUpdate !== "number" ||
+      !Number.isFinite(loadedState.lastSkintUpdate)
+    ) {
+      loadedState.lastSkintUpdate = Date.now();
+    }
+
+    applyPassiveIncome(loadedState);
+
+    return loadedState;
+
   } catch (error) {
     console.error("Ошибка загрузки сохранения:", error);
     return createInitialState();
@@ -296,13 +322,71 @@ function saveState() {
 }
 
 /* =========================================
+   ПАССИВНЫЙ ДОХОД
+   +10 Скинтов за каждую полную минуту
+========================================= */
+
+function applyPassiveIncome(targetState) {
+  const now = Date.now();
+
+  if (
+    typeof targetState.lastSkintUpdate !== "number" ||
+    !Number.isFinite(targetState.lastSkintUpdate)
+  ) {
+    targetState.lastSkintUpdate = now;
+    return 0;
+  }
+
+  /*
+    Если системные часы перевели назад,
+    начинаем отсчёт заново.
+  */
+
+  if (now < targetState.lastSkintUpdate) {
+    targetState.lastSkintUpdate = now;
+    return 0;
+  }
+
+  const elapsed = now - targetState.lastSkintUpdate;
+  const fullMinutes = Math.floor(elapsed / 60000);
+
+  if (fullMinutes <= 0) {
+    return 0;
+  }
+
+  const earned = fullMinutes * PASSIVE_SKINT_PER_MINUTE;
+
+  targetState.skint += earned;
+
+  /*
+    Сохраняем остаток секунд,
+    чтобы не терять время между начислениями.
+  */
+
+  targetState.lastSkintUpdate += fullMinutes * 60000;
+
+  return earned;
+}
+
+function updatePassiveIncome() {
+  const earned = applyPassiveIncome(state);
+
+  if (earned > 0) {
+    saveState();
+    renderCurrencies();
+  }
+}
+
+/* =========================================
    ЭЛЕМЕНТЫ СТРАНИЦЫ
 ========================================= */
 
 const boardElement = document.getElementById("mergeBoard");
 const summonButton = document.getElementById("summonButton");
+
 const skintElement = document.getElementById("skint");
 const antiSkintElement = document.getElementById("antiSkint");
+
 const questListElement = document.getElementById("questList");
 
 const tutorialOverlay = document.getElementById("tutorialOverlay");
@@ -353,12 +437,50 @@ function getCurrentBoard() {
 }
 
 /* =========================================
+   ВЫБОР ПРЕДМЕТА ДЛЯ ПРИЗЫВА
+========================================= */
+
+function getRandomSummonItem() {
+  /*
+    С вероятностью 75% выбираем предмет,
+    который уже есть на поле.
+
+    Это повышает шанс получить пару
+    для объединения.
+  */
+
+  const existingBaseItems = randomItems.filter(itemId =>
+    state.board.includes(itemId)
+  );
+
+  if (
+    existingBaseItems.length > 0 &&
+    Math.random() < 0.75
+  ) {
+    const chosen = existingBaseItems[
+      Math.floor(Math.random() * existingBaseItems.length)
+    ];
+
+    return chosen;
+  }
+
+  return randomItems[
+    Math.floor(Math.random() * randomItems.length)
+  ];
+}
+
+/* =========================================
    ОТОБРАЖЕНИЕ ВАЛЮТ
 ========================================= */
 
 function renderCurrencies() {
-  skintElement.textContent = state.skint;
-  antiSkintElement.textContent = state.antiSkint;
+  if (skintElement) {
+    skintElement.textContent = Math.floor(state.skint);
+  }
+
+  if (antiSkintElement) {
+    antiSkintElement.textContent = Math.floor(state.antiSkint);
+  }
 }
 
 /* =========================================
@@ -366,6 +488,8 @@ function renderCurrencies() {
 ========================================= */
 
 function renderBoard() {
+  if (!boardElement || !summonButton) return;
+
   const board = getCurrentBoard();
 
   boardElement.innerHTML = "";
@@ -384,6 +508,7 @@ function renderBoard() {
       icon.textContent = items[itemId].icon;
 
       cell.appendChild(icon);
+
       cell.title = items[itemId].name;
       cell.setAttribute("aria-label", items[itemId].name);
       cell.draggable = false;
@@ -399,7 +524,8 @@ function renderBoard() {
   if (tutorialMode) {
     summonButton.textContent = "✨ Призвать пару";
   } else {
-    summonButton.textContent = `✨ Призвать предмет · ${SUMMON_COST} Скинта`;
+    summonButton.textContent =
+      `✨ Призвать предмет · ${SUMMON_COST} Скинта`;
   }
 }
 
@@ -412,6 +538,8 @@ function getEmptyCell(board) {
 }
 
 function summonMainItem() {
+  updatePassiveIncome();
+
   if (state.skint < SUMMON_COST) {
     showMessage("Недостаточно Скинта!");
     return;
@@ -424,9 +552,7 @@ function summonMainItem() {
     return;
   }
 
-  const itemId = randomItems[
-    Math.floor(Math.random() * randomItems.length)
-  ];
+  const itemId = getRandomSummonItem();
 
   state.skint -= SUMMON_COST;
   state.board[empty] = itemId;
@@ -447,16 +573,18 @@ function summonTutorialPair() {
   showTutorialStep();
 }
 
-summonButton.addEventListener("click", () => {
-  if (tutorialMode) {
-    if (tutorialStep === 1) {
-      summonTutorialPair();
+if (summonButton) {
+  summonButton.addEventListener("click", () => {
+    if (tutorialMode) {
+      if (tutorialStep === 1) {
+        summonTutorialPair();
+      }
+      return;
     }
-    return;
-  }
 
-  summonMainItem();
-});
+    summonMainItem();
+  });
+}
 
 /* =========================================
    ОБЪЕДИНЕНИЕ
@@ -513,106 +641,111 @@ function mergeItems(sourceIndex, targetIndex) {
    ПЕРЕТАСКИВАНИЕ ПАЛЬЦЕМ И МЫШКОЙ
 ========================================= */
 
-boardElement.addEventListener("pointerdown", event => {
-  const cell = event.target.closest(".board-cell");
+if (boardElement) {
+  boardElement.addEventListener("pointerdown", event => {
+    const cell = event.target.closest(".board-cell");
 
-  if (!cell) return;
+    if (!cell) return;
 
-  dragSource = Number(cell.dataset.index);
-  pointerStart = {
-    x: event.clientX,
-    y: event.clientY
-  };
-  pointerMoved = false;
+    dragSource = Number(cell.dataset.index);
 
-  cell.classList.add("dragging");
-});
+    pointerStart = {
+      x: event.clientX,
+      y: event.clientY
+    };
 
-boardElement.addEventListener("pointermove", event => {
-  if (dragSource === null || !pointerStart) return;
+    pointerMoved = false;
 
-  const distance = Math.hypot(
-    event.clientX - pointerStart.x,
-    event.clientY - pointerStart.y
-  );
-
-  if (distance > 8) {
-    pointerMoved = true;
-  }
-});
-
-boardElement.addEventListener("pointerup", event => {
-  if (dragSource === null) return;
-
-  const sourceIndex = dragSource;
-  const sourceCell = boardElement.querySelector(
-    `[data-index="${sourceIndex}"]`
-  );
-
-  if (sourceCell) {
-    sourceCell.classList.remove("dragging");
-  }
-
-  const targetCell = document.elementFromPoint(
-    event.clientX,
-    event.clientY
-  )?.closest(".board-cell");
-
-  if (targetCell && pointerMoved) {
-    const targetIndex = Number(targetCell.dataset.index);
-
-    if (sourceIndex !== targetIndex) {
-      mergeItems(sourceIndex, targetIndex);
-    }
-  } else if (!pointerMoved) {
-    handleCellTap(sourceIndex);
-  }
-
-  dragSource = null;
-  pointerStart = null;
-  pointerMoved = false;
-
-  boardElement.querySelectorAll(".drag-over").forEach(cell => {
-    cell.classList.remove("drag-over");
+    cell.classList.add("dragging");
   });
-});
 
-boardElement.addEventListener("pointercancel", () => {
-  if (dragSource !== null) {
-    const cell = boardElement.querySelector(
-      `[data-index="${dragSource}"]`
+  boardElement.addEventListener("pointermove", event => {
+    if (dragSource === null || !pointerStart) return;
+
+    const distance = Math.hypot(
+      event.clientX - pointerStart.x,
+      event.clientY - pointerStart.y
     );
 
-    if (cell) {
-      cell.classList.remove("dragging");
+    if (distance > 8) {
+      pointerMoved = true;
     }
-  }
+  });
 
-  dragSource = null;
-  pointerStart = null;
-  pointerMoved = false;
-});
+  boardElement.addEventListener("pointerup", event => {
+    if (dragSource === null) return;
 
-boardElement.addEventListener("pointerover", event => {
-  if (dragSource === null) return;
+    const sourceIndex = dragSource;
 
-  const cell = event.target.closest(".board-cell");
-  if (!cell) return;
+    const sourceCell = boardElement.querySelector(
+      `[data-index="${sourceIndex}"]`
+    );
 
-  cell.classList.add("drag-over");
-});
+    if (sourceCell) {
+      sourceCell.classList.remove("dragging");
+    }
 
-boardElement.addEventListener("pointerout", event => {
-  const cell = event.target.closest(".board-cell");
+    const targetCell = document.elementFromPoint(
+      event.clientX,
+      event.clientY
+    )?.closest(".board-cell");
 
-  if (cell) {
-    cell.classList.remove("drag-over");
-  }
-});
+    if (targetCell && pointerMoved) {
+      const targetIndex = Number(targetCell.dataset.index);
+
+      if (sourceIndex !== targetIndex) {
+        mergeItems(sourceIndex, targetIndex);
+      }
+    } else if (!pointerMoved) {
+      handleCellTap(sourceIndex);
+    }
+
+    dragSource = null;
+    pointerStart = null;
+    pointerMoved = false;
+
+    boardElement.querySelectorAll(".drag-over").forEach(cell => {
+      cell.classList.remove("drag-over");
+    });
+  });
+
+  boardElement.addEventListener("pointercancel", () => {
+    if (dragSource !== null) {
+      const cell = boardElement.querySelector(
+        `[data-index="${dragSource}"]`
+      );
+
+      if (cell) {
+        cell.classList.remove("dragging");
+      }
+    }
+
+    dragSource = null;
+    pointerStart = null;
+    pointerMoved = false;
+  });
+
+  boardElement.addEventListener("pointerover", event => {
+    if (dragSource === null) return;
+
+    const cell = event.target.closest(".board-cell");
+
+    if (!cell) return;
+
+    cell.classList.add("drag-over");
+  });
+
+  boardElement.addEventListener("pointerout", event => {
+    const cell = event.target.closest(".board-cell");
+
+    if (cell) {
+      cell.classList.remove("drag-over");
+    }
+  });
+}
 
 /* =========================================
    ВЫБОР ПРЕДМЕТОВ КАСАНИЕМ
-   Можно выбрать один предмет, затем второй.
 ========================================= */
 
 function handleCellTap(index) {
@@ -687,6 +820,8 @@ function hasItem(itemId) {
 }
 
 function renderQuests() {
+  if (!questListElement) return;
+
   questListElement.innerHTML = "";
 
   questData.forEach(quest => {
@@ -723,6 +858,7 @@ function renderQuests() {
       button.disabled = true;
     } else if (!accepted) {
       button.textContent = "Принять задание";
+
       button.addEventListener("click", () => {
         state.acceptedQuests.push(quest.id);
         saveState();
@@ -730,6 +866,7 @@ function renderQuests() {
       });
     } else if (hasTarget) {
       button.textContent = "Сдать предмет";
+
       button.addEventListener("click", () => {
         completeQuest(quest);
       });
@@ -972,3 +1109,29 @@ function renderAll() {
 renderAll();
 openPage("homePage");
 
+/*
+  Проверяем доход каждые 10 секунд.
+  Начисление рассчитывается по времени,
+  поэтому закрытие игры не останавливает доход.
+*/
+
+updatePassiveIncome();
+
+setInterval(() => {
+  updatePassiveIncome();
+}, PASSIVE_INTERVAL);
+
+/*
+  При возвращении во вкладку сразу
+  проверяем накопившийся доход.
+*/
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    updatePassiveIncome();
+  }
+});
+
+window.addEventListener("pageshow", () => {
+  updatePassiveIncome();
+});

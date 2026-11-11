@@ -1355,13 +1355,11 @@ async def main():
     )
 
     conversation = ConversationHandler(
-        entry_points=[
-            CommandHandler("buy", buy),
-            MessageHandler(
-                filters.Regex("^🛒 Купить звёзды$"),
-                buy,
-            ),
-        ],
+            entry_points=[
+    CommandHandler("buy", buy),
+    MessageHandler(filters.Regex("^🛒 Купить звёзды$"), buy),
+    MessageHandler(filters.Regex("^💎 Купить Premium$"), buy_premium),
+],
         states={
     CHOOSE_PACKAGE: [
         CallbackQueryHandler(

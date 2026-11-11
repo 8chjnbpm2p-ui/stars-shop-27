@@ -283,13 +283,17 @@ a { color: #55aaff; text-decoration: none; }
   </div>
 </section>
 
-<section id="gamePage" class="hidden">
-  <div class="game-placeholder">
-    <div class="game-icon">🎮</div>
-    <h2>Игра</h2>
-    <p>Раздел скоро появится.</p>
-  </div>
+
+<section id="gamePage" class="hidden" style="padding:0;margin:0">
+  <iframe
+    src="./game/game.html"
+    title="Merge Worlds"
+    style="display:block;width:calc(100% + 32px);height:calc(100vh - 80px);min-height:760px;margin:0 -16px;border:0;background:#121126"
+    loading="lazy"
+    allow="clipboard-read; clipboard-write"
+  ></iframe>
 </section>
+
 
 <section id="profilePage" class="profile-page hidden">
   <div class="user-header">

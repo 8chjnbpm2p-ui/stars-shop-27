@@ -8,35 +8,118 @@
   <link rel="stylesheet" href="game.css">
 </head>
 <body>
-  <main class="game">
-    <header>
+  <div class="game">
+
+    <header class="top">
       <div>
-        <p class="eyebrow">МИРОХОДЦЫ</p>
-        <h1>Merge Worlds</h1>
-        <p class="subtitle">Новое Поколение</p>
+        <div class="logo">MERGE WORLDS</div>
+        <div class="subtitle">Путь мироходца</div>
       </div>
-      <div class="rank">✦ Путник</div>
+      <div class="world-label">МИР 1 · НОВОЕ ПОКОЛЕНИЕ</div>
     </header>
 
     <section class="currencies">
-      <div class="currency">💠 <span>Скинт</span><b id="skint">100</b></div>
-      <div class="currency">🔮 <span>Анти-скинт</span><b id="anti">0</b></div>
+      <div class="currency skint">
+        <div class="currency-icon">◆</div>
+        <div>
+          <small>СКИНТ</small>
+          <strong id="skint">100</strong>
+        </div>
+      </div>
+      <div class="currency anti">
+        <div class="currency-icon">✦</div>
+        <div>
+          <small>АНТИ-СКИНТ</small>
+          <strong id="antiSkint">0</strong>
+        </div>
+      </div>
     </section>
 
-    <section class="board-section">
-      <h2>Твоя мастерская</h2>
-      <p>Объединяй одинаковые предметы!</p>
-      <div class="board" id="board"></div>
-      <button id="summon">＋ Призвать предмет · 10 Скинта</button>
-    </section>
+    <main>
+      <section class="page active" id="homePage">
+        <div class="section-heading">
+          <div>
+            <h2>Мастерская</h2>
+            <p>Объединяй предметы и открывай новые</p>
+          </div>
+          <span class="level">ПУТНИК</span>
+        </div>
 
-    <section class="quests">
-      <h2>Задания мира</h2>
-      <article>🗝️ <b>Ключ Расшифровки</b><small>Награда: 1 Анти-скинт · 25 Скинта</small></article>
-      <article>📜 <b>Фрагмент Скрижали</b><small>Награда: 1 Анти-скинт · 40 Скинта</small></article>
-      <article>🧥 <b>Укреплённый путевой плащ</b><small>Награда: 2 Анти-скинта · 35 Скинта</small></article>
-    </section>
-  </main>
+        <div class="board" id="mergeBoard"></div>
+
+        <button class="primary-button" id="summonButton">
+          Призвать предмет · 10 Скинта
+        </button>
+
+        <div class="hint">
+          Перетаскивай одинаковые предметы друг на друга.
+        </div>
+      </section>
+
+      <section class="page" id="questsPage">
+        <div class="section-heading">
+          <div>
+            <h2>Задания</h2>
+            <p>Помоги жителям этого мира</p>
+          </div>
+        </div>
+        <div id="questList"></div>
+      </section>
+
+      <section class="page" id="worldPage">
+        <div class="section-heading">
+          <div>
+            <h2>Миры</h2>
+            <p>Каждый мир открывает новые предметы</p>
+          </div>
+        </div>
+        <div class="world-card current">
+          <span>МИР 1</span>
+          <h3>Новое Поколение</h3>
+          <p>Текущий мир</p>
+        </div>
+        <div class="world-card locked">
+          <span>МИР 2</span>
+          <h3>Игра Бога</h3>
+          <p>Сначала заверши предыдущий мир</p>
+          <span class="lock">🔒</span>
+        </div>
+      </section>
+
+      <section class="page" id="profilePage">
+        <div class="section-heading">
+          <div>
+            <h2>Профиль</h2>
+            <p>Твой путь мироходца</p>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-symbol">✦</div>
+          <h3>Путник</h3>
+          <p>Звание: Смертные обитатели миров</p>
+          <p>Пройдено миров: 0</p>
+          <p>Выполнено заданий: 0</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-button active" data-page="homePage">
+        <span>◇</span>Главная
+      </button>
+      <button class="nav-button" data-page="questsPage">
+        <span>▤</span>Задания
+      </button>
+      <button class="nav-button" data-page="worldPage">
+        <span>✧</span>Миры
+      </button>
+      <button class="nav-button" data-page="profilePage">
+        <span>♙</span>Профиль
+      </button>
+    </nav>
+
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>

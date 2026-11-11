@@ -65,6 +65,7 @@ const items = {
 };
 
 const recipes = {
+  "ice_scale+ice_scale": "dim_crystal",
   "ice_scale+dim_crystal": "key_core",
   "key_core+rune_cloth": "key",
 
@@ -110,7 +111,6 @@ const initialState = {
   antiSkint: 0,
   board: [
     "ice_scale",
-    "dim_crystal",
     null,
     null,
     null,
@@ -449,10 +449,10 @@ const tutorialButton = document.getElementById("tutorialButton");
 
 const tutorialSteps = [
   {
-    title: "Призови предмет",
-    text: "Нажми на кнопку «Призвать предмет». За это потребуется 10 Скинта.",
-    target: "#summonButton"
-  },
+  title: "Объедини одинаковые предметы",
+  text: "Зажми один ледяной осколок и перетащи его на такой же. Два одинаковых предмета превратятся в один новый!",
+  target: "#mergeBoard"
+},
   {
     title: "Объедини предметы",
     text: "Зажми первый предмет и перетащи его на подходящий второй предмет.",

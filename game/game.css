@@ -465,3 +465,45 @@ h2 {
     width: min(100%, 265px);
   }
 }
+/* Обучение не должно блокировать нажатия */
+.tutorial-overlay {
+  pointer-events: none !important;
+  background: transparent !important;
+  z-index: 200 !important;
+}
+
+.tutorial-tooltip {
+  position: fixed !important;
+  top: 12px !important;
+  left: 12px !important;
+  right: 12px !important;
+  margin: 0 auto !important;
+  max-width: 340px;
+  pointer-events: none !important;
+  text-align: center;
+}
+
+.tutorial-highlight {
+  position: relative !important;
+  z-index: 202 !important;
+  outline: 3px solid #ffd54a !important;
+  box-shadow:
+    0 0 12px 5px #ffd54a,
+    0 0 0 9999px rgba(5, 3, 14, 0.72) !important;
+  animation: tutorialGlow 1s infinite alternate;
+}
+
+@keyframes tutorialGlow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.6); }
+}
+
+/* Вкладки наверху */
+.game-tabs {
+  position: sticky !important;
+  top: 0 !important;
+  bottom: auto !important;
+  z-index: 50 !important;
+  width: 100%;
+  margin-bottom: 12px;
+}

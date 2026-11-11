@@ -1,122 +1,147 @@
 
-const items = [
-  { name: "Осколок", icon: "❄️", level: 1 },
-  { name: "Осколок", icon: "❄️", level: 1 },
-  { name: "Кристалл", icon: "💎", level: 2 },
-  { name: "Руна", icon: "🔮", level: 3 },
-  { name: "Пыль", icon: "✨", level: 1 },
-  null, null, null, null
-];
+const SAVE_KEY = "merge_worlds_save_v2";
 
-let skint = Number(localStorage.getItem("mw_skint") || 100);
-let antiSkint = Number(localStorage.getItem("mw_anti") || 0);
-let selected = null;
+const recipes = {
+  1: {
+    name: "Тусклый кристалл",
+    icon: "💎",
+    next: 2
+  },
+  2: {
+    name: "Светящийся кристалл",
+    icon: "🔷",
+    next: 3
+  },
+  3: {
+    name: "Магический кристалл",
+    icon: "🔮",
+    next: 4
+  },
+  4: {
+    name: "Кристалл энергии",
+    icon: "💠",
+    next: 5
+  },
+  5: {
+    name: "Сердце кристалла",
+    icon: "🌟",
+    next: null
+  }
+};
 
-const board = document.getElementById("mergeBoard");
-const skintDisplay = document.getElementById("skint");
-const antiDisplay = document.getElementById("antiSkint");
+const initialState = {
+  skint: 100,
+  antiSkint: 0,
+  board: [
+    1, 1, 2,
+    2, 1, null,
+    1, null, null
+  ],
+  acceptedQuests: [],
+  completedQuests: [],
+  tutorialDone: false
+};
 
-function save() {
-  localStorage.setItem("mw_skint", skint);
-  localStorage.setItem("mw_anti", antiSkint);
+let state;
+
+try {
+  state = JSON.parse(localStorage.getItem(SAVE_KEY)) || initialState;
+} catch {
+  state = initialState;
+}
+
+const boardElement = document.getElementById("mergeBoard");
+const skintElement = document.getElementById("skint");
+const antiElement = document.getElementById("antiSkint");
+
+function saveGame() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
 }
 
 function updateCurrencies() {
-  skintDisplay.textContent = skint;
-  antiDisplay.textContent = antiSkint;
-  save();
+  skintElement.textContent = state.skint;
+  antiElement.textContent = state.antiSkint;
+  saveGame();
 }
 
 function renderBoard() {
-  board.innerHTML = "";
+  boardElement.innerHTML = "";
 
-  items.forEach((item, index) => {
-    const cell = document.createElement("div");
+  state.board.forEach((level, index) => {
+    const cell = document.createElement("button");
     cell.className = "board-cell";
-    cell.dataset.index = index;
+    cell.type = "button";
 
-    if (item) {
-      cell.textContent = item.icon;
-      cell.title = item.name;
+    if (level !== null) {
+      const item = recipes[level];
+      cell.innerHTML = `
+        <span>${item.icon}</span>
+        <small>${item.name}</small>
+      `;
     }
 
-    if (selected === index) {
-      cell.style.borderColor = "#f1d18a";
-      cell.style.boxShadow = "0 0 15px #e9c77d88";
-    }
-
-    cell.addEventListener("click", () => selectItem(index));
-    board.appendChild(cell);
+    cell.addEventListener("click", () => selectCell(index));
+    boardElement.appendChild(cell);
   });
 }
 
-function selectItem(index) {
-  if (!items[index]) {
-    if (selected !== null) {
-      items[index] = items[selected];
-      items[selected] = null;
-      selected = null;
-      renderBoard();
-    }
+let selectedCell = null;
+
+function selectCell(index) {
+  const level = state.board[index];
+
+  if (selectedCell === null) {
+    if (level === null) return;
+
+    selectedCell = index;
+    renderBoard();
+    boardElement.children[index].style.borderColor = "#f1d18a";
     return;
   }
 
-  if (selected === null) {
-    selected = index;
+  if (selectedCell === index) {
+    selectedCell = null;
     renderBoard();
     return;
   }
 
-  if (selected === index) {
-    selected = null;
-    renderBoard();
-    return;
-  }
+  const first = state.board[selectedCell];
+  const second = state.board[index];
 
-  const first = items[selected];
-  const second = items[index];
-
-  if (first.level === second.level) {
-    items[index] = {
-      name: "Усиленный предмет",
-      icon: first.level >= 3 ? "🌟" : "💠",
-      level: first.level + 1
-    };
-
-    items[selected] = null;
-    skint += first.level * 5;
-    updateCurrencies();
+  if (second === null) {
+    state.board[index] = first;
+    state.board[selectedCell] = null;
+  } else if (first === second && recipes[first].next !== null) {
+    state.board[index] = recipes[first].next;
+    state.board[selectedCell] = null;
+    state.skint += first * 5;
   } else {
-    items[selected] = second;
-    items[index] = first;
+    selectedCell = index;
+    renderBoard();
+    boardElement.children[index].style.borderColor = "#f1d18a";
+    return;
   }
 
-  selected = null;
+  selectedCell = null;
+  updateCurrencies();
   renderBoard();
 }
 
 document.getElementById("summonButton").addEventListener("click", () => {
-  if (skint < 10) {
+  if (state.skint < 10) {
     alert("Недостаточно Скинта!");
     return;
   }
 
-  const empty = items.findIndex(item => item === null);
+  const emptyIndex = state.board.indexOf(null);
 
-  if (empty === -1) {
-    alert("Нет свободных ячеек!");
+  if (emptyIndex === -1) {
+    alert("Игровое поле заполнено!");
     return;
   }
 
-  skint -= 10;
-
-  const level = Math.random() < 0.75 ? 1 : 2;
-
-  items[empty] = {
-    name: level === 1 ? "Осколок" : "Кристалл",
-    icon: level === 1 ? "❄️" : "💎",
-    level
-  };
+  state.skint -= 10;
+  state.board[emptyIndex] = 1;
 
   updateCurrencies();
   renderBoard();
@@ -124,68 +149,121 @@ document.getElementById("summonButton").addEventListener("click", () => {
 
 const quests = [
   {
+    id: "key",
+    giver: "Лефтарион",
     title: "Ключ Расшифровки",
-    giver: "Лефтарион",
-    description: "Собери предмет, который поможет прочесть оставленную записку.",
-    reward: "25 Скинта и 1 Анти-скинт"
+    description: "Собери ключ, чтобы прочитать оставленную записку.",
+    required: 5,
+    rewardSkint: 25,
+    rewardAnti: 1
   },
   {
+    id: "tablet",
+    giver: "Лефтарион",
     title: "Фрагмент Скрижали",
-    giver: "Лефтарион",
-    description: "Собери фрагмент древней Скрижали.",
-    reward: "40 Скинта и 1 Анти-скинт"
+    description: "Создай фрагмент древней Скрижали.",
+    required: 4,
+    rewardSkint: 40,
+    rewardAnti: 1
   },
   {
-    title: "Укреплённый путевой плащ",
+    id: "cloak",
     giver: "Горбатик",
-    description: "Подготовь защиту для дальнейшего путешествия.",
-    reward: "35 Скинта и 2 Анти-скинта"
+    title: "Укреплённый путевой плащ",
+    description: "Подготовь защиту для путешествия.",
+    required: 3,
+    rewardSkint: 35,
+    rewardAnti: 2
   }
 ];
 
 function renderQuests() {
   const list = document.getElementById("questList");
 
-  list.innerHTML = quests.map(quest => `
-    <article class="quest-card">
+  list.innerHTML = "";
+
+  quests.forEach(quest => {
+    const accepted = state.acceptedQuests.includes(quest.id);
+    const completed = state.completedQuests.includes(quest.id);
+
+    const card = document.createElement("article");
+    card.className = "quest-card";
+
+    card.innerHTML = `
       <small>${quest.giver}</small>
       <h3>${quest.title}</h3>
       <p>${quest.description}</p>
-      <p>Награда: ${quest.reward}</p>
-    </article>
-  `).join("");
+      <p>Награда: ${quest.rewardSkint} Скинта и ${quest.rewardAnti} Анти-скинта</p>
+      <button class="primary-button">
+        ${completed ? "Выполнено" : accepted ? "Сдать задание" : "Принять задание"}
+      </button>
+    `;
+
+    card.querySelector("button").addEventListener("click", () => {
+      if (completed) return;
+
+      if (!accepted) {
+        state.acceptedQuests.push(quest.id);
+        saveGame();
+        renderQuests();
+        return;
+      }
+
+      const itemIndex = state.board.indexOf(quest.required);
+
+      if (itemIndex === -1) {
+        alert("У тебя пока нет нужного предмета. Собери его на игровом поле!");
+        return;
+      }
+
+      state.board[itemIndex] = null;
+      state.completedQuests.push(quest.id);
+      state.skint += quest.rewardSkint;
+      state.antiSkint += quest.rewardAnti;
+
+      updateCurrencies();
+      renderBoard();
+      renderQuests();
+    });
+
+    list.appendChild(card);
+  });
 }
 
 document.querySelectorAll(".nav-button").forEach(button => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".nav-button").forEach(item =>
-      item.classList.remove("active")
+    document.querySelectorAll(".nav-button").forEach(nav =>
+      nav.classList.remove("active")
     );
 
-    
-document.querySelectorAll(".nav-button").forEach(button => {
-  button.addEventListener("click", () => {
-    const targetPage = button.dataset.page;
-
-    document.querySelectorAll(".nav-button").forEach(nav => {
-      nav.classList.remove("active");
-    });
-
-    document.querySelectorAll(".page").forEach(page => {
-      page.classList.remove("active");
-    });
+    document.querySelectorAll(".page").forEach(page =>
+      page.classList.remove("active")
+    );
 
     button.classList.add("active");
 
-    const page = document.getElementById(targetPage);
+    const target = document.getElementById(button.dataset.page);
 
-    if (page) {
-      page.classList.add("active");
-    }
+    if (target) target.classList.add("active");
   });
 });
 
+function startTutorial() {
+  if (state.tutorialDone) return;
+
+  alert(
+    "Добро пожаловать в Merge Worlds!\n\n" +
+    "1. Нажми «Призвать предмет».\n" +
+    "2. Выбери предмет на поле.\n" +
+    "3. Перетащи его на такой же предмет, выбрав сначала один, затем другой.\n" +
+    "4. Одинаковые предметы объединяются в следующий уровень."
+  );
+
+  state.tutorialDone = true;
+  saveGame();
+}
 
 updateCurrencies();
 renderBoard();
 renderQuests();
+startTutorial();

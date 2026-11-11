@@ -466,8 +466,8 @@ async def api_create_order(request):
     
 if product == "STARS":
         package_id = str(
-            body.get("package_id") or body.get("quantity") or ""
-        ).strip()
+    body.get("package_id") or body.get("quantity") or ""
+).strip()
 
         if package_id not in PACKAGES:
             return web.json_response(

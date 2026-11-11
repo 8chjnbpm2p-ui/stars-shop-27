@@ -57,7 +57,7 @@ PREMIUM_PACKAGES = {
     "12": {"months": 12, "price": 399000, "package_id": "premium_12"},
 }
 
-CHOOSE_PACKAGE, ENTER_USERNAME = range(2)
+CHOOSE_PACKAGE, ENTER_USERNAME, CHOOSE_PREMIUM, ENTER_PREMIUM_USERNAME = range(4)
 telegram_app = None
 
 # ---------------- DATABASE ----------------
@@ -791,18 +791,11 @@ async def api_order_status(request):
 # ---------------- TELEGRAM MENU ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [
-            KeyboardButton(
-                "⭐ Открыть магазин",
-                web_app=WebAppInfo(url=SHOP_URL),
-            )
-        ],
-        [
-            KeyboardButton("🛒 Купить звёзды"),
-            KeyboardButton("💰 Цены"),
-        ],
-        [KeyboardButton("🆘 Поддержка")],
-    ]
+    [KeyboardButton("⭐ Открыть магазин", web_app=WebAppInfo(url=SHOP_URL))],
+    [KeyboardButton("🛒 Купить звёзды"), KeyboardButton("💎 Купить Premium")],
+    [KeyboardButton("💰 Цены")],
+    [KeyboardButton("🆘 Поддержка")],
+]
 
     await update.effective_message.reply_text(
         "Добро пожаловать в Stars Shop 27! ⭐\n\n"

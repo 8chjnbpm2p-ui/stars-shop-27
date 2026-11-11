@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101522">
 <title>Stars Shop 27</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -18,7 +17,7 @@ button, input { font: inherit; }
 button { cursor: pointer; }
 .app {
   max-width: 480px; min-height: 100vh; margin: auto;
-  padding: 18px 16px 100px;
+  padding: 18px 16px calc(112px + env(safe-area-inset-bottom));
 }
 .header {
   display: flex; align-items: center; justify-content: space-between;
@@ -73,8 +72,9 @@ input:focus { border-color: #2688ff; }
 .avatar {
   width: 52px; height: 52px; border-radius: 50%;
   background: #303c53; display: flex; align-items: center;
-  justify-content: center; font-size: 23px;
+  justify-content: center; font-size: 23px; overflow: hidden; flex: 0 0 auto;
 }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-name { font-weight: bold; }
 .profile-username { color: #aeb9d0; font-size: 13px; margin-top: 5px; }
 .order-price { color: #55d6a7; font-size: 22px; font-weight: bold; }
@@ -111,10 +111,6 @@ input:focus { border-color: #2688ff; }
 }
 .nav-button.active { color: #55aaff; font-weight: bold; }
 .nav-icon { display: block; font-size: 21px; margin-bottom: 5px; }
-.support {
-  text-align: center; margin-top: 30px;
-  color: #aeb9d0; font-size: 13px;
-}
 a { color: #55aaff; text-decoration: none; }
 .order-card {
   background: #101522; border: 1px solid #303c53;
@@ -134,6 +130,71 @@ a { color: #55aaff; text-decoration: none; }
   border: 0; border-radius: 9px; padding: 9px 12px;
   background: #303c53; color: white; margin-top: 9px;
 }
+
+/* Вкладки магазина */
+.shop-tabs {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;
+  margin: 22px 0 18px; padding: 5px;
+  background: #171f30; border: 1px solid #303c53; border-radius: 13px;
+}
+.shop-tab {
+  border: 0; border-radius: 9px; padding: 11px 4px;
+  background: transparent; color: #929db2; font-size: 12px;
+}
+.shop-tab.active { background: #2a3850; color: #fff; font-weight: bold; }
+.shop-category-title {
+  display: flex; align-items: center; gap: 8px;
+  margin: 12px 0 13px; font-size: 19px;
+}
+.shop-category-title:first-child { margin-top: 0; }
+
+/* Профиль */
+.profile-page { padding-top: 4px; }
+.user-header { text-align: center; padding: 14px 0 27px; }
+.user-avatar {
+  width: 94px; height: 94px; border-radius: 50%;
+  margin: 0 auto 14px; background: #303c53;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; font-size: 38px; border: 3px solid #35435d;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-display-name { font-size: 22px; font-weight: 700; }
+.user-handle { color: #929db2; font-size: 14px; margin-top: 7px; }
+.profile-menu-card {
+  background: #1b2436; border: 1px solid #303c53;
+  border-radius: 17px; overflow: hidden; margin-top: 13px;
+}
+.profile-menu-row {
+  display: flex; align-items: center; gap: 13px;
+  min-height: 82px; padding: 15px;
+}
+.menu-icon {
+  width: 45px; height: 45px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 22px; flex: 0 0 auto;
+}
+.menu-icon.orders { background: #218b62; }
+.menu-icon.support-icon { background: #c87528; }
+.menu-copy { flex: 1; min-width: 0; }
+.menu-title { font-size: 16px; font-weight: 700; }
+.menu-subtitle { color: #929db2; font-size: 13px; margin-top: 5px; }
+.menu-arrow { color: #7f8ca4; font-size: 25px; }
+.support-link {
+  color: #55aaff; font-size: 13px; white-space: nowrap;
+  padding-left: 4px;
+}
+.profile-footer {
+  text-align: center; color: #77839a; font-size: 12px;
+  margin-top: 38px; line-height: 1.8;
+}
+.app-version {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .3px;
+}
+.game-placeholder { text-align: center; padding: 75px 15px; }
+.game-placeholder .game-icon { font-size: 54px; }
+.game-placeholder h2 { margin: 18px 0 8px; }
+.game-placeholder p { color: #aeb9d0; font-size: 14px; line-height: 1.5; }
 </style>
 </head>
 
@@ -145,78 +206,127 @@ a { color: #55aaff; text-decoration: none; }
   <div class="header-label">ONLINE SHOP</div>
 </header>
 
-<section id="starsPage">
-  <h1>Telegram Stars ⭐</h1>
-  <div class="subtitle">Выбирай пакет и пополняй свой Telegram.</div>
+<section id="shopPage">
+  <h1>Магазин</h1>
+  <div class="subtitle">Выбирай продукт и пополняй свой Telegram.</div>
 
-  <button id="historyButton" class="secondary-button hidden"
-          onclick="openOrderHistory()">📦 Мои заказы</button>
+  <div class="shop-tabs" role="tablist" aria-label="Категории магазина">
+    <button id="shopTabStars" class="shop-tab active" type="button" onclick="showShopCategory('stars')">⭐ Звёзды</button>
+    <button id="shopTabPremium" class="shop-tab" type="button" onclick="showShopCategory('premium')">💎 Premium</button>
+    <button id="shopTabNFT" class="shop-tab" type="button" onclick="showShopCategory('nft')">🎁 NFT подарки</button>
+  </div>
 
-  <h2 class="section-title">Выбери количество</h2>
-  <div class="products">
-    <div class="card">
-      <div class="star">⭐</div>
-      <div class="amount">50 Stars</div>
-      <div class="price">10 500 сум</div>
-      <button class="primary-button" onclick="selectStars(50)">Купить</button>
+  <div id="shopStarsCategory" class="shop-category">
+    <h2 class="shop-category-title">⭐ Telegram Stars</h2>
+    <div class="products">
+      <div class="card">
+        <div class="star">⭐</div>
+        <div class="amount">50 Stars</div>
+        <div class="price">10 500 сум</div>
+        <button class="primary-button" onclick="selectStars(50)">Купить</button>
+      </div>
+      <div class="card">
+        <div class="star">⭐</div>
+        <div class="amount">100 Stars</div>
+        <div class="price">21 000 сум</div>
+        <button class="primary-button" onclick="selectStars(100)">Купить</button>
+      </div>
+      <div class="card">
+        <div class="star">⭐</div>
+        <div class="amount">250 Stars</div>
+        <div class="price">52 000 сум</div>
+        <button class="primary-button" onclick="selectStars(250)">Купить</button>
+      </div>
+      <div class="card">
+        <div class="star">⭐</div>
+        <div class="amount">500 Stars</div>
+        <div class="price">105 000 сум</div>
+        <button class="primary-button" onclick="selectStars(500)">Купить</button>
+      </div>
     </div>
-    <div class="card">
-      <div class="star">⭐</div>
-      <div class="amount">100 Stars</div>
-      <div class="price">21 000 сум</div>
-      <button class="primary-button" onclick="selectStars(100)">Купить</button>
+  </div>
+
+  <div id="shopPremiumCategory" class="shop-category hidden">
+    <h2 class="shop-category-title">💎 Telegram Premium</h2>
+    <div class="subtitle">Выбери срок подписки Telegram Premium.</div>
+    <div class="products" style="margin-top:14px">
+      <div class="card">
+        <div class="star">💎</div>
+        <div class="amount">3 месяца</div>
+        <div class="price">165 000 сум</div>
+        <button class="primary-button" onclick="selectPremium(3)">Купить</button>
+      </div>
+      <div class="card">
+        <div class="star">💎</div>
+        <div class="amount">6 месяцев</div>
+        <div class="price">225 000 сум</div>
+        <button class="primary-button" onclick="selectPremium(6)">Купить</button>
+      </div>
+      <div class="card">
+        <div class="star">💎</div>
+        <div class="amount">12 месяцев</div>
+        <div class="price">399 000 сум</div>
+        <button class="primary-button" onclick="selectPremium(12)">Купить</button>
+      </div>
     </div>
-    <div class="card">
-      <div class="star">⭐</div>
-      <div class="amount">250 Stars</div>
-      <div class="price">52 000 сум</div>
-      <button class="primary-button" onclick="selectStars(250)">Купить</button>
+    <div class="notice">
+      Перед оформлением заказа проверяется возможность подарить Premium выбранному аккаунту.
     </div>
-    <div class="card">
-      <div class="star">⭐</div>
-      <div class="amount">500 Stars</div>
-      <div class="price">105 000 сум</div>
-      <button class="primary-button" onclick="selectStars(500)">Купить</button>
+  </div>
+
+  <div id="shopNFTCategory" class="shop-category hidden">
+    <div class="unavailable">
+      <div class="unavailable-icon">🎁</div>
+      <h2>NFT подарки</h2>
+      <p>Пока недоступно</p>
     </div>
   </div>
 </section>
 
-<section id="premiumPage" class="hidden">
-  <h1>Telegram Premium 💎</h1>
-  <div class="subtitle">Выбери срок подписки Telegram Premium.</div>
-
-  <h2 class="section-title">Выбери подписку</h2>
-  <div class="products">
-    <div class="card">
-      <div class="star">💎</div>
-      <div class="amount">3 месяца</div>
-      <div class="price">165 000 сум</div>
-      <button class="primary-button" onclick="selectPremium(3)">Купить</button>
-    </div>
-    <div class="card">
-      <div class="star">💎</div>
-      <div class="amount">6 месяцев</div>
-      <div class="price">225 000 сум</div>
-      <button class="primary-button" onclick="selectPremium(6)">Купить</button>
-    </div>
-    <div class="card">
-      <div class="star">💎</div>
-      <div class="amount">12 месяцев</div>
-      <div class="price">399 000 сум</div>
-      <button class="primary-button" onclick="selectPremium(12)">Купить</button>
-    </div>
-  </div>
-  <div class="notice">
-    Перед оформлением заказа проверяется возможность подарить Premium выбранному аккаунту.
+<section id="gamePage" class="hidden">
+  <div class="game-placeholder">
+    <div class="game-icon">🎮</div>
+    <h2>Игра</h2>
+    <p>Раздел скоро появится.</p>
   </div>
 </section>
 
-<section id="nftPage" class="hidden">
-  <div class="unavailable">
-    <div class="unavailable-icon">🎁</div>
-    <h2>NFT подарки</h2>
-    <p>Пока недоступно</p>
+<section id="profilePage" class="profile-page hidden">
+  <div class="user-header">
+    <div class="user-avatar" id="userAvatar">👤</div>
+    <div class="user-display-name" id="userDisplayName">Пользователь Telegram</div>
+    <div class="user-handle" id="userHandle">@username</div>
   </div>
+
+  <div class="profile-menu-card">
+    <button class="profile-menu-row" type="button"
+            onclick="openOrderHistory()"
+            style="width:100%;border:0;background:transparent;color:inherit;text-align:left">
+      <span class="menu-icon orders" aria-hidden="true">▣</span>
+      <span class="menu-copy">
+        <span class="menu-title" style="display:block">Мои заказы</span>
+        <span class="menu-subtitle" style="display:block">История покупок</span>
+      </span>
+      <span class="menu-arrow" aria-hidden="true">›</span>
+    </button>
+  </div>
+
+  <div class="profile-menu-card">
+    <div class="profile-menu-row">
+      <span class="menu-icon support-icon" aria-hidden="true">◎</span>
+      <span class="menu-copy">
+        <span class="menu-title" style="display:block">Поддержка</span>
+        <span class="menu-subtitle" style="display:block">Вопросы и проблемы</span>
+      </span>
+      <a class="support-link" href="https://t.me/JonDayviHar1s"
+         target="_blank" rel="noopener noreferrer">@JonDayviHar1s ›</a>
+    </div>
+  </div>
+
+  <footer class="profile-footer">
+    <div>© 2026 Stars Shop</div>
+    <div class="app-version">v3.2.0</div>
+  </footer>
 </section>
 
 <!-- Общая форма заказа для Stars и Premium -->
@@ -278,7 +388,7 @@ a { color: #55aaff; text-decoration: none; }
 </div>
 
 <div id="orderPanel" class="panel hidden">
-  <button class="back-button" onclick="backToShop()">← В магазин</button>
+  <button class="back-button" onclick="backToShop()">← В профиль</button>
   <h2>Мои заказы</h2>
   <button class="secondary-button" onclick="loadOrders()">Обновить список</button>
   <div id="ordersList">
@@ -286,241 +396,239 @@ a { color: #55aaff; text-decoration: none; }
   </div>
 </div>
 
-<div class="support">
-  🆘 Нужна помощь?<br>
-  <a href="https://t.me/JonDayviHar1s" target="_blank"
-     rel="noopener noreferrer">Написать в поддержку</a>
-</div>
 </div>
 
 <nav class="bottom-nav">
-  <button id="navStars" class="nav-button active" onclick="showPage('stars')">
-    <span class="nav-icon">⭐</span>Звёзды
+  <button id="navShop" class="nav-button active" onclick="showPage('shop')">
+    <span class="nav-icon">🛍️</span>Магазин
   </button>
-  <button id="navPremium" class="nav-button" onclick="showPage('premium')">
-    <span class="nav-icon">💎</span>Premium
+  <button id="navGame" class="nav-button" onclick="showPage('game')">
+    <span class="nav-icon">🎮</span>Игра
   </button>
-  <button id="navNFT" class="nav-button" onclick="showPage('nft')">
-    <span class="nav-icon">🎁</span>NFT подарки
+  <button id="navProfile" class="nav-button" onclick="showPage('profile')">
+    <span class="nav-icon">👤</span>Профиль
   </button>
 </nav>
 
 <script>
 const API_BASE = "https://starsshopbot27.onrender.com";
+const SUPPORT_USERNAME = "@JonDayviHar1s";
 
-const starsPackages = {
-  50:  { id: "50", price: 10500 },
-  100: { id: "100", price: 21000 },
-  250: { id: "250", price: 52000 },
-  500: { id: "500", price: 105000 }
-};
-
-const premiumPackages = {
-  3:  { id: "premium_3", months: 3, price: 165000 },
-  6:  { id: "premium_6", months: 6, price: 225000 },
-  12: { id: "premium_12", months: 12, price: 399000 }
-};
-
-const tg = window.Telegram && window.Telegram.WebApp
-  ? window.Telegram.WebApp : null;
-
-let selectedProduct = null;
-let selectedStars = null;
-let selectedMonths = null;
-let checkedUsername = null;
-let checkedProductKey = null;
-let currentOrderId = null;
-let currentPaymentDetails = "";
-
+const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-  document.getElementById("historyButton").classList.remove("hidden");
 }
 
-function showMessage(id, message, type = "") {
-  const el = document.getElementById(id);
-  el.textContent = message;
-  el.className = "notice";
-  if (type) el.classList.add(type);
-  el.classList.remove("hidden");
+let selectedProduct = "STARS";
+let selectedQuantity = 0;
+let selectedMonths = null;
+let currentOrder = null;
+let currentPaymentDetails = "";
+let recipientChecked = false;
+let recipientUsername = "";
+
+function getInitData() {
+  return tg?.initData || "";
 }
 
-function hideMessage(id) {
-  document.getElementById(id).classList.add("hidden");
-}
-
-function requireTelegram() {
-  if (!tg || !tg.initData) {
-    alert("Открой Stars Shop 27 через Telegram Mini App.");
-    return false;
-  }
-  return true;
-}
-
-async function apiRequest(path, options = {}) {
-  if (!requireTelegram()) {
-    throw new Error("Открой магазин внутри Telegram.");
-  }
-
-  const headers = {
+function apiHeaders() {
+  return {
     "Content-Type": "application/json",
-    "Authorization": "tma " + tg.initData,
-    ...(options.headers || {})
+    "X-Telegram-Init-Data": getInitData()
   };
-
-  const response = await fetch(API_BASE + path, {
-    ...options,
-    headers
-  });
-
-  let data;
-  try {
-    data = await response.json();
-  } catch {
-    throw new Error("Сервер вернул некорректный ответ.");
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      data.error || data.message || "Ошибка сервера (" + response.status + ")."
-    );
-  }
-  return data;
 }
 
 function showPage(page) {
-  const pages = {
-    stars: "starsPage",
-    premium: "premiumPage",
-    nft: "nftPage"
-  };
+  document.getElementById("shopPage").classList.toggle("hidden", page !== "shop");
+  document.getElementById("gamePage").classList.toggle("hidden", page !== "game");
+  document.getElementById("profilePage").classList.toggle("hidden", page !== "profile");
 
-  Object.values(pages).forEach(id =>
-    document.getElementById(id).classList.add("hidden")
-  );
-  document.getElementById(pages[page]).classList.remove("hidden");
-
-  document.getElementById("navStars").classList.toggle("active", page === "stars");
-  document.getElementById("navPremium").classList.toggle("active", page === "premium");
-  document.getElementById("navNFT").classList.toggle("active", page === "nft");
-
-  closePurchase();
+  document.getElementById("purchasePanel").classList.add("hidden");
   document.getElementById("paymentPanel").classList.add("hidden");
   document.getElementById("orderPanel").classList.add("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  document.getElementById("navShop").classList.toggle("active", page === "shop");
+  document.getElementById("navGame").classList.toggle("active", page === "game");
+  document.getElementById("navProfile").classList.toggle("active", page === "profile");
+
+  if (page === "profile") {
+    loadTelegramProfile();
+  }
 }
 
-function resetRecipientCheck() {
-  checkedUsername = null;
-  checkedProductKey = null;
-  document.getElementById("profilePreview").classList.add("hidden");
-  document.getElementById("createOrderButton").classList.add("hidden");
-  hideMessage("checkMessage");
+function showShopCategory(category) {
+  const categories = ["stars", "premium", "nft"];
+
+  categories.forEach(name => {
+    document.getElementById(
+      "shop" + name.charAt(0).toUpperCase() + name.slice(1) + "Category"
+    ).classList.toggle("hidden", name !== category);
+
+    document.getElementById(
+      "shopTab" + name.charAt(0).toUpperCase() + name.slice(1)
+    ).classList.toggle("active", name === category);
+  });
 }
 
-function openPurchasePanel() {
-  resetRecipientCheck();
-  currentOrderId = null;
-  document.getElementById("username").value = "";
-  document.getElementById("purchasePanel").classList.remove("hidden");
-  document.getElementById("paymentPanel").classList.add("hidden");
-  document.getElementById("orderPanel").classList.add("hidden");
-  document.getElementById("purchasePanel").scrollIntoView({ behavior: "smooth" });
+function loadTelegramProfile() {
+  const user = tg?.initDataUnsafe?.user;
+
+  const avatar = document.getElementById("userAvatar");
+  const displayName = document.getElementById("userDisplayName");
+  const handle = document.getElementById("userHandle");
+
+  if (!user) {
+    displayName.textContent = "Пользователь Telegram";
+    handle.textContent = "Открой магазин через Telegram";
+    avatar.textContent = "👤";
+    return;
+  }
+
+  const fullName = [user.first_name, user.last_name]
+    .filter(Boolean)
+    .join(" ");
+
+  displayName.textContent = fullName || "Пользователь Telegram";
+  handle.textContent = user.username ? "@" + user.username : "Username не указан";
+
+  if (user.photo_url) {
+    avatar.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = user.photo_url;
+    img.alt = "Аватар Telegram";
+    img.onerror = () => {
+      avatar.textContent = "👤";
+    };
+    avatar.appendChild(img);
+  } else {
+    avatar.textContent = "👤";
+  }
 }
 
-function selectStars(stars) {
-  if (!starsPackages[stars]) return;
-
+function selectStars(quantity) {
   selectedProduct = "STARS";
-  selectedStars = stars;
+  selectedQuantity = quantity;
   selectedMonths = null;
-
-  document.getElementById("selectedPackage").innerHTML = `
-    <div class="order-price">⭐ ${stars} Stars</div>
-    <p class="subtitle">Стоимость: ${starsPackages[stars].price.toLocaleString("ru-RU")} сум</p>
-  `;
-  openPurchasePanel();
+  openPurchase();
 }
 
 function selectPremium(months) {
-  if (!premiumPackages[months]) return;
-
   selectedProduct = "PREMIUM";
-  selectedStars = null;
+  selectedQuantity = 0;
   selectedMonths = months;
+  openPurchase();
+}
 
-  document.getElementById("selectedPackage").innerHTML = `
-    <div class="order-price">💎 Telegram Premium</div>
-    <p class="subtitle">${months} месяцев · ${premiumPackages[months].price.toLocaleString("ru-RU")} сум</p>
-  `;
-  openPurchasePanel();
+function openPurchase() {
+  document.getElementById("purchasePanel").classList.remove("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
+  document.getElementById("orderPanel").classList.add("hidden");
+
+  document.getElementById("shopPage").classList.remove("hidden");
+  document.getElementById("gamePage").classList.add("hidden");
+  document.getElementById("profilePage").classList.add("hidden");
+
+  document.getElementById("navShop").classList.add("active");
+  document.getElementById("navGame").classList.remove("active");
+  document.getElementById("navProfile").classList.remove("active");
+
+  const title = selectedProduct === "STARS"
+    ? `${selectedQuantity} Telegram Stars`
+    : `Telegram Premium на ${selectedMonths} мес.`;
+
+  document.getElementById("selectedPackage").innerHTML =
+    `<div class="order-price">${title}</div>`;
+
+  document.getElementById("username").value = "";
+  document.getElementById("checkMessage").classList.add("hidden");
+  document.getElementById("profilePreview").classList.add("hidden");
+  document.getElementById("createOrderButton").classList.add("hidden");
+  document.getElementById("checkButton").classList.remove("hidden");
+
+  recipientChecked = false;
+  recipientUsername = "";
+  currentOrder = null;
+  document.getElementById("purchasePanel").scrollIntoView({ behavior: "smooth" });
+}
+
+function closePurchase() {
+  document.getElementById("purchasePanel").classList.add("hidden");
+  document.getElementById("paymentPanel").classList.add("hidden");
+  document.getElementById("shopPage").scrollIntoView({ behavior: "smooth" });
+}
+
+function normalizeUsername(value) {
+  return value.trim().replace(/^@+/, "");
+}
+
+function showCheckMessage(message, type = "") {
+  const el = document.getElementById("checkMessage");
+  el.textContent = message;
+  el.className = "notice" + (type ? " " + type : "");
+  el.classList.remove("hidden");
 }
 
 async function checkUsername() {
-  const input = document.getElementById("username");
-  const username = input.value.trim().replace(/^@/, "");
+  const username = normalizeUsername(
+    document.getElementById("username").value
+  );
+
+  if (!username) {
+    showCheckMessage("Введи Telegram username получателя.", "error");
+    return;
+  }
 
   if (!/^[a-zA-Z0-9_]{5,32}$/.test(username)) {
-    alert("Введи корректный Telegram username.");
-    input.focus();
+    showCheckMessage("Проверь username. Он должен содержать от 5 до 32 символов.", "error");
     return;
   }
 
-  if (!selectedProduct) {
-    alert("Сначала выбери продукт.");
+  if (!getInitData()) {
+    showCheckMessage("Открой Mini App через Telegram-бота.", "error");
     return;
   }
-
-  const productKey = selectedProduct === "PREMIUM"
-    ? "PREMIUM_" + selectedMonths
-    : "STARS_" + selectedStars;
 
   const button = document.getElementById("checkButton");
   button.disabled = true;
-  button.textContent = "Проверяю...";
-  resetRecipientCheck();
+  button.textContent = "Проверяем...";
 
-  const requestBody = {
-    username,
-    product: selectedProduct
-  };
-
-  if (selectedProduct === "PREMIUM") {
-    requestBody.months = selectedMonths;
-  }
+  recipientChecked = false;
+  document.getElementById("createOrderButton").classList.add("hidden");
+  document.getElementById("profilePreview").classList.add("hidden");
 
   try {
-    const data = await apiRequest("/api/recipient/check", {
+    const response = await fetch(`${API_BASE}/api/recipient/check`, {
       method: "POST",
-      body: JSON.stringify(requestBody)
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        username: username,
+        product: selectedProduct,
+        months: selectedMonths
+      })
     });
 
-    if (!data.eligible) {
-      showMessage(
-        "checkMessage",
-        data.error || "Не удалось подтвердить получателя.",
-        "error"
-      );
-      return;
+    const data = await response.json();
+
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || data.message || "Не удалось проверить получателя.");
     }
 
-    checkedUsername = data.username || username;
-    checkedProductKey = productKey;
-
-    document.getElementById("profileName").textContent =
-      data.name || "Получатель найден";
-    document.getElementById("profileUsername").textContent =
-      "@" + checkedUsername.replace(/^@/, "");
-    document.getElementById("profileMessage").textContent =
-      data.message || "Получатель проверен поставщиком.";
+    recipientUsername = username;
+    recipientChecked = true;
 
     document.getElementById("profilePreview").classList.remove("hidden");
+    document.getElementById("profileName").textContent =
+      data.name || data.first_name || username;
+    document.getElementById("profileUsername").textContent = "@" + username;
+    document.getElementById("profileMessage").textContent =
+      data.message || "Получателя можно использовать для оформления заказа.";
+
+    showCheckMessage("Получатель проверен. Можно переходить к оплате.", "success");
     document.getElementById("createOrderButton").classList.remove("hidden");
-    showMessage("checkMessage", "Username успешно проверен.", "success");
 
   } catch (error) {
-    showMessage("checkMessage", error.message, "error");
+    showCheckMessage(error.message || "Ошибка проверки. Попробуй ещё раз.", "error");
   } finally {
     button.disabled = false;
     button.textContent = "Проверить username";
@@ -528,224 +636,269 @@ async function checkUsername() {
 }
 
 async function createOrder() {
-  if (!selectedProduct || !checkedUsername) {
-    alert("Сначала выбери продукт и проверь username.");
-    return;
-  }
-
-  const expectedKey = selectedProduct === "PREMIUM"
-    ? "PREMIUM_" + selectedMonths
-    : "STARS_" + selectedStars;
-
-  if (checkedProductKey !== expectedKey) {
-    alert("Проверь username заново для выбранного продукта.");
-    resetRecipientCheck();
+  if (!recipientChecked || !recipientUsername) {
+    showCheckMessage("Сначала проверь username получателя.", "error");
     return;
   }
 
   const button = document.getElementById("createOrderButton");
   button.disabled = true;
-  button.textContent = "Создаю заказ...";
-
-  const requestBody = {
-    product: selectedProduct,
-    username: checkedUsername
-  };
-
-  if (selectedProduct === "STARS") {
-    requestBody.package_id = starsPackages[selectedStars].id;
-  } else {
-    requestBody.months = selectedMonths;
-  }
+  button.textContent = "Создаём заказ...";
 
   try {
-    const data = await apiRequest("/api/orders", {
-      method: "POST",
-      body: JSON.stringify(requestBody)
-    });
+    const payload = {
+      product: selectedProduct,
+      username: recipientUsername
+    };
 
-    if (!data.success || !data.order || !data.order.id) {
-      throw new Error(data.message || "Сервер не подтвердил создание заказа.");
+    if (selectedProduct === "STARS") {
+      payload.quantity = selectedQuantity;
+    } else {
+      payload.months = selectedMonths;
     }
 
-    currentOrderId = data.order.id;
-    currentPaymentDetails = formatPaymentDetails(data.payment_details);
+    const response = await fetch(`${API_BASE}/api/orders`, {
+      method: "POST",
+      headers: apiHeaders(),
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || data.message || "Не удалось создать заказ.");
+    }
+
+    currentOrder = data.order || data;
+    currentPaymentDetails =
+      data.payment_details ||
+      data.paymentDetails ||
+      currentOrder.payment_details ||
+      currentOrder.paymentDetails ||
+      "";
 
     document.getElementById("purchasePanel").classList.add("hidden");
     document.getElementById("paymentPanel").classList.remove("hidden");
 
-    const description = selectedProduct === "PREMIUM"
-      ? "Telegram Premium · " + selectedMonths + " месяцев"
-      : "⭐ " + selectedStars + " Stars";
+    const orderTitle = selectedProduct === "STARS"
+      ? `${selectedQuantity} Stars`
+      : `Premium на ${selectedMonths} месяцев`;
 
     document.getElementById("paymentOrderInfo").textContent =
-      "Заказ: " + currentOrderId + " · " + description +
-      " · " + Number(data.order.price).toLocaleString("ru-RU") + " сум";
+      `Заказ: ${orderTitle} • Получатель: @${recipientUsername}`;
 
     document.getElementById("paymentDetails").textContent =
-      currentPaymentDetails ||
-      "Реквизиты не переданы сервером. Обратись в поддержку.";
-
-    document.getElementById("paidButton").disabled = false;
-    document.getElementById("paidButton").textContent = "Я оплатил";
-    hideMessage("paymentMessage");
+      currentPaymentDetails || "Реквизиты оплаты не получены. Обратись в поддержку.";
 
     document.getElementById("paymentPanel").scrollIntoView({ behavior: "smooth" });
 
   } catch (error) {
-    alert(error.message);
+    showCheckMessage(error.message || "Ошибка создания заказа.", "error");
   } finally {
     button.disabled = false;
     button.textContent = "Перейти к оплате";
   }
 }
 
-function formatPaymentDetails(details) {
-  if (!details) return "";
-  if (typeof details === "string") return details;
-  if (typeof details === "object") {
-    return Object.entries(details)
-      .map(([key, value]) => key + ": " + value)
-      .join("\n");
+async function copyPaymentDetails() {
+  if (!currentPaymentDetails) {
+    alert("Реквизиты оплаты отсутствуют.");
+    return;
   }
-  return String(details);
+
+  try {
+    await navigator.clipboard.writeText(currentPaymentDetails);
+    alert("Реквизиты скопированы.");
+  } catch {
+    const field = document.createElement("textarea");
+    field.value = currentPaymentDetails;
+    document.body.appendChild(field);
+    field.select();
+    document.execCommand("copy");
+    field.remove();
+    alert("Реквизиты скопированы.");
+  }
 }
 
 async function reportPayment() {
-  if (!currentOrderId) return;
+  if (!currentOrder) {
+    alert("Заказ не найден. Попробуй оформить его заново.");
+    return;
+  }
+
+  const orderId = currentOrder.id || currentOrder.order_id;
+  if (!orderId) {
+    alert("Не удалось определить номер заказа.");
+    return;
+  }
 
   const button = document.getElementById("paidButton");
+  const message = document.getElementById("paymentMessage");
+
   button.disabled = true;
-  button.textContent = "Отправляю...";
+  button.textContent = "Отправляем...";
 
   try {
-    const data = await apiRequest(
-      "/api/orders/" + encodeURIComponent(currentOrderId) + "/paid",
-      { method: "POST", body: JSON.stringify({}) }
+    const response = await fetch(
+      `${API_BASE}/api/orders/${encodeURIComponent(orderId)}/paid`,
+      {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({})
+      }
     );
 
-    showMessage(
-      "paymentMessage",
-      data.message || "Сообщение об оплате отправлено администратору.",
-      "success"
-    );
-    button.textContent = "Оплата заявлена";
-    await loadOrders();
+    const data = await response.json();
+
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || data.message || "Не удалось сообщить об оплате.");
+    }
+
+    message.textContent =
+      data.message || "Сообщение об оплате отправлено. Ожидай проверки администратором.";
+    message.className = "notice success";
+    message.classList.remove("hidden");
+    button.textContent = "Отправлено";
 
   } catch (error) {
-    showMessage("paymentMessage", error.message, "error");
+    message.textContent = error.message || "Ошибка отправки.";
+    message.className = "notice error";
+    message.classList.remove("hidden");
     button.disabled = false;
     button.textContent = "Я оплатил";
   }
 }
 
-function copyPaymentDetails() {
-  if (!currentPaymentDetails) return;
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText("5614683408392082")
-      .then(() => alert("Реквизиты скопированы."))
-      .catch(() => alert("Не удалось скопировать реквизиты."));
-  } else {
-    alert("Скопируй реквизиты вручную.");
-  }
-}
-
-const statusLabels = {
-  WAITING_PAYMENT: "Ожидает оплаты",
-  PAYMENT_REPORTED: "Проверка оплаты",
-  SUBMITTING: "Передаётся поставщику",
-  API_ERROR: "Ошибка поставщика",
-  REJECTED: "Оплата отклонена",
-  SUCCEEDED: "Выполнен",
-  COMPLETED: "Выполнен",
-  DELIVERED: "Доставлен",
-  FAILED: "Ошибка доставки",
-  NEEDS_REVIEW: "Требуется проверка"
-};
-
-function statusText(status) {
-  return statusLabels[String(status || "").toUpperCase()] ||
-    String(status || "Статус уточняется");
-}
-
-function renderOrders(orders) {
-  const container = document.getElementById("ordersList");
-  container.innerHTML = "";
-
-  if (!Array.isArray(orders) || orders.length === 0) {
-    container.textContent = "У тебя пока нет заказов.";
-    return;
-  }
-
-  orders.forEach(order => {
-    const card = document.createElement("div");
-    card.className = "order-card";
-
-    const title = document.createElement("strong");
-    const product = String(order.product || "STARS").toUpperCase();
-
-    title.textContent = product === "PREMIUM"
-      ? "💎 Telegram Premium — " + (order.months || "?") + " месяцев"
-      : "⭐ " + (order.quantity || 0) + " Stars";
-
-    const username = document.createElement("p");
-    username.textContent = "Получатель: @" +
-      String(order.username || "").replace(/^@/, "");
-
-    const price = document.createElement("p");
-    price.textContent = "Сумма: " +
-      Number(order.price || 0).toLocaleString("ru-RU") + " сум";
-
-    const status = document.createElement("span");
-    status.className = "status";
-    status.textContent = statusText(order.status);
-
-    const date = document.createElement("p");
-    date.textContent = order.created_at ? "Дата: " + order.created_at : "";
-
-    card.append(title, username, price, status, date);
-    container.appendChild(card);
-  });
-}
-
-async function loadOrders() {
-  const container = document.getElementById("ordersList");
-  container.textContent = "Загружаю заказы...";
-
-  try {
-    const data = await apiRequest("/api/orders", { method: "GET" });
-    renderOrders(data.orders || []);
-  } catch (error) {
-    container.textContent = error.message;
-  }
-}
-
 async function openOrderHistory() {
+  document.getElementById("shopPage").classList.add("hidden");
+  document.getElementById("gamePage").classList.add("hidden");
+  document.getElementById("profilePage").classList.add("hidden");
   document.getElementById("purchasePanel").classList.add("hidden");
   document.getElementById("paymentPanel").classList.add("hidden");
   document.getElementById("orderPanel").classList.remove("hidden");
-  await loadOrders();
-  document.getElementById("orderPanel").scrollIntoView({ behavior: "smooth" });
-}
 
-function closePurchase() {
-  document.getElementById("purchasePanel").classList.add("hidden");
+  document.getElementById("navShop").classList.remove("active");
+  document.getElementById("navGame").classList.remove("active");
+  document.getElementById("navProfile").classList.add("active");
+
+  await loadOrders();
 }
 
 function backToShop() {
   document.getElementById("orderPanel").classList.add("hidden");
-  document.getElementById("purchasePanel").classList.add("hidden");
-  document.getElementById("paymentPanel").classList.add("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  showPage("profile");
 }
 
-// Если пользователь изменил username после проверки,
-// результат предыдущей проверки больше не считается действительным.
-document.getElementById("username").addEventListener("input", () => {
-  resetRecipientCheck();
-});
+function formatOrderStatus(status) {
+  const statuses = {
+    NEW: "Ожидает оплаты",
+    PENDING: "Ожидает оплаты",
+    PAID: "Оплата проверяется",
+    SUBMITTING: "Обрабатывается",
+    PROCESSING: "Обрабатывается",
+    SUCCEEDED: "Выполнен",
+    COMPLETED: "Выполнен",
+    FAILED: "Ошибка",
+    NEEDS_REVIEW: "Требует проверки",
+    CANCELLED: "Отменён"
+  };
 
+  return statuses[String(status || "").toUpperCase()] || status || "Неизвестно";
+}
+
+function formatOrderProduct(order) {
+  const product = String(order.product || "STARS").toUpperCase();
+
+  if (product === "PREMIUM") {
+    return `Telegram Premium — ${order.months || "?"} мес.`;
+  }
+
+  return `Telegram Stars — ${order.quantity || "?"}`;
+}
+
+async function loadOrders() {
+  const list = document.getElementById("ordersList");
+  list.innerHTML = '<div class="notice">Загружаю заказы...</div>';
+
+  if (!getInitData()) {
+    list.innerHTML =
+      '<div class="notice error">Открой Mini App через Telegram-бота, чтобы увидеть заказы.</div>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/orders`, {
+      method: "GET",
+      headers: apiHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || data.message || "Не удалось загрузить заказы.");
+    }
+
+    const orders = Array.isArray(data)
+      ? data
+      : (data.orders || data.items || []);
+
+    if (!orders.length) {
+      list.innerHTML = '<div class="notice">У тебя пока нет заказов.</div>';
+      return;
+    }
+
+    list.innerHTML = "";
+
+    orders.forEach(order => {
+      const card = document.createElement("div");
+      card.className = "order-card";
+
+      const title = document.createElement("strong");
+      title.textContent = formatOrderProduct(order);
+
+      const recipient = document.createElement("p");
+      recipient.textContent = "Получатель: @" + (order.username || "не указан");
+
+      const status = document.createElement("div");
+      status.className = "status";
+      status.textContent = formatOrderStatus(order.status);
+
+      const price = document.createElement("p");
+      price.textContent = order.price
+        ? `Сумма: ${Number(order.price).toLocaleString("ru-RU")} сум`
+        : "";
+
+      const date = document.createElement("p");
+      date.textContent = order.created_at
+        ? `Дата: ${new Date(order.created_at).toLocaleString("ru-RU")}`
+        : "";
+
+      card.appendChild(title);
+      card.appendChild(recipient);
+      card.appendChild(status);
+      if (price.textContent) card.appendChild(price);
+      if (date.textContent) card.appendChild(date);
+
+      list.appendChild(card);
+    });
+
+  } catch (error) {
+    list.innerHTML = "";
+    const notice = document.createElement("div");
+    notice.className = "notice error";
+    notice.textContent = error.message || "Ошибка загрузки заказов.";
+    list.appendChild(notice);
+  }
+}
+
+// При открытии Mini App загружаем профиль Telegram.
+loadTelegramProfile();
+
+// Telegram Main Button не используем — все действия доступны в интерфейсе.
+if (tg) {
+  tg.MainButton.hide();
+  tg.BackButton.hide();
+}
 </script>
 </body>
 </html>

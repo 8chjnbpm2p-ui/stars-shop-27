@@ -262,7 +262,8 @@ h2 {
   border: 1px solid #b29364;
 }
 
-.bottom-nav {
+
+.game-tabs {
   position: fixed;
   z-index: 10;
   left: 50%;
@@ -272,11 +273,30 @@ h2 {
   max-width: 650px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 10px 5px calc(10px + env(safe-area-inset-bottom));
-  background: #171329ee;
+  gap: 5px;
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  background: #171426ee;
   border-top: 1px solid #493b60;
   backdrop-filter: blur(15px);
 }
+
+.nav-button {
+  display: grid;
+  justify-items: center;
+  padding: 12px 3px;
+  border: 0;
+  border-radius: 10px;
+  color: #9288a8;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nav-button.active {
+  color: #e9c77d;
+  background: #403052;
+}
+
 
 .nav-button {
   display: grid;

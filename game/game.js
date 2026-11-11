@@ -415,6 +415,12 @@ function renderWorlds() {
 /* ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ */
 
 const navButtons = document.querySelectorAll(".nav-button");
+const tabs = document.querySelector(".game-tabs");
+const firstPage = document.querySelector(".page");
+
+if (tabs && firstPage && tabs.parentElement === firstPage.parentElement) {
+  firstPage.parentElement.insertBefore(tabs, firstPage);
+}
 const pages = document.querySelectorAll(".page");
 
 function openPage(pageId) {
@@ -453,28 +459,28 @@ navButtons.forEach(button => {
 
 const tutorialSteps = [
   {
-    title: "Призыв предмета",
-    text: "Нажми на кнопку призыва. Мы выдадим тебе два одинаковых предмета для обучения.",
+    title: "Нажми сюда",
+    text: "Призови предмет!",
     target: "#summonButton"
   },
   {
-    title: "Объедини предметы",
-    text: "Зажми один ледяной осколок и перетащи его на такой же. Два одинаковых предмета превратятся в новый!",
+    title: "Теперь объедини!",
+    text: "Перетащи один ❄️ на другой.",
     target: "#mergeBoard"
   },
   {
-    title: "Твои задания",
-    text: "Здесь находятся задания персонажей. Выполняй их, чтобы получать награды и открывать новые миры.",
+    title: "Квесты",
+    text: "Открой задания!",
     target: '[data-page="questsPage"]'
   },
   {
     title: "Миры",
-    text: "Здесь собраны все миры. Следующие миры открываются после выполнения заданий предыдущего.",
+    text: "Посмотри доступные миры!",
     target: '[data-page="worldPage"]'
   },
   {
-    title: "Твой профиль",
-    text: "Здесь находится информация о твоём путешественнике и его прогрессе.",
+    title: "Профиль",
+    text: "Открой свой профиль!",
     target: '[data-page="profilePage"]'
   }
 ];

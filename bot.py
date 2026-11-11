@@ -463,13 +463,22 @@ async def api_create_order(request):
     if not username:
         return web.json_response({"error": "Проверь Telegram username."}, status=400)
 
-    if product == "STARS":
-        package_id = str(body.get("package_id", ""))
+    
+if product == "STARS":
+        package_id = str(
+            body.get("package_id") or body.get("quantity") or ""
+        ).strip()
+
         if package_id not in PACKAGES:
-            return web.json_response({"error": "Неизвестный пакет Stars."}, status=400)
+            return web.json_response(
+                {"error": "Неизвестный пакет Stars."},
+                status=400
+            )
+
         package = PACKAGES[package_id]
         quantity = package["stars"]
         months = None
+
         price = package["price"]
     elif product == "PREMIUM":
         try:

@@ -1,77 +1,29 @@
-
 const SAVE_KEY = "merge_worlds_save_v3";
 
 const items = {
-  ice_scale: {
-    name: "Осколок ледяной чешуи",
-    icon: "❄️"
-  },
-  dim_crystal: {
-    name: "Тусклый кристалл",
-    icon: "💎"
-  },
-  rune_cloth: {
-    name: "Кусок ткани с рунами",
-    icon: "🧵"
-  },
-  stone_fragment: {
-    name: "Каменный осколок с древними символами",
-    icon: "🪨"
-  },
-  glowing_dust: {
-    name: "Светящаяся пыль",
-    icon: "✨"
-  },
-  metal_plate: {
-    name: "Тонкая металлическая пластина",
-    icon: "🔩"
-  },
-  dense_cloth: {
-    name: "Плотная ткань",
-    icon: "🧶"
-  },
-  beast_leather: {
-    name: "Прочная кожа местного зверя",
-    icon: "🐾"
-  },
-  stable_stone: {
-    name: "Небольшой стабильный магический камень",
-    icon: "🔮"
-  },
-  key_core: {
-    name: "Основа Ключа Расшифровки",
-    icon: "🗝️"
-  },
-  tablet_core: {
-    name: "Основа Фрагмента Скрижали",
-    icon: "📜"
-  },
-  cloak_core: {
-    name: "Основа путевого плаща",
-    icon: "🧥"
-  },
-  key: {
-    name: "Ключ Расшифровки",
-    icon: "🗝️"
-  },
-  tablet: {
-    name: "Фрагмент Скрижали",
-    icon: "📜"
-  },
-  cloak: {
-    name: "Укреплённый путевой плащ",
-    icon: "🛡️"
-  }
+  ice_scale: { name: "Осколок ледяной чешуи", icon: "❄️" },
+  dim_crystal: { name: "Тусклый кристалл", icon: "💎" },
+  rune_cloth: { name: "Кусок ткани с рунами", icon: "🧵" },
+  stone_fragment: { name: "Каменный осколок с древними символами", icon: "🪨" },
+  glowing_dust: { name: "Светящаяся пыль", icon: "✨" },
+  metal_plate: { name: "Тонкая металлическая пластина", icon: "🔩" },
+  dense_cloth: { name: "Плотная ткань", icon: "🧶" },
+  beast_leather: { name: "Прочная кожа местного зверя", icon: "🐾" },
+  stable_stone: { name: "Небольшой стабильный магический камень", icon: "🔮" },
+  key_core: { name: "Основа Ключа Расшифровки", icon: "🗝️" },
+  tablet_core: { name: "Основа Фрагмента Скрижали", icon: "📜" },
+  cloak_core: { name: "Основа путевого плаща", icon: "🧥" },
+  key: { name: "Ключ Расшифровки", icon: "🗝️" },
+  tablet: { name: "Фрагмент Скрижали", icon: "📜" },
+  cloak: { name: "Укреплённый путевой плащ", icon: "🛡️" }
 };
 
 const recipes = {
   "ice_scale+ice_scale": "dim_crystal",
   "ice_scale+dim_crystal": "key_core",
   "key_core+rune_cloth": "key",
-
   "stone_fragment+glowing_dust": "tablet_core",
   "metal_plate+tablet_core": "tablet",
-
   "beast_leather+dense_cloth": "cloak_core",
   "cloak_core+stable_stone": "cloak"
 };
@@ -117,6 +69,7 @@ const initialState = {
     null,
     null,
     null,
+    null,
     null
   ],
   acceptedQuests: [],
@@ -133,11 +86,35 @@ function loadGame() {
       return structuredClone(initialState);
     }
 
-    return {
+    const loaded = {
       ...structuredClone(initialState),
       ...saved,
       board: saved.board.slice(0, 9)
     };
+
+    while (loaded.board.length < 9) {
+      loaded.board.push(null);
+    }
+
+    loaded.acceptedQuests = Array.isArray(loaded.acceptedQuests)
+      ? loaded.acceptedQuests
+      : [];
+
+    loaded.completedQuests = Array.isArray(loaded.completedQuests)
+      ? loaded.completedQuests
+      : [];
+
+    // Если старое обучение не выдало пару одинаковых предметов,
+    // возвращаем игрока к шагу призыва.
+    if (
+      !loaded.tutorialDone &&
+      loaded.tutorialStep === 1 &&
+      loaded.board.filter(item => item === "ice_scale").length < 2
+    ) {
+      loaded.tutorialStep = 0;
+    }
+
+    return loaded;
   } catch {
     return structuredClone(initialState);
   }
@@ -150,8 +127,14 @@ const skintElement = document.getElementById("skint");
 const antiElement = document.getElementById("antiSkint");
 const summonButton = document.getElementById("summonButton");
 
+const tutorialOverlay = document.getElementById("tutorialOverlay");
+const tutorialTitle = document.getElementById("tutorialTitle");
+const tutorialText = document.getElementById("tutorialText");
+const tutorialProgress = document.getElementById("tutorialProgress");
+const tutorialButton = document.getElementById("tutorialButton");
+
 let dragSource = null;
-let dragTarget = null;
+let arrowElement = null;
 
 function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -165,16 +148,17 @@ function updateCurrencies() {
 
 function getRecipe(first, second) {
   return recipes[`${first}+${second}`] ||
-         recipes[`${second}+${first}`] ||
-         null;
+    recipes[`${second}+${first}`] ||
+    null;
 }
+
+/* ИГРОВОЕ ПОЛЕ */
 
 function renderBoard() {
   boardElement.innerHTML = "";
 
   state.board.forEach((itemId, index) => {
     const cell = document.createElement("button");
-
     cell.className = "board-cell";
     cell.type = "button";
     cell.dataset.index = index;
@@ -192,7 +176,6 @@ function renderBoard() {
       if (!itemId) return;
 
       event.preventDefault();
-
       dragSource = index;
       cell.classList.add("dragging");
     });
@@ -210,14 +193,10 @@ function mergeItems(from, to) {
   if (!first || !second) return false;
 
   const result = getRecipe(first, second);
-
-  if (!result) {
-    return false;
-  }
+  if (!result) return false;
 
   state.board[to] = result;
   state.board[from] = null;
-
   state.skint += 5;
 
   updateCurrencies();
@@ -230,6 +209,7 @@ function finishDrag(event) {
   if (dragSource === null) return;
 
   const source = dragSource;
+
   const targetElement = document.elementFromPoint(
     event.clientX,
     event.clientY
@@ -241,12 +221,11 @@ function finishDrag(event) {
     : null;
 
   dragSource = null;
-  dragTarget = null;
 
   if (target !== null && target !== source) {
     const merged = mergeItems(source, target);
 
-    if (merged && state.tutorialStep === 1) {
+    if (merged && !state.tutorialDone && state.tutorialStep === 1) {
       nextTutorialStep();
     }
   }
@@ -255,11 +234,50 @@ function finishDrag(event) {
 }
 
 document.addEventListener("pointerup", finishDrag);
+
 document.addEventListener("pointercancel", () => {
   dragSource = null;
-  dragTarget = null;
   renderBoard();
 });
+
+/* ПРИЗЫВ ПРЕДМЕТОВ */
+
+const availableItems = [
+  "ice_scale",
+  "dim_crystal",
+  "rune_cloth",
+  "stone_fragment",
+  "glowing_dust",
+  "metal_plate",
+  "dense_cloth",
+  "beast_leather",
+  "stable_stone"
+];
+
+function summonTutorialPair() {
+  const currentCount = state.board.filter(
+    item => item === "ice_scale"
+  ).length;
+
+  const needed = Math.max(0, 2 - currentCount);
+
+  const emptySlots = [];
+
+  state.board.forEach((item, index) => {
+    if (item === null) emptySlots.push(index);
+  });
+
+  if (emptySlots.length < needed) {
+    alert("Освободи место на поле для предметов обучения.");
+    return false;
+  }
+
+  for (let i = 0; i < needed; i++) {
+    state.board[emptySlots[i]] = "ice_scale";
+  }
+
+  return true;
+}
 
 summonButton.addEventListener("click", () => {
   if (state.skint < 10) {
@@ -274,41 +292,30 @@ summonButton.addEventListener("click", () => {
     return;
   }
 
-  const availableItems = [
-    "ice_scale",
-    "dim_crystal",
-    "rune_cloth",
-    "stone_fragment",
-    "glowing_dust",
-    "metal_plate",
-    "dense_cloth",
-    "beast_leather",
-    "stable_stone"
-  ];
+  if (!state.tutorialDone && state.tutorialStep === 0) {
+    if (!summonTutorialPair()) return;
+
+    state.skint -= 10;
+
+    updateCurrencies();
+    renderBoard();
+    nextTutorialStep();
+    return;
+  }
 
   state.skint -= 10;
 
-  // Во время обучения выдаём нужный предмет.
-  // После обучения предметы выбираются случайно.
-  if (state.tutorialStep === 0) {
-    state.board[emptyIndex] = "rune_cloth";
-  } else {
-    const randomIndex = Math.floor(
-      Math.random() * availableItems.length
-    );
+  const randomIndex = Math.floor(
+    Math.random() * availableItems.length
+  );
 
-    state.board[emptyIndex] = availableItems[randomIndex];
-  }
+  state.board[emptyIndex] = availableItems[randomIndex];
 
   updateCurrencies();
   renderBoard();
-
-  if (state.tutorialStep === 0) {
-    nextTutorialStep();
-  }
 });
 
-/* Квесты */
+/* КВЕСТЫ */
 
 function renderQuests() {
   const list = document.getElementById("questList");
@@ -378,7 +385,7 @@ function renderQuests() {
   });
 }
 
-/* Миры */
+/* МИРЫ */
 
 function renderWorlds() {
   const worldCards = document.querySelectorAll(".world-card");
@@ -395,14 +402,17 @@ function renderWorlds() {
     const lock = worldCards[1].querySelector(".lock");
 
     if (label) label.textContent = "МИР 02 · ДОСТУПЕН";
+
     if (description) {
-      description.textContent = "Мир открыт. Скоро здесь начнётся новое путешествие.";
+      description.textContent =
+        "Мир открыт. Скоро здесь начнётся новое путешествие.";
     }
+
     if (lock) lock.remove();
   }
 }
 
-/* Переключение экранов */
+/* ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ */
 
 const navButtons = document.querySelectorAll(".nav-button");
 const pages = document.querySelectorAll(".page");
@@ -439,23 +449,17 @@ navButtons.forEach(button => {
   });
 });
 
-/* Интерактивное обучение */
-
-const tutorialOverlay = document.getElementById("tutorialOverlay");
-const tutorialTitle = document.getElementById("tutorialTitle");
-const tutorialText = document.getElementById("tutorialText");
-const tutorialProgress = document.getElementById("tutorialProgress");
-const tutorialButton = document.getElementById("tutorialButton");
+/* ОБУЧЕНИЕ */
 
 const tutorialSteps = [
   {
-  title: "Объедини одинаковые предметы",
-  text: "Зажми один ледяной осколок и перетащи его на такой же. Два одинаковых предмета превратятся в один новый!",
-  target: "#mergeBoard"
-},
+    title: "Призыв предмета",
+    text: "Нажми на кнопку призыва. Мы выдадим тебе два одинаковых предмета для обучения.",
+    target: "#summonButton"
+  },
   {
     title: "Объедини предметы",
-    text: "Зажми первый предмет и перетащи его на подходящий второй предмет.",
+    text: "Зажми один ледяной осколок и перетащи его на такой же. Два одинаковых предмета превратятся в новый!",
     target: "#mergeBoard"
   },
   {
@@ -475,8 +479,6 @@ const tutorialSteps = [
   }
 ];
 
-let arrowElement = null;
-
 function clearTutorialHighlight() {
   document.querySelectorAll(".tutorial-highlight").forEach(element => {
     element.classList.remove("tutorial-highlight");
@@ -487,7 +489,11 @@ function clearTutorialHighlight() {
     arrowElement = null;
   }
 
-  document.querySelector(".game-tabs").style.zIndex = "";
+  const tabs = document.querySelector(".game-tabs");
+
+  if (tabs) {
+    tabs.style.zIndex = "";
+  }
 }
 
 function showTutorial() {
@@ -508,6 +514,9 @@ function showTutorial() {
 
   tutorialOverlay.classList.remove("hidden");
 
+  // Поднимаем окно обучения, чтобы текст не пропадал за вкладками.
+  tutorialOverlay.style.zIndex = "200";
+
   tutorialTitle.textContent = step.title;
   tutorialText.textContent = step.text;
 
@@ -522,12 +531,16 @@ function showTutorial() {
     target.classList.add("tutorial-highlight");
 
     if (target.closest(".game-tabs")) {
-      document.querySelector(".game-tabs").style.zIndex = "102";
+      const tabs = document.querySelector(".game-tabs");
+      tabs.style.zIndex = "202";
     }
 
     arrowElement = document.createElement("div");
     arrowElement.className = "tutorial-arrow";
     arrowElement.textContent = "⬇";
+
+    arrowElement.style.position = "fixed";
+    arrowElement.style.zIndex = "203";
 
     document.body.appendChild(arrowElement);
 
@@ -569,7 +582,7 @@ tutorialButton.addEventListener("click", () => {
   finishTutorial();
 });
 
-/* Запуск */
+/* ЗАПУСК ИГРЫ */
 
 updateCurrencies();
 renderBoard();

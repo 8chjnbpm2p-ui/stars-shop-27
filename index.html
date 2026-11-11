@@ -96,7 +96,7 @@ a { color: #55aaff; }
   <div id="message"></div>
   <p class="note">
     Оформление заявки доступно через Telegram-бота.
-    Онлайн-оплата и автоматическая доставка пока не подключены.
+    
   </p>
   <p class="support">
     🆘 Нужна помощь?<br>
@@ -109,10 +109,10 @@ a { color: #55aaff; }
 <script>
 function order(stars) {
   const prices = {
-    50: 10000,
-    100: 20000,
-    250: 50000,
-    500: 100000
+    50: 10500,
+    100: 21000,
+    250: 52000,
+    500: 105000
   };
   if (!Object.prototype.hasOwnProperty.call(prices, stars)) return;
   const message = document.getElementById("message");

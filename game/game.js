@@ -712,7 +712,7 @@ const questData = [
   {
     id: "voiceFaragondaQuest",
     world: 4,
-    requires: ""
+    requires: "voiceJodahQuest",
     title: "Компас потерянных мгновений",
     character: "Фарагонда",
     description: "Временное эхо сбивает ориентиры. Создай компас и закрепи его печатью, чтобы найти правильную ветвь.",
@@ -723,7 +723,7 @@ const questData = [
   {
     id: "voiceEbardoQuest",
     world: 4,
-    requires: ""
+    requires: "voiceFaragondaQuest",
     title: "Тюрьма для парадокса",
     character: "Эбардо",
     description: "Парадокс нельзя оставить без контроля. Подготовь печать Видомнии — она удержит разлом хотя бы на время.",
@@ -745,6 +745,7 @@ const questData = [
   {
     id: "flamesSindbadQuest",
     world: 5,
+    requires: "flamesOketraQuest",
 
     title: "Путь через пески",
     character: "Синдбад",
@@ -756,6 +757,7 @@ const questData = [
   {
     id: "flamesSderikQuest",
     world: 5,
+    requires: "flamesSindbadQuest",
 
     title: "Клятва тринадцати",
     character: "Сдерик",
@@ -778,6 +780,7 @@ const questData = [
   {
     id: "realityDylanQuest",
     world: 6,
+    requires: "realityJennaQuest",
 
     title: "Память на плёнке",
     character: "Дилан",
@@ -789,6 +792,7 @@ const questData = [
   {
     id: "realitySolusQuest",
     world: 6,
+    requires: "realityDylanQuest",
 
     title: "Маска для плана",
     character: "Саймон Солус",
@@ -811,6 +815,7 @@ const questData = [
   {
     id: "heartWatcherQuest",
     world: 7,
+    requires: "heartShangrinQuest",
 
     title: "Пульс мироздания",
     character: "Смотрящий",
@@ -822,6 +827,7 @@ const questData = [
   {
     id: "heartJodahQuest",
     world: 7,
+    requires: "heartWatcherQuest",
 
     title: "Первоисточник",
     character: "Джодах",
@@ -844,6 +850,7 @@ const questData = [
   {
     id: "pointValdharQuest",
     world: 8,
+    requires: "pointLaiyaQuest",
 
     title: "Якорь живой ветки",
     character: "Вальдхар",
@@ -855,6 +862,7 @@ const questData = [
   {
     id: "pointKacperQuest",
     world: 8,
+    requires: "pointValdharQuest",
 
     title: "Сосуд Первой Матери",
     character: "Кацпер Малецки",
@@ -877,6 +885,7 @@ const questData = [
   {
     id: "workshopMilandraQuest",
     world: 9,
+    requires: "workshopAitorQuest",
 
     title: "Ядро Мастерской",
     character: "Миландра",
@@ -888,6 +897,7 @@ const questData = [
   {
     id: "workshopWatcherQuest",
     world: 9,
+    requires: "workshopMilandraQuest",
 
     title: "Следующая форма",
     character: "Смотрящий",

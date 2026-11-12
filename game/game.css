@@ -1024,6 +1024,19 @@ body {
   font-size: 17px;
   line-height: 1.25;
 }
+.quest-world-label {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 8px;
+  padding: 5px 8px;
+  border: 1px solid #71529c;
+  border-radius: 999px;
+  color: #d9c4ff;
+  background: #493367;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .6px;
+}
 .quest-card p {
   color: #c1b4d0;
   font-size: 12px;

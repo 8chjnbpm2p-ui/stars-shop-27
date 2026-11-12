@@ -1387,7 +1387,33 @@ function completeQuest(quest) {
    МИРЫ
 ========================================= */
 
+function getWorldQuests(worldNumber) {
+  return questData.filter(quest => (quest.world || 1) === worldNumber);
+}
+
+// Восстанавливаем открытый мир по уже выполненным заданиям.
+// Это также исправляет сохранения, созданные до исправления переходов.
+function updateUnlockedWorldProgress() {
+  let highestUnlocked = Math.max(1, Number(state.unlockedWorld) || 1);
+
+  for (let worldNumber = 1; worldNumber <= 9; worldNumber++) {
+    const quests = getWorldQuests(worldNumber);
+    if (!quests.length) break;
+    const allComplete = quests.every(quest =>
+      state.completedQuests.includes(quest.id)
+    );
+    if (!allComplete) break;
+    highestUnlocked = Math.max(highestUnlocked, Math.min(9, worldNumber + 1));
+  }
+
+  const changed = highestUnlocked !== state.unlockedWorld;
+  state.unlockedWorld = highestUnlocked;
+  if (changed) saveState();
+  return changed;
+}
+
 function renderWorlds() {
+  updateUnlockedWorldProgress();
   const cards = document.querySelectorAll(".world-card");
 
   cards.forEach(card => {
@@ -1399,13 +1425,10 @@ function renderWorlds() {
   });
 }
 
-function getWorldQuests(worldNumber) {
-  return questData.filter(quest => (quest.world || 1) === worldNumber);
-}
-
 function areCurrentWorldQuestsComplete() {
   const currentQuests = getWorldQuests(state.currentWorld);
-  return currentQuests.every(quest => state.completedQuests.includes(quest.id));
+  return currentQuests.length === 0 ||
+    currentQuests.every(quest => state.completedQuests.includes(quest.id));
 }
 
 document.querySelectorAll(".world-card").forEach(card => {
@@ -1413,6 +1436,8 @@ document.querySelectorAll(".world-card").forEach(card => {
     const number = Number(card.dataset.world);
 
     if (!number) return;
+
+    updateUnlockedWorldProgress();
 
     if (number > state.unlockedWorld) {
       showMessage("Сначала открой предыдущий мир!");

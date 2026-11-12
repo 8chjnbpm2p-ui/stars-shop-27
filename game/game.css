@@ -750,395 +750,393 @@ button:focus-visible {
 }
 
 
-/* Исправления мобильного управления и интерфейса */
+
+
+/* =========================================
+   ПРИКЛЮЧЕНИЕ LO — ЕДИНЫЙ МОБИЛЬНЫЙ ДИЗАЙН
+========================================= */
+:root {
+  --bg: #0d0a17;
+  --panel: #1a1428;
+  --panel-light: #261d39;
+  --border: #51406f;
+  --text: #f8f2ff;
+  --muted: #b8abc9;
+  --purple: #9366e8;
+  --purple-light: #c5a4ff;
+  --gold: #ffdc75;
+}
+body {
+  padding: 12px 12px 100px;
+  background:
+    radial-gradient(ellipse at 50% -8%, #3b245e 0%, transparent 46%),
+    linear-gradient(180deg, #100c1d, #0c0a15 78%);
+}
+.game-container { max-width: 560px; }
+.top-title { text-align: center; margin: 6px 0 17px; }
 .game-title {
-  margin: 5px 0 8px;
-  font-size: 28px;
-  font-weight: 900;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(27px, 7vw, 36px);
   letter-spacing: .3px;
-  color: var(--text);
-  text-shadow: 0 0 22px #9568e888;
-}
-/* Валюты видны над игровым полем и в профиле. */
-.board {
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.board-cell {
-  touch-action: none;
-  overscroll-behavior: contain;
-}
-.item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(36px, 10vw, 58px);
-  line-height: 1;
-  width: 100%;
-  height: 100%;
-}
-.modal-overlay.hidden,
-.tutorial-overlay.hidden {
-  display: none !important;
-}
-.world-card[data-world="1"] {
-  overflow: hidden;
-}
-.world-cover {
-  display: block;
-  width: calc(100% + 30px);
-  max-width: none;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  margin: -15px -15px 14px;
-  border-radius: 15px 15px 0 0;
-}
-@media (max-width: 380px) {
-  .item-icon { font-size: clamp(34px, 11vw, 48px); }
-}
-
-
-/* Плавное перетаскивание предметов пальцем */
-.board-cell {
-  position: relative;
-  transition: background .12s ease, box-shadow .12s ease, transform .12s ease;
-}
-.board-cell.drag-source {
-  opacity: .28;
-  transform: scale(.94);
-}
-.board-cell.drop-target {
-  background: #8c6be655 !important;
-  box-shadow: inset 0 0 0 3px #b99aff, 0 0 18px #9b79ff88;
-  transform: scale(1.04);
-}
-.item-drag-ghost {
-  position: fixed;
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  border-radius: 16px;
-  font-size: clamp(40px, 11vw, 62px);
-  line-height: 1;
-  opacity: .96;
-  filter: drop-shadow(0 10px 12px #0009);
-  transform: scale(1.08);
-  will-change: left, top, transform;
-}
-.item-drag-ghost.dragging {
-  transform: scale(1.16) rotate(-4deg);
-}
-
-
-/* Первый мир: заголовок над иллюстрацией */
-.world-card-first {
-  padding: 15px;
-  overflow: hidden;
-  text-align: center;
-  border-color: #8b6bc2;
-  background: linear-gradient(155deg, #302344, #1b1629 75%);
-}
-.world-card-first .world-number {
-  display: flex;
-  width: 34px;
-  height: 27px;
-  margin: 0 auto 2px;
-}
-.world-first-title {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 8px;
-  color: #f4d9ff;
-  font-family: 'Marck Script', 'Segoe Script', cursive;
-  font-size: clamp(29px, 8vw, 37px);
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: .2px;
-  text-shadow: 0 2px 12px #c18cff66;
-}
-.world-card-first .world-cover {
-  width: calc(100% + 30px);
-  max-width: none;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-  background: #171226;
-  margin: 0 -15px 12px;
-  border-radius: 0;
-}
-.world-card-first .world-content {
-  margin-top: 0;
-  text-align: left;
-}
-
-
-/* Во время перетаскивания фиксируем страницу, чтобы экран не уезжал */
-html.item-drag-active,
-html.item-drag-active body {
-  overscroll-behavior: none;
-  touch-action: none;
-}
-html.item-drag-active body {
-  overflow: hidden !important;
-}
-
-
-/* Иллюстрированные карточки миров */
-.world-card-illustrated {
-  padding: 15px;
-  overflow: hidden;
-  border-color: #5a477b;
-  background: linear-gradient(155deg, #29203e, #171323 82%);
-}
-.world-card-illustrated .world-number {
-  display: flex;
-  width: 34px;
-  height: 27px;
-  margin: 0 auto 3px;
-}
-.world-illustrated-title {
-  margin: 0 0 10px;
-  color: #f4eaff;
-  font-family: 'Marck Script', 'Segoe Script', cursive;
-  font-size: clamp(28px, 7.5vw, 36px);
-  font-weight: 400;
-  line-height: 1.15;
-  text-align: center;
-  text-shadow: 0 2px 14px #c18cff55;
-}
-.world-card-illustrated .world-cover {
-  display: block;
-  width: calc(100% + 30px);
-  max-width: none;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  margin: 0 -15px 12px;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0;
-  background: #171226;
-}
-.world-card-illustrated .world-content {
-  margin-top: 0;
-}
-.world-card-illustrated.locked {
-  opacity: .88;
-}
-.world-chapter-divider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin: 12px 0 2px;
-  padding: 14px 12px;
-  border: 1px solid #9a70d0;
-  border-radius: 15px;
-  background: linear-gradient(120deg, #382650, #20182e);
-  text-align: center;
-  box-shadow: 0 6px 20px #0003;
-}
-.world-chapter-divider span {
-  color: #f2d8ff;
-  font-family: 'Marck Script', 'Segoe Script', cursive;
-  font-size: 30px;
-}
-.world-chapter-divider small {
-  color: #c9b9dc;
-  font-size: 11px;
-}
-
-
-/* Чистый интерфейс и удобное поле на телефоне */
-.top-title, .section-heading, .profile-card {
-  text-align: center;
+  line-height: 1.12;
+  text-shadow: 0 4px 22px #a77aff55;
 }
 .top-title p, .section-heading p {
-  color: #b9aecb;
+  color: #c3b5d4;
   font-size: 13px;
   line-height: 1.55;
-  letter-spacing: .15px;
 }
-.game-title, .section-heading h2, .profile-card h2, .profile-card h3,
-.modal-card h2, .modal-card h3, .quest-card h3 {
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: .25px;
-  text-wrap: balance;
+.game-tabs { gap: 8px; margin: 0 0 20px; }
+.nav-button {
+  min-height: 58px;
+  border-radius: 15px;
+  border-color: #49375f;
+  background: linear-gradient(145deg, #211a32, #171222);
+  font-size: 12px;
+  letter-spacing: .1px;
 }
+.nav-button span:first-child { font-size: 19px; }
+.nav-button.active {
+  background: linear-gradient(135deg, #8e5be0, #56358e);
+  box-shadow: 0 6px 22px #8d5be044;
+}
+.section-heading { text-align: center; margin: 12px 0 17px; }
 .section-heading h2 {
-  font-size: clamp(23px, 6vw, 28px);
+  margin: 0 0 9px;
+  color: #fff8ff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(25px, 6vw, 31px);
   text-shadow: 0 3px 18px #9b7be855;
 }
-.board-wrapper {
-  padding: 10px;
-  background: linear-gradient(145deg, #1b1728, #15111f);
-}
-.board-cell {
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-.board-cell.empty {
-  position: relative;
-}
-.board-cell.empty::after {
-  content: "+";
-  color: #a89bbd;
-  opacity: .5;
-  font-size: 22px;
-  font-weight: 300;
-}
-.board-cell.has-item {
-  border-color: #76619d;
-  background: radial-gradient(circle at 50% 35%, #44345f, #211a32 78%);
-}
-.item-icon {
-  font-size: clamp(40px, 12vw, 58px);
-}
-.hint { display: none !important; }
-.profile-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 132px;
-  height: 132px;
-  margin: 2px auto 14px;
-  overflow: hidden;
-  border: 1px solid #5e4d80;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 30%, #47335f, #171322 75%);
-  box-shadow: 0 0 34px #9b7be833, inset 0 0 20px #ffffff0b;
-}
-.profile-avatar span {
-  font-size: 76px;
-  line-height: 1;
-  filter: drop-shadow(0 8px 12px #0008);
-}
-.profile-card {
-  text-align: left;
-}
-.profile-card > .profile-avatar,
-.profile-card > #profileName,
-.profile-card > #profileStatus {
-  text-align: center;
-}
-.profile-card > #profileName {
-  margin: 0 0 4px;
-  font-size: 25px;
-}
-.profile-card > #profileStatus {
-  margin: 0;
-  color: #bca4ef;
-  font-weight: 700;
-}
-.tutorial-overlay, #tutorialCompleteOverlay {
-  display: none !important;
-}
-@media (max-width: 380px) {
-  .board-wrapper { padding: 8px; }
-  .board { gap: 7px; }
-  .profile-avatar { width: 116px; height: 116px; }
-}
+.section-heading p { margin: 0; }
 
-
-/* Персональный аватар игрока */
-.profile-avatar {
-  position: relative;
-  width: 148px;
-  height: 148px;
-  border-radius: 50%;
-  margin: 4px auto 12px;
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 30%, #45325f, #171322 76%);
-}
-.profile-avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.profile-avatar img[hidden] { display: none; }
-.avatar-file-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-.avatar-change-button {
-  display: block;
-  margin: 0 auto 16px;
-  padding: 9px 16px;
-  border: 1px solid #8064aa;
-  border-radius: 999px;
-  color: #eee4ff;
-  background: #302440;
-  font-size: 12px;
-  font-weight: 750;
-}
-.avatar-change-button:active { transform: scale(.97); }
-
-
-/* Поле без пустых клеток: показываем только существующие предметы */
-.board {
-  aspect-ratio: auto;
-  grid-auto-rows: clamp(104px, 27vw, 142px);
-  align-content: start;
-  min-height: 0;
-}
-.board:empty { display: none; }
-.board-wrapper:has(.board:empty) { display: none; }
-.board-cell.empty { display: none; }
-.board-cell { touch-action: none; }
-.board-empty { min-height: 0; }
+/* Валюты — настоящие иконки + видимый баланс */
 .game-currencies {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin: 0 0 14px;
 }
-.currency-icon-emoji {
-  display: flex;
+.game-currencies .currency {
+  display: flex !important;
   align-items: center;
-  justify-content: center;
-  width: 35px;
-  height: 35px;
-  flex: 0 0 35px;
-  font-size: 25px;
+  min-height: 70px;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid #594777;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #2b2141, #191426);
+  box-shadow: inset 0 1px #ffffff0a, 0 6px 18px #0003;
 }
-.currency-value {
+.game-currencies .currency-anti {
+  border-color: #594b82;
+  background: linear-gradient(145deg, #29213e, #171326);
+}
+.game-currencies .currency-icon {
+  display: block;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  object-fit: contain;
+}
+.game-currencies .currency-name {
+  color: #c9bbdc;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.game-currencies .currency-value {
+  margin-top: 4px;
+  color: #ffe18a;
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
-@media (max-width: 420px) {
-  body { padding-bottom: 24px; }
-  .board-wrapper { padding: 10px; }
-  .board { gap: 8px; grid-auto-rows: clamp(96px, 27vw, 122px); }
+.currency-anti .currency-value { color: #d8c2ff; }
+
+/* Поле — всегда девять клеток, одинаковая высота и видимые пустые места */
+.board-wrapper {
+  display: block !important;
+  padding: 10px;
+  border: 1px solid #594576;
+  border-radius: 21px;
+  background: linear-gradient(145deg, #1b1529, #120e1d);
+  box-shadow: 0 12px 30px #0005, inset 0 1px #ffffff0a;
 }
-
-
-/* Возвращаем постоянное игровое поле 3×3 */
 .board {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(3, minmax(0, 1fr));
   grid-auto-rows: auto;
+  width: 100%;
   aspect-ratio: 1 / 1;
+  gap: 8px;
   min-height: 0;
   align-content: stretch;
 }
-.board-wrapper { display: block; }
-.board-cell.empty {
+.board-cell {
   display: flex;
-  opacity: .45;
-  border: 1px dashed #65547f;
-  background: rgba(255,255,255,.035);
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid #705b91;
+  border-radius: 14px;
+  background: radial-gradient(circle at 50% 35%, #352747, #20182e 80%);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.board-cell.empty {
+  display: flex !important;
+  opacity: 1;
+  border: 1px dashed #514164;
+  background: linear-gradient(145deg, #191424, #15111f);
 }
 .board-cell.empty::after {
-  content: "+";
-  color: #b9a8d2;
-  opacity: .45;
-  font-size: 25px;
-  font-weight: 300;
+  content: "＋";
+  color: #77668c;
+  opacity: .55;
+  font-size: 22px;
+}
+.board-cell.has-item {
+  border-color: #8266a8;
+  background: radial-gradient(circle at 50% 35%, #443257, #21192f 80%);
+}
+.item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 82%;
+  height: 82%;
+  font-size: clamp(37px, 11vw, 58px);
+  line-height: 1;
+  pointer-events: none;
+}
+.board-cell.drag-source { opacity: .28; }
+.board-cell.drop-target {
+  border: 2px solid #c5a4ff;
+  box-shadow: 0 0 18px #a77aff88;
+  background: #594078 !important;
 }
 .item-drag-ghost { pointer-events: none !important; }
+
+/* Призыв */
+.summon-buttons { gap: 10px; margin-top: 13px; }
+.summon-buttons .primary-button {
+  min-height: 88px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+.summon-button {
+  border-color: #aa86ee;
+  background: linear-gradient(145deg, #8052c7, #4d327e);
+}
+.anti-summon-button {
+  border-color: #7863ad;
+  background: linear-gradient(145deg, #40345f, #211a35);
+}
+.primary-button:disabled {
+  opacity: .72;
+  filter: none;
+}
+.primary-button small { font-size: 11px; }
+
+/* Квесты с портретом персонажа слева */
+.quest-list { display: grid; gap: 13px; }
+.quest-card {
+  position: relative;
+  padding: 14px;
+  border: 1px solid #51406f;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #261d39, #171222);
+  box-shadow: 0 8px 22px #0003;
+}
+.quest-person {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.quest-portrait {
+  width: 62px;
+  height: 62px;
+  border: 2px solid #a889d7;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 25%;
+  background: #252036;
+  box-shadow: 0 0 16px #a77aff33;
+}
+.quest-giver-label {
+  display: block;
+  margin-bottom: 3px;
+  color: #a99abf;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.quest-giver-name {
+  color: #f4eaff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+.quest-card h3 {
+  margin: 0 0 7px;
+  color: #f5eaff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.25;
+}
+.quest-card p {
+  color: #c1b4d0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.quest-reward {
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: #332642;
+  color: #ffdf87;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.quest-card button {
+  min-height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8054c4, #58388d);
+}
+
+/* Миры: название и описание поверх фотографии */
+.world-list { display: grid; gap: 15px; }
+.world-card-first,
+.world-card-illustrated {
+  position: relative;
+  min-height: 220px;
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #70558f;
+  border-radius: 19px;
+  background: #171222;
+  box-shadow: 0 9px 24px #0004;
+  text-align: left;
+}
+.world-card-first::after,
+.world-card-illustrated::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, #0c0911b8 0%, #0c091100 34%, #0c091166 57%, #0c0911ed 100%);
+  pointer-events: none;
+}
+.world-card-first .world-cover,
+.world-card-illustrated .world-cover {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+}
+.world-first-title,
+.world-illustrated-title {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  left: 15px;
+  right: 15px;
+  margin: 0;
+  color: #fff7ff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(22px, 6vw, 29px);
+  font-weight: 800;
+  line-height: 1.12;
+  text-align: center;
+  text-shadow: 0 2px 9px #000, 0 0 18px #0009;
+}
+.world-number {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  left: 12px;
+  width: 34px;
+  height: 28px;
+  margin: 0 !important;
+  border: 1px solid #ffffff66;
+  border-radius: 9px;
+  color: #fff;
+  background: #17102099;
+  backdrop-filter: blur(8px);
+}
+.world-card-first .world-content,
+.world-card-illustrated .world-content {
+  position: absolute;
+  z-index: 2;
+  left: 15px;
+  right: 15px;
+  bottom: 13px;
+  margin: 0;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.45;
+  text-shadow: 0 2px 6px #000;
+}
+.world-content p { margin: 0; color: #f4eefa; }
+.world-status {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  right: 12px;
+  margin: 0;
+  padding: 6px 9px;
+  border: 1px solid #ffffff55;
+  border-radius: 9px;
+  color: #fff !important;
+  background: #171020a8 !important;
+  backdrop-filter: blur(8px);
+}
+.world-card-first.locked,
+.world-card-illustrated.locked { opacity: 1; }
+.world-chapter-divider {
+  padding: 16px;
+  border: 1px solid #785b9f;
+  border-radius: 15px;
+  background: linear-gradient(120deg, #382650, #20182e);
+  text-align: center;
+}
+.world-chapter-divider span {
+  color: #f2d8ff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+/* Типографика и нижняя навигация */
+.game-title, .section-heading h2, .profile-card h2, .profile-card h3,
+.modal-card h2, .modal-card h3 { letter-spacing: .2px; }
+.profile-card { text-align: left; }
+.profile-card > .profile-avatar,
+.profile-card > #profileName,
+.profile-card > #profileStatus { text-align: center; }
+.game-message { border-radius: 14px; backdrop-filter: blur(12px); }
+@media (max-width: 380px) {
+  body { padding-left: 9px; padding-right: 9px; padding-bottom: 100px; }
+  .game-tabs { gap: 5px; }
+  .nav-button { min-height: 54px; padding: 8px 2px; font-size: 10px; }
+  .game-currencies .currency { padding: 8px; gap: 6px; }
+  .game-currencies .currency-icon { width: 34px; height: 34px; flex-basis: 34px; }
+  .board { gap: 6px; }
+  .board-cell { border-radius: 10px; }
+  .quest-person { grid-template-columns: 56px minmax(0,1fr); }
+  .quest-portrait { width: 56px; height: 56px; }
+}

@@ -400,14 +400,35 @@ a { color: #55aaff; text-decoration: none; }
   <div id="paymentMessage" class="notice hidden"></div>
 </div>
 
+
 <div id="orderPanel" class="panel hidden">
   <button class="back-button" onclick="backToShop()">← В профиль</button>
+
   <h2>Мои заказы</h2>
-  <button class="secondary-button" onclick="loadOrders()">Обновить список</button>
-  <div id="ordersList">
-    <div class="notice">Загружаю заказы...</div>
+  <button class="secondary-button" onclick="loadOrders()">Обновить историю</button>
+
+  <div class="order-stats">
+    <div class="order-stat">
+      <span>Всего куплено Stars</span>
+      <strong id="totalStarsBought">0 ⭐</strong>
+    </div>
+    <div class="order-stat">
+      <span>Всего потрачено</span>
+      <strong id="totalMoneySpent">0 сум</strong>
+    </div>
+    <div class="order-stat">
+      <span>Успешных покупок</span>
+      <strong id="totalSuccessfulOrders">0</strong>
+    </div>
   </div>
+
+  <h3>История покупок</h3>
+  <div id="completedOrdersList"></div>
+
+  <h3 style="margin-top:24px">Активные заказы</h3>
+  <div id="activeOrdersList"></div>
 </div>
+
 
 </div>
 

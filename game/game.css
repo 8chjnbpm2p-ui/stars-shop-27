@@ -1997,3 +1997,38 @@ body[data-world="9"] {
     min-height: 72px !important; max-height: 72px !important;
   }
 }
+
+
+/* Nickname editor is a plain popover, not a titled/banner panel. */
+.nickname-edit-menu {
+  margin: 8px 0 12px 100px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.nickname-edit-menu .game-nickname-row {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+}
+.nickname-edit-menu .game-nickname-row input {
+  min-width: 0;
+  width: 125px;
+  padding: 8px 9px;
+  font-size: 13px;
+}
+.nickname-edit-menu .game-nickname-row button {
+  padding: 7px 9px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.nickname-edit-menu #gameNicknameStatus {
+  margin-top: 5px;
+}
+@media (max-width: 380px) {
+  .nickname-edit-menu { margin-left: 0; }
+  .nickname-edit-menu .game-nickname-row { display: grid; grid-template-columns: minmax(0,1fr); }
+  .nickname-edit-menu .game-nickname-row input { width: 100%; }
+}

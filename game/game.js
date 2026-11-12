@@ -723,6 +723,11 @@ if (sellCancelButton) {
   sellCancelButton.addEventListener("click", closeSellWindow);
 }
 
+const sellCancelButtonSecondary = document.getElementById("sellCancelButtonSecondary");
+if (sellCancelButtonSecondary) {
+  sellCancelButtonSecondary.addEventListener("click", closeSellWindow);
+}
+
 if (sellOverlay) {
   sellOverlay.addEventListener("click", event => {
     if (event.target === sellOverlay) closeSellWindow();

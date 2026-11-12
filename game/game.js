@@ -318,6 +318,7 @@ function createInitialState() {
     summonedCount: 0,
 
     unlockedWorld: 1,
+    currentWorld: 1,
 
     playTimeMs: 0,
     lastSessionStart: Date.now(),
@@ -387,7 +388,13 @@ function loadState() {
       unlockedWorld: Math.min(
         9,
         Math.max(1, Number(parsed.unlockedWorld) || 1)
-      )
+      ),
+      currentWorld: Math.min(
+        9,
+        Math.max(1, Number(parsed.currentWorld) || 1)
+      ),
+      // Сбрасываем таймер при загрузке: офлайн-доход не начисляется.
+      lastSkintUpdate: Date.now()
     };
   } catch (error) {
     console.error("Ошибка загрузки сохранения:", error);
@@ -410,6 +417,8 @@ function saveState() {
 ========================================= */
 
 function updatePassiveIncome() {
+  if (document.hidden) return;
+
   const now = Date.now();
 
   if (!state.lastSkintUpdate) {
@@ -422,7 +431,7 @@ function updatePassiveIncome() {
 
   if (minutes <= 0) return;
 
-  state.skint += minutes * PASSIVE_SKINT_PER_MINUTE;
+  state.skint = Number(state.skint || 0) + minutes * PASSIVE_SKINT_PER_MINUTE;
   state.lastSkintUpdate += minutes * 60000;
 
   saveState();
@@ -1222,8 +1231,8 @@ function completeQuest(quest) {
   state.board[index] = null;
   state.boardValues[index] = 0;
   state.completedQuests.push(quest.id);
-  state.skint += quest.rewardSkint;
-  state.antiSkint += quest.rewardAnti;
+  state.skint = Number(state.skint || 0) + Number(quest.rewardSkint || 0);
+  state.antiSkint = Number(state.antiSkint || 0) + Number(quest.rewardAnti || 0);
 
   saveState();
   renderAll();
@@ -1243,6 +1252,7 @@ function renderWorlds() {
     const locked = number > state.unlockedWorld;
 
     card.classList.toggle("locked", locked);
+    card.classList.toggle("world-card-active", number === state.currentWorld);
   });
 }
 
@@ -1257,7 +1267,17 @@ document.querySelectorAll(".world-card").forEach(card => {
       return;
     }
 
-    showMessage("Выбран мир: " + worlds[number - 1].name);
+    if (number === state.currentWorld) {
+      showMessage("Ты уже находишься в этом мире.");
+      return;
+    }
+
+    state.currentWorld = number;
+    state.skint = 0;
+    state.lastSkintUpdate = Date.now();
+    saveState();
+    renderAll();
+    showMessage("Переход в мир: " + worlds[number - 1].name + ". Скинты сброшены, Анти-скинты сохранены.");
   });
 });
 
@@ -1301,7 +1321,7 @@ function renderProfile() {
     profileName: "Мироходец",
     profileStatus: "Начинающий",
     profileRank: "—",
-    profileWorld: worlds[state.unlockedWorld - 1]?.name || worlds[0].name,
+    profileWorld: worlds[(state.currentWorld || 1) - 1]?.name || worlds[0].name,
     playTime: formatPlayTime(getPlayTime()),
     mergedCount: state.mergedCount,
     soldCount: state.soldCount,
@@ -1567,14 +1587,20 @@ function savePlayTime() {
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
+    updatePassiveIncome();
+    state.lastSkintUpdate = Date.now();
     savePlayTime();
   } else {
     state.lastSessionStart = Date.now();
+    state.lastSkintUpdate = Date.now();
     saveState();
   }
 });
 
-window.addEventListener("pagehide", savePlayTime);
+window.addEventListener("pagehide", () => {
+  updatePassiveIncome();
+  savePlayTime();
+});
 
 setInterval(() => {
   updatePassiveIncome();

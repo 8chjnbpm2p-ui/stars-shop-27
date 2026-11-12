@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#100d1b">
   <title>Приключение Lo</title>
-  <link rel="stylesheet" href="game.css?v=20261112-nickname-buttons-polish1">
+  <link rel="stylesheet" href="game.css?v=20261112-profile-layout1">
 </head>
 
 <body>
@@ -223,22 +223,28 @@
 
         <div class="profile-card">
 
-          <div class="profile-avatar" id="profileAvatarFrame">
-            <img id="profileAvatarImage" alt="Аватар игрока" hidden>
-            <span id="profileAvatarFallback" aria-hidden="true">🧑🏻‍🚀</span>
+          <div class="profile-identity">
+            <div class="profile-avatar-column">
+              <div class="profile-avatar" id="profileAvatarFrame">
+                <img id="profileAvatarImage" alt="Аватар игрока" hidden>
+                <span id="profileAvatarFallback" aria-hidden="true">🧑🏻‍🚀</span>
+              </div>
+              <input id="profileAvatarInput" class="avatar-file-input" type="file" accept="image/*">
+              <button class="avatar-change-button" id="changeAvatarButton" type="button">Изменить фото</button>
+            </div>
+            <div class="profile-identity-info">
+              <span class="profile-type-label">ПРОФИЛЬ ИГРОКА</span>
+              <h2 id="profileName">Мироходец</h2>
+              <p id="profileStatus">Начинающий</p>
+              <p class="avatar-caption">Твой персонаж в мире Приключения Lo</p>
+            </div>
           </div>
-          <input id="profileAvatarInput" class="avatar-file-input" type="file" accept="image/*">
-          <p class="avatar-caption">Твоё фото в мире Приключения Lo</p>
-          <button class="avatar-change-button" id="changeAvatarButton" type="button">Изменить фото</button>
-
-          <h2 id="profileName">Мироходец</h2>
-          <p id="profileStatus">Начинающий</p>
 
           <div class="game-nickname-panel">
             <label for="gameNicknameInput">Твой игровой ник</label>
             <div class="game-nickname-row">
               <input id="gameNicknameInput" type="text" maxlength="16" minlength="3"
-                     autocomplete="off" placeholder="Например, Shadow_482">
+                     autocomplete="off" placeholder="Например, name_993">
               <button id="saveGameNicknameButton" type="button">✦ Сохранить ник</button>
             </div>
             <small>Придумай псевдоним: 3–16 символов, латиница, цифры или _</small>
@@ -367,7 +373,7 @@
 
     </div>
 
-  </div><script src="game.js?v=20261112-nickname-buttons-polish1" defer></script>
+  </div><script src="game.js?v=20261112-profile-layout1" defer></script>
 
 
 

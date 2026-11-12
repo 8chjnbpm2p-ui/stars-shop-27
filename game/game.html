@@ -212,7 +212,12 @@
 
         <div class="profile-card">
 
-          <div class="profile-avatar" role="img" aria-label="Аватар персонажа"><span>🧑🏻‍🚀</span></div>
+          <div class="profile-avatar" id="profileAvatarFrame">
+            <img id="profileAvatarImage" alt="Аватар игрока" hidden>
+            <span id="profileAvatarFallback" aria-hidden="true">🧑🏻‍🚀</span>
+          </div>
+          <input id="profileAvatarInput" class="avatar-file-input" type="file" accept="image/*">
+          <button class="avatar-change-button" id="changeAvatarButton" type="button">Изменить аватар</button>
 
           <h2 id="profileName">Мироходец</h2>
           <p id="profileStatus">Начинающий</p>

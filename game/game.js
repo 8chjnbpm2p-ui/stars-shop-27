@@ -273,6 +273,7 @@ const questData = [
     id: "cloakQuest",
     title: "Укреплённый путевой плащ",
     character: "Горбатик",
+    portrait: "https://fanfics.me/images/fandoms_heroes/3106-1756472497-big.jpg",
     description: "Без хорошей защиты далеко не уйдёшь.",
     target: "cloak",
     rewardSkint: 35,
@@ -529,6 +530,7 @@ function renderCurrencies() {
 function updateSummonButtons() {
   const occupied = state.board.filter(Boolean).length;
   const full = occupied >= BOARD_SIZE;
+  renderCurrencies();
 
   if (summonButton) {
     summonButton.disabled = full || state.skint < SUMMON_COST;
@@ -1051,7 +1053,6 @@ navButtons.forEach(button => {
 
 function renderQuests() {
   if (!questListElement) return;
-
   questListElement.innerHTML = "";
 
   questData.forEach(quest => {
@@ -1062,11 +1063,36 @@ function renderQuests() {
     const card = document.createElement("article");
     card.className = "quest-card";
 
+    const person = document.createElement("div");
+    person.className = "quest-person";
+
+    const portrait = document.createElement("img");
+    portrait.className = "quest-portrait";
+    portrait.alt = "Портрет персонажа " + quest.character;
+    portrait.loading = "lazy";
+    if (quest.portrait) {
+      portrait.src = quest.portrait;
+      portrait.onerror = () => {
+        portrait.removeAttribute("src");
+        portrait.classList.add("portrait-fallback");
+        portrait.alt = quest.character;
+      };
+    } else {
+      portrait.src = "assets/anti-skint.svg";
+    }
+
+    const giver = document.createElement("div");
+    const label = document.createElement("span");
+    label.className = "quest-giver-label";
+    label.textContent = "Задание от";
+    const giverName = document.createElement("strong");
+    giverName.className = "quest-giver-name";
+    giverName.textContent = quest.character;
+    giver.append(label, giverName);
+    person.append(portrait, giver);
+
     const title = document.createElement("h3");
     title.textContent = quest.title;
-
-    const character = document.createElement("p");
-    character.textContent = "Персонаж: " + quest.character;
 
     const description = document.createElement("p");
     description.textContent = quest.description;
@@ -1074,17 +1100,16 @@ function renderQuests() {
     const reward = document.createElement("div");
     reward.className = "quest-reward";
     reward.textContent =
-      `Награда: ${quest.rewardSkint} Скинтов · ${quest.rewardAnti} Анти-скинтов`;
+      "Награда: " + quest.rewardSkint + " Скинтов · " +
+      quest.rewardAnti + " Анти-скинтов";
 
     const button = document.createElement("button");
     button.className = "primary-button";
-
     if (completed) {
       button.textContent = "Задание выполнено";
       button.disabled = true;
     } else if (!accepted) {
       button.textContent = "Принять задание";
-
       button.addEventListener("click", () => {
         state.acceptedQuests.push(quest.id);
         saveState();
@@ -1092,14 +1117,13 @@ function renderQuests() {
       });
     } else if (hasTarget) {
       button.textContent = "Сдать предмет";
-
       button.addEventListener("click", () => completeQuest(quest));
     } else {
       button.textContent = "Предмет ещё не найден";
       button.disabled = true;
     }
 
-    card.append(title, character, description, reward, button);
+    card.append(person, title, description, reward, button);
     questListElement.appendChild(card);
   });
 }

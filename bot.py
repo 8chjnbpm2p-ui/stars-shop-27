@@ -2602,6 +2602,7 @@ async def main():
         api_check_recipient,
     )
 
+    # Game nickname/profile endpoint: the client saves profiles with POST.
     web_app.router.add_post(
         "/api/game/profile",
         api_game_profile,

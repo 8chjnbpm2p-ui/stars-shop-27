@@ -753,7 +753,7 @@ const questData = [
 
     title: "Путь через пески",
     character: "Синдбад",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/d/da/%D0%A1%D0%B8%D0%BD%D0%B4%D0%B1%D0%B0%D0%B4.png",
+    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/d/da/%D0%A1%D0%B8%D0%BD%D0%B4%D0%B1%D0%B0%D0%B4.png/revision/latest?cb=20230818172401&path-prefix=ru",
     description: "Мне нужен знак, который укажет безопасный путь через пустыню. Собери диск и наполни его жаром древнего пламени.",
     target: "sun_disc",
     rewardSkint: 145,
@@ -766,7 +766,7 @@ const questData = [
 
     title: "Клятва тринадцати",
     character: "Сдерик",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/8/81/%D0%A1%D0%B4%D0%B5%D1%80%D0%B8%D0%BA.png",
+    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/8/81/%D0%A1%D0%B4%D0%B5%D1%80%D0%B8%D0%BA.png/revision/latest?cb=20230821113935&path-prefix=ru",
     description: "Боги не должны решать судьбу каждого. Создай печать клятвы, чтобы объединить тех, кто готов сопротивляться.",
     target: "oath_seal",
     rewardSkint: 175,

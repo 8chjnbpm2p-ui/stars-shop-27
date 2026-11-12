@@ -828,3 +828,46 @@ button:focus-visible {
 .item-drag-ghost.dragging {
   transform: scale(1.16) rotate(-4deg);
 }
+
+
+/* Первый мир: заголовок над иллюстрацией */
+@import url('https://fonts.googleapis.com/css2?family=Marck+Script&display=swap');
+.world-card-first {
+  padding: 15px;
+  overflow: hidden;
+  text-align: center;
+  border-color: #8b6bc2;
+  background: linear-gradient(155deg, #302344, #1b1629 75%);
+}
+.world-card-first .world-number {
+  display: flex;
+  width: 34px;
+  height: 27px;
+  margin: 0 auto 2px;
+}
+.world-first-title {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 8px;
+  color: #f4d9ff;
+  font-family: 'Marck Script', 'Segoe Script', cursive;
+  font-size: clamp(29px, 8vw, 37px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: .2px;
+  text-shadow: 0 2px 12px #c18cff66;
+}
+.world-card-first .world-cover {
+  width: calc(100% + 30px);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #171226;
+  margin: 0 -15px 12px;
+  border-radius: 0;
+}
+.world-card-first .world-content {
+  margin-top: 0;
+  text-align: left;
+}

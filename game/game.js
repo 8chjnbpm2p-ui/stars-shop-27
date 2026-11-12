@@ -333,6 +333,26 @@ const questData = [
     target: "cloak",
     rewardSkint: 35,
     rewardAnti: 2
+  },
+  {
+    id: "anomalyCoreQuest",
+    world: 2,
+    title: "Сердце нестабильности",
+    character: "Архонт Элион",
+    description: "В разломе между мирами появился нестабильный источник. Создай основу стабилизатора, чтобы сдержать его энергию.",
+    target: "anomaly_core",
+    rewardSkint: 55,
+    rewardAnti: 2
+  },
+  {
+    id: "anomalyStabilizerQuest",
+    world: 2,
+    title: "Игра Бога",
+    character: "Оракул Разлома",
+    description: "Одной основы недостаточно. Заверши стабилизатор и останови аномалию, пока она не поглотила этот мир.",
+    target: "anomaly_stabilizer",
+    rewardSkint: 90,
+    rewardAnti: 3
   }
 ];
 
@@ -1252,6 +1272,12 @@ function renderQuests() {
     const title = document.createElement("h3");
     title.textContent = quest.title;
 
+    const worldLabel = document.createElement("span");
+    worldLabel.className = "quest-world-label";
+    const questWorld = Number(quest.world || 1);
+    worldLabel.textContent = "МИР " + String(questWorld).padStart(2, "0") +
+      " · " + (worlds[questWorld - 1]?.name || "Неизвестный мир");
+
     const toggleQuestGuide = () => {
       const existingGuide = card.querySelector(".quest-guide-panel");
       if (existingGuide) {
@@ -1300,7 +1326,7 @@ function renderQuests() {
       button.disabled = true;
     }
 
-    card.append(person, title, description, reward, button);
+    card.append(person, title, worldLabel, description, reward, button);
     questListElement.appendChild(card);
   });
 }
@@ -1327,6 +1353,13 @@ function createQuestGuide(quest) {
     cloak: [
       ["beast_leather", "dense_cloth", "cloak_core"],
       ["cloak_core", "stable_stone", "cloak"]
+    ],
+    anomaly_core: [
+      ["strange_glass", "copper_wire", "anomaly_core"]
+    ],
+    anomaly_stabilizer: [
+      ["strange_glass", "copper_wire", "anomaly_core"],
+      ["anomaly_core", "weak_energy", "anomaly_stabilizer"]
     ]
   };
 

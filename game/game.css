@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Marck+Script&display=swap');
+
 
 :root {
   --bg: #100d1c;
@@ -831,7 +833,6 @@ button:focus-visible {
 
 
 /* Первый мир: заголовок над иллюстрацией */
-@import url('https://fonts.googleapis.com/css2?family=Marck+Script&display=swap');
 .world-card-first {
   padding: 15px;
   overflow: hidden;

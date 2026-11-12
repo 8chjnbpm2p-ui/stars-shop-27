@@ -1473,3 +1473,10 @@ body[data-world="8"] {
 body[data-world="9"] {
   background: radial-gradient(ellipse at 50% 0%, #74602f 0%, transparent 55%), linear-gradient(180deg, #282112, #171208) !important;
 }
+
+
+/* Убираем нижние всплывающие уведомления — они перекрывают игровой интерфейс. */
+.game-message,
+.game-message.visible {
+  display: none !important;
+}

@@ -1224,7 +1224,10 @@ function renderQuests() {
   if (!questListElement) return;
   questListElement.innerHTML = "";
 
-  const orderedQuests = [...questData].sort((a, b) => {
+  const availableQuests = questData.filter(quest =>
+    Number(quest.world || 1) <= Number(state.currentWorld || 1)
+  );
+  const orderedQuests = [...availableQuests].sort((a, b) => {
     return Number(state.completedQuests.includes(a.id)) -
       Number(state.completedQuests.includes(b.id));
   });

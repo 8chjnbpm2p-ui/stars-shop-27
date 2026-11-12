@@ -187,7 +187,8 @@ function getUpgradeId(itemId) {
     };
     items[newId] = {
       name: upgradedNames[itemId] || ("Улучшенный " + items[itemId].name.toLowerCase()),
-      icon: "✨"
+      // Сохраняем узнаваемый образ исходного предмета, добавляя знак улучшения.
+      icon: items[itemId].icon + "✦"
     };
   }
 
@@ -779,13 +780,15 @@ function mergeItems(sourceIndex, targetIndex) {
   const second = board[targetIndex];
   if (!first || !second) return false;
 
-  // Объединять можно только два совершенно одинаковых предмета.
-  if (first !== second) {
-    showMessage("Объединять можно только одинаковые предметы.");
+  // Сначала проверяем рецепт пары разных предметов; одинаковые предметы
+  // без отдельного рецепта переходят на следующий уровень.
+  const recipeResult = recipes[makePair(first, second)];
+  const result = recipeResult || (first === second ? getUpgradeId(first) : null);
+
+  if (!result) {
+    showMessage("Для этих предметов пока нет рецепта объединения.");
     return false;
   }
-
-  const result = getUpgradeId(first);
   board[sourceIndex] = null;
   board[targetIndex] = result;
 
@@ -951,7 +954,10 @@ if (boardElement) {
           saveState();
           renderBoard();
         } else if (currentBoard[sourceIndex] && currentBoard[targetIndex]) {
-          if (currentBoard[sourceIndex] === currentBoard[targetIndex]) {
+          const pairHasRecipe = Boolean(
+            recipes[makePair(currentBoard[sourceIndex], currentBoard[targetIndex])]
+          );
+          if (currentBoard[sourceIndex] === currentBoard[targetIndex] || pairHasRecipe) {
             mergeItems(sourceIndex, targetIndex);
           } else if (!tutorialMode) {
             const sourceItem = currentBoard[sourceIndex];
@@ -1042,7 +1048,8 @@ function handleBoardTap(index) {
     return;
   }
 
-  if (sourceItem === targetItem) {
+  const pairHasRecipe = Boolean(recipes[makePair(sourceItem, targetItem)]);
+  if (sourceItem === targetItem || pairHasRecipe) {
     selectedBoardIndex = null;
     mergeItems(source, index);
     renderBoard();
@@ -1363,7 +1370,7 @@ const tutorialSteps = [
   },
   {
     title: "Перемещение и объединение",
-    text: "Нажми на предмет, затем на другую клетку. Пустая клетка переместит его, одинаковый предмет объединится с ним, а другой предмет поменяется местами. Можно также перетаскивать пальцем.",
+    text: "Нажми на предмет, затем на второй. Одинаковые предметы объединяются в улучшенный, а некоторые разные предметы объединяются по специальному рецепту. Если рецепта нет — они меняются местами. В пустую клетку предмет просто перемещается. Можно также перетаскивать пальцем.",
     button: "Далее"
   },
   {
@@ -1462,12 +1469,6 @@ function nextTutorialStep() {
 if (tutorialButton) {
   tutorialButton.addEventListener("click", () => {
     if (!tutorialMode) return;
-
-    if (tutorialStep === 2 && !tutorialMerged) {
-      showMessage("Сначала объедини два предмета!");
-      return;
-    }
-
     nextTutorialStep();
   });
 }
@@ -1479,7 +1480,8 @@ if (tutorialSkipButton) {
 if (tutorialCompleteButton) {
   tutorialCompleteButton.addEventListener("click", () => {
     if (tutorialCompleteOverlay) {
-      tutorialCompleteOverlay.classList.add("hidden");
+      tutorialCompleteOverlay.classList.remove("active");
+      tutorialCompleteOverlay.classList.remove("hidden");
     }
 
     tutorialMode = false;

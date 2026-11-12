@@ -142,6 +142,14 @@ const items = {
   order_sign: {
     name: "Защитный знак Ордена",
     icon: "🔰"
+  },
+  fire_core: {
+    name: "Сердцевина пламени",
+    icon: "🔥"
+  },
+  fire_emblem: {
+    name: "Печать огненного полубога",
+    icon: "♨️"
   }
 };
 
@@ -171,7 +179,9 @@ const recipes = {
   [makePair("amulet_core", "magic_essence")]: "eola_amulet",
 
   [makePair("tree_bark", "dark_feather")]: "order_core",
-  [makePair("order_core", "stone_symbol")]: "order_sign"
+  [makePair("order_core", "stone_symbol")]: "order_sign",
+  [makePair("strange_glass", "weak_energy")]: "fire_core",
+  [makePair("fire_core", "magic_essence")]: "fire_emblem"
 };
 
 /* =========================================
@@ -363,7 +373,7 @@ const questData = [
     character: "Люциус",
     portrait: "https://i.pinimg.com/736x/73/45/f1/7345f1dc85ce5ba7a5c476e223cf805b.jpg",
     description: "Полубог огня не собирается доверять тебе просто так. Подготовь укреплённый плащ, способный выдержать жар и опасности пути. Со временем между вами может появиться настоящая дружба.",
-    target: "cloak",
+    target: "fire_emblem",
     rewardSkint: 70,
     rewardAnti: 2
   },
@@ -374,7 +384,7 @@ const questData = [
     character: "Бастиан и Воланд",
     portrait: "https://i.pinimg.com/736x/f8/19/72/f81972f93dfe250d149afd3e236c7421.jpg",
     description: "Опытные маги предлагают помощь. Собери фрагмент Скрижали — он понадобится для изучения древних магических знаний.",
-    target: "tablet",
+    target: "eola_amulet",
     rewardSkint: 80,
     rewardAnti: 2
   },
@@ -470,11 +480,17 @@ function loadState() {
       boardValues.push(0);
     }
 
-    // Убираем только неизвестные старые ID, чтобы они не занимали место невидимыми.
-    // Валюты и все распознанные предметы остаются в сохранении.
+    // Предметы первого мира не должны переноситься или оставаться в сохранении второго мира.
+    const savedWorld = Math.min(9, Math.max(1, Number(parsed.currentWorld) || 1));
+    const firstWorldItems = new Set([
+      "ice_scale", "dim_crystal", "rune_cloth", "key_core", "key",
+      "stone_fragment", "glowing_dust", "metal_plate", "tablet_core", "tablet",
+      "dense_cloth", "beast_leather", "stable_stone", "cloak_core", "cloak"
+    ]);
     for (let i = 0; i < BOARD_SIZE; i++) {
       if (board[i]) ensureUpgradeItem(board[i]);
-      if (board[i] && !items[board[i]]) {
+      const rootId = items[board[i]]?.baseItemId || board[i];
+      if (board[i] && (!items[board[i]] || (savedWorld >= 2 && firstWorldItems.has(rootId)))) {
         board[i] = null;
         boardValues[i] = 0;
       }
@@ -620,27 +636,41 @@ function getCurrentBoard() {
 
 // Шансы обычного призыва. Предметы не получают бонус к выпадению
 // только потому, что уже лежат на поле.
-const summonDrops = [
-  { id: "ice_scale", weight: 18 },      // 20%
-  { id: "rune_cloth", weight: 12 },     // 13,33%
-  { id: "stone_fragment", weight: 10 }, // 11,11%
-  { id: "glowing_dust", weight: 10 },   // 11,11%
-  { id: "metal_plate", weight: 10 },    // 11,11%
-  { id: "dense_cloth", weight: 10 },    // 11,11%
-  { id: "beast_leather", weight: 10 },  // 11,11%
-  { id: "stable_stone", weight: 10 }   // 11,11%
-];
+const worldSummonDrops = {
+  1: [
+    { id: "ice_scale", weight: 18 },
+    { id: "rune_cloth", weight: 12 },
+    { id: "stone_fragment", weight: 10 },
+    { id: "glowing_dust", weight: 10 },
+    { id: "metal_plate", weight: 10 },
+    { id: "dense_cloth", weight: 10 },
+    { id: "beast_leather", weight: 10 },
+    { id: "stable_stone", weight: 10 }
+  ],
+  2: [
+    { id: "strange_glass", weight: 15 },
+    { id: "copper_wire", weight: 15 },
+    { id: "weak_energy", weight: 15 },
+    { id: "amulet_fragment", weight: 15 },
+    { id: "silver_thread", weight: 10 },
+    { id: "magic_essence", weight: 10 },
+    { id: "tree_bark", weight: 10 },
+    { id: "dark_feather", weight: 5 },
+    { id: "stone_symbol", weight: 5 }
+  ]
+};
 
 function getRandomSummonItem() {
-  const totalWeight = summonDrops.reduce((sum, item) => sum + item.weight, 0);
+  const drops = worldSummonDrops[Number(state.currentWorld) || 1] || worldSummonDrops[1];
+  const totalWeight = drops.reduce((sum, item) => sum + item.weight, 0);
   let roll = Math.random() * totalWeight;
 
-  for (const item of summonDrops) {
+  for (const item of drops) {
     roll -= item.weight;
     if (roll < 0) return item.id;
   }
 
-  return summonDrops[summonDrops.length - 1].id;
+  return drops[drops.length - 1].id;
 }
 
 /* =========================================
@@ -1559,7 +1589,7 @@ document.querySelectorAll(".world-card").forEach(card => {
 
     state.currentWorld = number;
     state.unlockedWorld = Math.max(state.unlockedWorld, number);
-    // Каждый мир начинается с чистого поля: предметы из прошлого мира не переносятся.
+    // Каждый мир начинается с чистого поля; призыв выдаёт материалы только текущего мира.
     state.board = Array(BOARD_SIZE).fill(null);
     state.boardValues = Array(BOARD_SIZE).fill(0);
     selectedBoardIndex = null;

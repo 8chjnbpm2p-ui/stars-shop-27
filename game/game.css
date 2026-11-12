@@ -2032,3 +2032,57 @@ body[data-world="9"] {
   .nickname-edit-menu .game-nickname-row { display: grid; grid-template-columns: minmax(0,1fr); }
   .nickname-edit-menu .game-nickname-row input { width: 100%; }
 }
+
+
+/* Обновлённое меню миров: яркий активный мир и аккуратные статусы. */
+.world-list { gap: 16px; }
+.world-card-first,
+.world-card-illustrated {
+  min-height: 238px;
+  border: 1px solid color-mix(in srgb, var(--world-edge, #a98bd4) 48%, transparent);
+  border-radius: 22px;
+  box-shadow: 0 12px 30px #0005, inset 0 1px #ffffff18;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.world-card-first:active,
+.world-card-illustrated:active { transform: scale(.985); }
+.world-card-first.world-card-active,
+.world-card-illustrated.world-card-active {
+  border: 2px solid var(--world-edge, #d8b7ff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--world-halo, #a56bff) 25%, transparent),
+              0 14px 34px #0007;
+}
+.world-card-first.locked .world-cover,
+.world-card-illustrated.locked .world-cover { filter: saturate(.72) brightness(.78); }
+.world-card-first:not(.locked) .world-status,
+.world-card-illustrated:not(.locked) .world-status {
+  color: #effff6 !important;
+  border-color: #9fffd277;
+  background: #123d30c9 !important;
+}
+.world-card-first.world-card-active .world-status,
+.world-card-illustrated.world-card-active .world-status {
+  color: #fff8d8 !important;
+  border-color: #ffe08caa;
+  background: #68451dcc !important;
+  box-shadow: 0 0 18px #ffcf5b33;
+}
+.world-card-first.locked .world-status,
+.world-card-illustrated.locked .world-status {
+  color: #f0eafa !important;
+  border-color: #ffffff44;
+  background: #171020c9 !important;
+}
+.world-card-first .world-content p,
+.world-card-illustrated .world-content p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 380px) {
+  .world-card-first, .world-card-illustrated { min-height: 218px; }
+  .world-card-first .world-content, .world-card-illustrated .world-content {
+    font-size: 11px;
+  }
+}

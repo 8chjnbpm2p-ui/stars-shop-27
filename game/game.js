@@ -438,11 +438,19 @@ function loadState() {
       acceptedQuests: Array.isArray(parsed.acceptedQuests)
         ? parsed.acceptedQuests
         : [],
-      nickname: typeof parsed.nickname === "string" ? parsed.nickname : "",
+      nickname: typeof parsed.nickname === "string"
+        ? (parsed.nickname === "Nami_993" ? "Nami" : parsed.nickname)
+        : "",
 
+      // Текущий мир всегда считается уже открытым, даже если старое сохранение
+      // не успело обновить unlockedWorld после перехода.
       unlockedWorld: Math.min(
         9,
-        Math.max(1, Number(parsed.unlockedWorld) || 1)
+        Math.max(
+          1,
+          Number(parsed.currentWorld) || 1,
+          Number(parsed.unlockedWorld) || 1
+        )
       ),
       currentWorld: Math.min(
         9,
@@ -1414,14 +1422,24 @@ function updateUnlockedWorldProgress() {
 
 function renderWorlds() {
   updateUnlockedWorldProgress();
+  // Нельзя показывать замок на мире, в котором игрок уже находится.
+  state.unlockedWorld = Math.max(state.unlockedWorld, state.currentWorld);
   const cards = document.querySelectorAll(".world-card");
 
   cards.forEach(card => {
     const number = Number(card.dataset.world);
     const locked = number > state.unlockedWorld;
+    const active = number === state.currentWorld;
+    const status = card.querySelector(".world-status");
 
     card.classList.toggle("locked", locked);
-    card.classList.toggle("world-card-active", number === state.currentWorld);
+    card.classList.toggle("unlocked", !locked);
+    card.classList.toggle("world-card-active", active);
+
+    if (status) {
+      status.textContent = locked ? "🔒 Закрыт" : active ? "✦ Текущий мир" : "✓ Открыт";
+    }
+    card.setAttribute("aria-current", active ? "true" : "false");
   });
 }
 
@@ -1465,6 +1483,11 @@ document.querySelectorAll(".world-card").forEach(card => {
     if (!confirmed) return;
 
     state.currentWorld = number;
+    state.unlockedWorld = Math.max(state.unlockedWorld, number);
+    // Каждый мир начинается с чистого поля: предметы из прошлого мира не переносятся.
+    state.board = Array(BOARD_SIZE).fill(null);
+    state.boardValues = Array(BOARD_SIZE).fill(0);
+    selectedBoardIndex = null;
     state.skint = 0;
     state.lastSkintUpdate = Date.now();
     saveState();
@@ -1561,7 +1584,10 @@ async function gameApi(path, options = {}) {
     }
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || data.message || "Ошибка сервера.");
+  if (!response.ok) {
+    const detail = data.error || data.message || ("Сервер ответил HTTP " + response.status + ".");
+    throw new Error(detail);
+  }
   return data;
 }
 
@@ -1736,7 +1762,7 @@ if (saveGameNicknameButton) {
       if (gameNicknamePanel) gameNicknamePanel.classList.add("hidden");
       if (profileNicknameButton) profileNicknameButton.setAttribute("aria-expanded", "false");
     } catch (error) {
-      if (status) status.textContent = error.message;
+      if (status) status.textContent = error.message || "Не удалось сохранить ник. Проверь соединение и попробуй ещё раз.";
     } finally {
       saveGameNicknameButton.disabled = false;
     }

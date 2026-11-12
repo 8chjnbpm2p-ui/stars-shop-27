@@ -552,31 +552,29 @@ function getCurrentBoard() {
    ПРЕДМЕТЫ ДЛЯ ПРИЗЫВА
 ========================================= */
 
-const randomItems = [
-  "ice_scale",
-  "ice_scale",
-  "rune_cloth",
-  "stone_fragment",
-  "glowing_dust",
-  "metal_plate",
-  "dense_cloth",
-  "beast_leather",
-  "stable_stone"
+// Шансы обычного призыва. Предметы не получают бонус к выпадению
+// только потому, что уже лежат на поле.
+const summonDrops = [
+  { id: "ice_scale", weight: 18 },      // 20%
+  { id: "rune_cloth", weight: 12 },     // 13,33%
+  { id: "stone_fragment", weight: 10 }, // 11,11%
+  { id: "glowing_dust", weight: 10 },   // 11,11%
+  { id: "metal_plate", weight: 10 },    // 11,11%
+  { id: "dense_cloth", weight: 10 },    // 11,11%
+  { id: "beast_leather", weight: 10 },  // 11,11%
+  { id: "stable_stone", weight: 10 }   // 11,11%
 ];
 
 function getRandomSummonItem() {
-  // Пока на поле меньше двух ледяных чешуек, призыв гарантирует недостающие.
-  // Это позволяет восстановить стартовую цепочку ключа даже в старом сохранении.
-  const iceScaleCount = state.board.filter(id => id === "ice_scale").length;
-  if (iceScaleCount < 2) return "ice_scale";
+  const totalWeight = summonDrops.reduce((sum, item) => sum + item.weight, 0);
+  let roll = Math.random() * totalWeight;
 
-  const existing = randomItems.filter(id => state.board.includes(id));
-
-  if (existing.length && Math.random() < 0.75) {
-    return existing[Math.floor(Math.random() * existing.length)];
+  for (const item of summonDrops) {
+    roll -= item.weight;
+    if (roll < 0) return item.id;
   }
 
-  return randomItems[Math.floor(Math.random() * randomItems.length)];
+  return summonDrops[summonDrops.length - 1].id;
 }
 
 /* =========================================

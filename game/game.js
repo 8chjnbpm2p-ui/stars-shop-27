@@ -1233,33 +1233,33 @@ function renderQuests() {
     giverName.textContent = quest.character;
     giver.append(label, giverName);
     person.append(portrait, giver);
-    person.classList.add("quest-person-clickable");
-    person.setAttribute("role", "button");
-    person.setAttribute("tabindex", "0");
-    person.setAttribute("aria-expanded", "false");
-    person.setAttribute("aria-label", "Как получить предмет: " + quest.title);
+
+    const title = document.createElement("h3");
+    title.className = "quest-title-clickable";
+    title.textContent = quest.title;
+    title.setAttribute("role", "button");
+    title.setAttribute("tabindex", "0");
+    title.setAttribute("aria-expanded", "false");
+    title.setAttribute("aria-label", "Показать, как получить: " + quest.title);
 
     const toggleQuestGuide = () => {
       const existingGuide = card.querySelector(".quest-guide-panel");
       if (existingGuide) {
         existingGuide.remove();
-        person.setAttribute("aria-expanded", "false");
+        title.setAttribute("aria-expanded", "false");
         return;
       }
       const guide = createQuestGuide(quest);
-      card.insertBefore(guide, title);
-      person.setAttribute("aria-expanded", "true");
+      card.insertBefore(guide, title.nextSibling);
+      title.setAttribute("aria-expanded", "true");
     };
-    person.addEventListener("click", toggleQuestGuide);
-    person.addEventListener("keydown", event => {
+    title.addEventListener("click", toggleQuestGuide);
+    title.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         toggleQuestGuide();
       }
     });
-
-    const title = document.createElement("h3");
-    title.textContent = quest.title;
 
     const description = document.createElement("p");
     description.textContent = quest.description;

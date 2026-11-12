@@ -811,6 +811,39 @@ let dragGhost = null;
 let dragTargetCell = null;
 let dragOffset = { x: 0, y: 0 };
 
+let savedPageScrollY = 0;
+let pageScrollLocked = false;
+
+function lockPageScroll() {
+  if (pageScrollLocked) return;
+  savedPageScrollY = window.scrollY || window.pageYOffset || 0;
+  pageScrollLocked = true;
+  document.documentElement.classList.add("item-drag-active");
+  document.body.style.position = "fixed";
+  document.body.style.top = "-" + savedPageScrollY + "px";
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.overflow = "hidden";
+}
+
+function unlockPageScroll() {
+  if (!pageScrollLocked) return;
+  pageScrollLocked = false;
+  document.documentElement.classList.remove("item-drag-active");
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.overflow = "";
+  window.scrollTo(0, savedPageScrollY);
+}
+
+document.addEventListener("touchmove", event => {
+  if (pageScrollLocked) event.preventDefault();
+}, { passive: false, capture: true });
+
 function clearDragVisuals() {
   if (dragGhost) dragGhost.remove();
   dragGhost = null;
@@ -831,6 +864,7 @@ if (boardElement) {
     dragSource = index;
     pointerStart = { x: event.clientX, y: event.clientY };
     pointerMoved = false;
+    lockPageScroll();
 
     if (currentBoard[index] && items[currentBoard[index]]) {
       const rect = cell.getBoundingClientRect();
@@ -917,6 +951,7 @@ if (boardElement) {
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
+    unlockPageScroll();
   });
 
   const cancelDrag = () => {
@@ -924,6 +959,7 @@ if (boardElement) {
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
+    unlockPageScroll();
   };
   boardElement.addEventListener("pointercancel", cancelDrag);
   boardElement.addEventListener("lostpointercapture", cancelDrag);

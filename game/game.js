@@ -386,10 +386,26 @@ const worlds = [
   },
   {
     number: 9,
-    name: "Мастерская 47",
+    name: "Мастерская",
     description: "Искусственный, созданный мир-симуляция. Здесь всё подчиняется правилам, которые можно понять… или сломать."
   }
 ];
+
+/* =========================================
+   СЮЖЕТНЫЕ СТАТУСЫ ПРОФИЛЯ
+========================================= */
+
+const profileRanks = {
+  1: "Искра",
+  2: "Междумирец",
+  3: "Бунтарь",
+  4: "Хранитель",
+  5: "Освободитель",
+  6: "Отражение",
+  7: "Первый",
+  8: "Выживший",
+  9: "Создатель МК-47"
+};
 
 /* =========================================
    КВЕСТЫ
@@ -1857,7 +1873,7 @@ function renderProfile() {
 
   const values = {
     profileName: state.nickname || "Nami",
-    profileRank: "—",
+    profileRank: profileRanks[Number(state.currentWorld) || 1] || profileRanks[1],
     profileWorld: worlds[(state.currentWorld || 1) - 1]?.name || worlds[0].name,
     playTime: formatPlayTime(getPlayTime()),
     mergedCount: state.mergedCount,

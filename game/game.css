@@ -1552,19 +1552,18 @@ body[data-world="9"] {
 }
 
 
-/* Рецепт открывается именно нажатием на название квеста. */
-.quest-title-clickable {
+/* Пошаговый рецепт открывается нажатием на имя персонажа-квестодателя. */
+.quest-giver-name-clickable {
   cursor: pointer;
-  width: fit-content;
-  max-width: 100%;
-  border-radius: 6px;
+  display: inline-block;
+  border-radius: 5px;
 }
-.quest-title-clickable:focus-visible {
-  outline: 2px solid #b99ae8;
-  outline-offset: 4px;
-}
-.quest-title-clickable::after {
+.quest-giver-name-clickable::after {
   content: "  ▾";
   color: #c8a9f2;
-  font: 700 12px sans-serif;
+  font: 700 11px sans-serif;
+}
+.quest-giver-name-clickable:focus-visible {
+  outline: 2px solid #b99ae8;
+  outline-offset: 3px;
 }

@@ -912,9 +912,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 82%;
-  height: 82%;
-  font-size: clamp(37px, 11vw, 58px);
+  width: 92%;
+  height: 92%;
+  font-size: clamp(46px, 14vw, 72px);
   line-height: 1;
   pointer-events: none;
 }

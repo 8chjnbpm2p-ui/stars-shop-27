@@ -759,7 +759,7 @@ button:focus-visible {
   color: var(--text);
   text-shadow: 0 0 22px #9568e888;
 }
-.currencies { display: none !important; }
+/* Валюты видны над игровым полем и в профиле. */
 .board {
   touch-action: none;
   user-select: none;

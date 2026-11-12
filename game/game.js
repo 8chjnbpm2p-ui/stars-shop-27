@@ -1511,7 +1511,7 @@ function renderProfile() {
   }
 
   const values = {
-    profileName: state.nickname || "name_993",
+    profileName: state.nickname || "Nami",
     profileRank: "—",
     profileWorld: worlds[(state.currentWorld || 1) - 1]?.name || worlds[0].name,
     playTime: formatPlayTime(getPlayTime()),

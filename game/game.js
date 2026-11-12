@@ -338,7 +338,8 @@ const questData = [
     id: "anomalyCoreQuest",
     world: 2,
     title: "Следы утраченной памяти",
-    character: "Междумирец",
+    character: "Джодах",
+    portrait: "https://image.jannyai.com/bot-avatars/fc6dklHKojmABpArtOvZc.webp",
     description: "Воспоминания о прошлом всё ещё скрыты. Собери основу стабилизатора, чтобы исследовать странную аномалию и найти первую зацепку о своей истинной природе.",
     target: "anomaly_core",
     rewardSkint: 55,
@@ -349,6 +350,7 @@ const questData = [
     world: 2,
     title: "Путь Ангела Смерти",
     character: "Джодах",
+    portrait: "https://image.jannyai.com/bot-avatars/fc6dklHKojmABpArtOvZc.webp",
     description: "Джодах направляет тебя сквозь опасности этого мира. Создай стабилизатор аномалии — он поможет удержать разлом и продолжить поиски ответов.",
     target: "anomaly_stabilizer",
     rewardSkint: 90,
@@ -359,6 +361,7 @@ const questData = [
     world: 2,
     title: "Испытание огнём",
     character: "Люциус",
+    portrait: "https://i.pinimg.com/736x/73/45/f1/7345f1dc85ce5ba7a5c476e223cf805b.jpg",
     description: "Полубог огня не собирается доверять тебе просто так. Подготовь укреплённый плащ, способный выдержать жар и опасности пути. Со временем между вами может появиться настоящая дружба.",
     target: "cloak",
     rewardSkint: 70,
@@ -369,6 +372,7 @@ const questData = [
     world: 2,
     title: "Уроки магии",
     character: "Бастиан и Воланд",
+    portrait: "https://i.pinimg.com/736x/f8/19/72/f81972f93dfe250d149afd3e236c7421.jpg",
     description: "Опытные маги предлагают помощь. Собери фрагмент Скрижали — он понадобится для изучения древних магических знаний.",
     target: "tablet",
     rewardSkint: 80,
@@ -378,7 +382,8 @@ const questData = [
     id: "emrisQuest",
     world: 2,
     title: "Знак сопротивления",
-    character: "Междумирец",
+    character: "Бастиан и Воланд",
+    portrait: "https://i.pinimg.com/736x/f8/19/72/f81972f93dfe250d149afd3e236c7421.jpg",
     description: "Эмрис стремится подчинить магию и даже богов своей воле. Создай защитный знак Ордена, чтобы противостоять его планам.",
     target: "order_sign",
     rewardSkint: 120,
@@ -1255,7 +1260,7 @@ function renderQuests() {
   questListElement.innerHTML = "";
 
   const availableQuests = questData.filter(quest =>
-    Number(quest.world || 1) <= Number(state.currentWorld || 1)
+    Number(quest.world || 1) === Number(state.currentWorld || 1)
   );
   const orderedQuests = [...availableQuests].sort((a, b) => {
     return Number(state.completedQuests.includes(a.id)) -

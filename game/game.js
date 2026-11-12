@@ -178,21 +178,73 @@ const recipes = {
    УЛУЧШЕННЫЕ ПРЕДМЕТЫ
 ========================================= */
 
-function getUpgradeId(itemId) {
-  const newId = "refined_" + itemId;
+const evolutionNames = ["", "Совершенная", "Вознесённая", "Легендарная", "Мифическая", "Божественная"];
+const evolutionMarks = ["", "✧", "♛", "♜", "✺", "☼"];
 
-  if (!items[newId]) {
-    const upgradedNames = {
-      stable_stone: "Совершенный кристалл устойчивости"
+function ensureUpgradeItem(itemId) {
+  if (!itemId || items[itemId]) return;
+
+  const evolvedMatch = itemId.match(/^evolved_(\\d+)_(.+)$/);
+  if (evolvedMatch) {
+    const tier = Number(evolvedMatch[1]);
+    const rootId = evolvedMatch[2];
+    ensureUpgradeItem(rootId);
+    if (!items[rootId]) return;
+    const root = items[rootId];
+    items[itemId] = {
+      name: (evolutionNames[tier] || "Вознесённая") + " " + root.name,
+      icon: root.icon + (evolutionMarks[tier] || "✧"),
+      baseItemId: root.baseItemId || rootId,
+      upgradeLevel: 0,
+      evolutionTier: tier
     };
-    items[newId] = {
-      name: upgradedNames[itemId] || ("Улучшенный " + items[itemId].name.toLowerCase()),
-      // Сохраняем узнаваемый образ исходного предмета, добавляя знак улучшения.
-      icon: items[itemId].icon + "✦"
-    };
+    return;
   }
 
-  return newId;
+  if (itemId.startsWith("refined_")) {
+    const parentId = itemId.slice("refined_".length);
+    ensureUpgradeItem(parentId);
+    if (!items[parentId]) return;
+    const parent = items[parentId];
+    items[itemId] = {
+      name: parent.name + " ✦",
+      icon: parent.icon + "✦",
+      baseItemId: parent.baseItemId || parentId,
+      upgradeLevel: (parent.upgradeLevel || 0) + 1,
+      evolutionTier: parent.evolutionTier || 0
+    };
+  }
+}
+
+function getUpgradeId(itemId) {
+  ensureUpgradeItem(itemId);
+  const current = items[itemId];
+  if (!current) return itemId;
+
+  const rootId = current.baseItemId || itemId;
+  const nextLevel = (current.upgradeLevel || 0) + 1;
+  const tier = current.evolutionTier || 0;
+
+  // Четвёртое объединение превращает предмет в новую ступень,
+  // а не добавляет бесконечное количество одинаковых звёзд.
+  if (nextLevel >= 4) {
+    const nextTier = tier + 1;
+    const evolvedId = "evolved_" + nextTier + "_" + rootId;
+    ensureUpgradeItem(evolvedId);
+    return evolvedId;
+  }
+
+  const refinedId = "refined_" + itemId;
+  if (!items[refinedId]) {
+    items[refinedId] = {
+      name: current.name + " ✦",
+      icon: current.icon + "✦",
+      baseItemId: rootId,
+      upgradeLevel: nextLevel,
+      evolutionTier: tier
+    };
+  }
+  return refinedId;
 }
 
 /* =========================================
@@ -365,6 +417,7 @@ function loadState() {
     // Убираем только неизвестные старые ID, чтобы они не занимали место невидимыми.
     // Валюты и все распознанные предметы остаются в сохранении.
     for (let i = 0; i < BOARD_SIZE; i++) {
+      if (board[i]) ensureUpgradeItem(board[i]);
       if (board[i] && !items[board[i]]) {
         board[i] = null;
         boardValues[i] = 0;
@@ -1530,23 +1583,9 @@ if (restartTutorialButton) {
 let messageTimeout = null;
 
 function showMessage(message) {
-  let element = document.getElementById("gameMessage");
-
-  if (!element) {
-    element = document.createElement("div");
-    element.id = "gameMessage";
-    element.className = "game-message";
-    document.body.appendChild(element);
-  }
-
-  element.textContent = message;
-  element.classList.add("visible");
-
-  clearTimeout(messageTimeout);
-
-  messageTimeout = setTimeout(() => {
-    element.classList.remove("visible");
-  }, 2200);
+  // Всплывающие уведомления отключены: в Telegram WebView они перекрывают поле.
+  const element = document.getElementById("gameMessage");
+  if (element) element.remove();
 }
 
 /* =========================================

@@ -559,6 +559,7 @@ function renderBoard() {
     cell.className = itemId && items[itemId]
       ? "board-cell has-item"
       : "board-cell empty";
+    if (!tutorialMode && selectedBoardIndex === index) cell.classList.add("selected");
     cell.dataset.index = index;
 
     if (itemId && items[itemId]) {
@@ -814,6 +815,7 @@ function mergeItems(sourceIndex, targetIndex) {
 
 let lastTappedIndex = null;
 let lastTapAt = 0;
+let selectedBoardIndex = null;
 let dragGhost = null;
 let dragTargetCell = null;
 let dragOffset = { x: 0, y: 0 };
@@ -961,19 +963,8 @@ if (boardElement) {
     } else if (!pointerMoved) {
       if (tutorialMode) {
         handleTutorialTap(sourceIndex);
-      } else if (state.board[sourceIndex]) {
-        const now = Date.now();
-        if (lastTappedIndex === sourceIndex && now - lastTapAt < 420) {
-          openSellWindow(sourceIndex);
-          lastTappedIndex = null;
-          lastTapAt = 0;
-        } else {
-          lastTappedIndex = sourceIndex;
-          lastTapAt = now;
-        }
       } else {
-        lastTappedIndex = null;
-        lastTapAt = 0;
+        handleBoardTap(sourceIndex);
       }
     }
 
@@ -995,6 +986,69 @@ if (boardElement) {
   };
   boardElement.addEventListener("pointercancel", cancelDrag);
   boardElement.addEventListener("lostpointercapture", cancelDrag);
+}
+
+
+function handleBoardTap(index) {
+  const board = state.board;
+  const now = Date.now();
+
+  if (selectedBoardIndex === null) {
+    if (!board[index]) return;
+    selectedBoardIndex = index;
+    lastTappedIndex = index;
+    lastTapAt = now;
+    renderBoard();
+    return;
+  }
+
+  if (selectedBoardIndex === index) {
+    if (lastTappedIndex === index && now - lastTapAt < 650) {
+      openSellWindow(index);
+    }
+    selectedBoardIndex = null;
+    lastTappedIndex = null;
+    lastTapAt = 0;
+    renderBoard();
+    return;
+  }
+
+  const source = selectedBoardIndex;
+  const sourceItem = board[source];
+  const targetItem = board[index];
+
+  if (!sourceItem) {
+    selectedBoardIndex = null;
+    renderBoard();
+    return;
+  }
+
+  if (!targetItem) {
+    board[index] = sourceItem;
+    board[source] = null;
+    state.boardValues[index] = state.boardValues[source] || SUMMON_COST;
+    state.boardValues[source] = 0;
+    selectedBoardIndex = null;
+    saveState();
+    renderAll();
+    return;
+  }
+
+  if (sourceItem === targetItem) {
+    selectedBoardIndex = null;
+    mergeItems(source, index);
+    renderBoard();
+    return;
+  }
+
+  board[source] = targetItem;
+  board[index] = sourceItem;
+  const sourceValue = state.boardValues[source] || SUMMON_COST;
+  state.boardValues[source] = state.boardValues[index] || SUMMON_COST;
+  state.boardValues[index] = sourceValue;
+  selectedBoardIndex = null;
+  saveState();
+  renderAll();
 }
 
 function handleTutorialTap(index) {
@@ -1291,7 +1345,7 @@ if (changeAvatarButton && avatarInput) {
 const tutorialSteps = [
   {
     title: "Добро пожаловать!",
-    text: "Это Merge Worlds. Здесь ты будешь получать предметы, объединять их и открывать новые миры.",
+    text: "Здесь ты получаешь предметы за Скинты, собираешь коллекцию и открываешь новые миры.",
     button: "Начать"
   },
   {
@@ -1300,13 +1354,13 @@ const tutorialSteps = [
     button: "Далее"
   },
   {
-    title: "Объединение",
-    text: "Перетащи один предмет на другой. Два подходящих предмета объединятся в один новый.",
+    title: "Перемещение и объединение",
+    text: "Нажми на предмет, затем на другую клетку. Пустая клетка переместит его, одинаковый предмет объединится с ним, а другой предмет поменяется местами. Можно также перетаскивать пальцем.",
     button: "Далее"
   },
   {
     title: "Продажа",
-    text: "Нажми на предмет, чтобы открыть окно продажи. Ты получишь половину его стоимости.",
+    text: "Дважды нажми на предмет, чтобы открыть продажу. Ты получишь половину его стоимости.",
     button: "Далее"
   },
   {

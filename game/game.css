@@ -1643,3 +1643,124 @@ body[data-world="9"] {
 .friend-pending { color: #b9abc9; font-size: 11px; line-height: 1.4; }
 .game-friend-card button { min-height: 36px; flex: 0 0 auto; }
 .friend-search-result { margin-top: 9px; }
+
+
+/* Более выразительный стиль профиля, игрового ника и кнопок друзей */
+.game-nickname-panel,
+.game-friends-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 17px;
+  border: 1px solid rgba(190, 151, 255, .28);
+  border-radius: 19px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(151, 93, 224, .19), transparent 55%),
+    linear-gradient(145deg, rgba(43, 31, 65, .98), rgba(20, 16, 34, .98));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .2), inset 0 1px rgba(255,255,255,.06);
+}
+.game-nickname-panel::before,
+.game-friends-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18px;
+  right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(224, 195, 255, .7), transparent);
+}
+.game-nickname-panel label,
+.game-friends-panel h3 {
+  color: #f6eaff;
+  font-size: 15px;
+  letter-spacing: .2px;
+}
+.game-nickname-row,
+.game-friend-search-row { gap: 9px; }
+.game-nickname-row input,
+.game-friend-search-row input {
+  box-sizing: border-box;
+  min-height: 45px;
+  padding: 0 13px;
+  border: 1px solid rgba(190, 157, 230, .28);
+  border-radius: 12px;
+  outline: none;
+  background: rgba(12, 9, 22, .78);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,.24);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.game-nickname-row input::placeholder,
+.game-friend-search-row input::placeholder { color: #8f819f; }
+.game-nickname-row input:focus,
+.game-friend-search-row input:focus {
+  border-color: #c49aff;
+  background: rgba(20, 13, 34, .96);
+  box-shadow: 0 0 0 3px rgba(168, 119, 235, .15), 0 0 18px rgba(155, 101, 226, .12);
+}
+.game-nickname-row button,
+.game-friend-search-row button,
+.game-friend-card button {
+  min-height: 44px;
+  padding: 0 15px;
+  border: 1px solid rgba(230, 207, 255, .42);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a879e9 0%, #8050c7 48%, #6237a4 100%);
+  box-shadow: 0 5px 13px rgba(83, 47, 137, .34), inset 0 1px rgba(255,255,255,.2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: .1px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+}
+.game-nickname-row button:active,
+.game-friend-search-row button:active,
+.game-friend-card button:active {
+  transform: translateY(1px) scale(.97);
+  filter: brightness(.92);
+}
+.game-nickname-row button:disabled,
+.game-friend-search-row button:disabled,
+.game-friend-card button:disabled {
+  opacity: .55;
+  cursor: wait;
+  filter: grayscale(.3);
+}
+.game-nickname-panel small { color: #aa9abb; }
+#gameNicknameStatus:not(:empty),
+#gameFriendsStatus:not(:empty) {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.045);
+  color: #d9c5f5;
+}
+#gameFriendsStatus.error { color: #ffaaaa; }
+.game-friends-panel > p { color: #b9abc9; }
+.game-friends-list { gap: 9px; }
+.game-friends-list h4 {
+  margin-top: 13px;
+  color: #d8baff;
+  font-size: 12px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.game-friend-card {
+  padding: 12px;
+  border: 1px solid rgba(180, 144, 221, .2);
+  border-radius: 14px;
+  background: linear-gradient(130deg, rgba(54, 39, 77, .8), rgba(31, 24, 46, .9));
+  box-shadow: inset 0 1px rgba(255,255,255,.035);
+}
+.game-friend-info strong { color: #f4e6ff; font-size: 13px; }
+.game-friend-info span,
+.friend-pending { color: #b7a8c9; }
+.friend-search-result .game-friend-card { border-color: rgba(194, 157, 255, .38); }
+@media (max-width: 380px) {
+  .game-nickname-panel,
+  .game-friends-panel { padding: 13px; }
+  .game-nickname-row,
+  .game-friend-search-row { grid-template-columns: minmax(0, 1fr); }
+  .game-nickname-row button,
+  .game-friend-search-row button { width: 100%; }
+}

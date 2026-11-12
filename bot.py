@@ -712,7 +712,8 @@ async def api_game_friend_search(request):
         ).fetchone()
     if not row:
         return web.json_response({"error": "Игрок с таким ником не найден."}, status=404)
-    return web.json_response({"player": game_profile_dict(row)})
+    # До принятия заявки показываем только ник; прогресс доступен друзьям.
+    return web.json_response({"player": {"nickname": row["nickname"]}})
 
 
 async def api_game_friend_request(request):

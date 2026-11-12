@@ -1233,6 +1233,30 @@ function renderQuests() {
     giverName.textContent = quest.character;
     giver.append(label, giverName);
     person.append(portrait, giver);
+    person.classList.add("quest-person-clickable");
+    person.setAttribute("role", "button");
+    person.setAttribute("tabindex", "0");
+    person.setAttribute("aria-expanded", "false");
+    person.setAttribute("aria-label", "Как получить предмет: " + quest.title);
+
+    const toggleQuestGuide = () => {
+      const existingGuide = card.querySelector(".quest-guide-panel");
+      if (existingGuide) {
+        existingGuide.remove();
+        person.setAttribute("aria-expanded", "false");
+        return;
+      }
+      const guide = createQuestGuide(quest);
+      card.insertBefore(guide, title);
+      person.setAttribute("aria-expanded", "true");
+    };
+    person.addEventListener("click", toggleQuestGuide);
+    person.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleQuestGuide();
+      }
+    });
 
     const title = document.createElement("h3");
     title.textContent = quest.title;
@@ -1269,6 +1293,63 @@ function renderQuests() {
     card.append(person, title, description, reward, button);
     questListElement.appendChild(card);
   });
+}
+
+function createQuestGuide(quest) {
+  const guide = document.createElement("section");
+  guide.className = "quest-guide-panel";
+  guide.setAttribute("aria-label", "Пошаговый рецепт");
+
+  const heading = document.createElement("h4");
+  heading.textContent = "Как получить предмет";
+  guide.appendChild(heading);
+
+  const guideRecipes = {
+    key: [
+      ["ice_scale", "ice_scale", "dim_crystal"],
+      ["ice_scale", "dim_crystal", "key_core"],
+      ["key_core", "rune_cloth", "key"]
+    ],
+    tablet: [
+      ["stone_fragment", "glowing_dust", "tablet_core"],
+      ["tablet_core", "metal_plate", "tablet"]
+    ],
+    cloak: [
+      ["beast_leather", "dense_cloth", "cloak_core"],
+      ["cloak_core", "stable_stone", "cloak"]
+    ]
+  };
+
+  const steps = guideRecipes[quest.target] || [];
+  const list = document.createElement("ol");
+  steps.forEach((recipe, index) => {
+    const [firstId, secondId, resultId] = recipe;
+    const first = items[firstId];
+    const second = items[secondId];
+    const result = items[resultId];
+    if (!first || !second || !result) return;
+
+    const step = document.createElement("li");
+    const instruction = document.createElement("strong");
+    instruction.textContent = "Шаг " + (index + 1);
+    const combination = document.createElement("div");
+    combination.className = "quest-guide-combination";
+    combination.textContent =
+      first.icon + " " + first.name + "  +  " +
+      second.icon + " " + second.name + "  →  " +
+      result.icon + " " + result.name;
+    const hint = document.createElement("p");
+    hint.textContent = "Положи оба предмета на поле и объедини их касанием или перетаскиванием.";
+    step.append(instruction, combination, hint);
+    list.appendChild(step);
+  });
+
+  guide.appendChild(list);
+  const note = document.createElement("p");
+  note.className = "quest-guide-note";
+  note.textContent = "Нужные начальные материалы получаются через призыв предметов.";
+  guide.appendChild(note);
+  return guide;
 }
 
 function completeQuest(quest) {

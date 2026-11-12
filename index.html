@@ -191,6 +191,44 @@ input:focus { border-color: #2688ff; }
 .nav-button.active { color: #55aaff; font-weight: bold; }
 .nav-icon { display: block; font-size: 21px; margin-bottom: 5px; }
 
+/* Полноэкранный режим игры: навигация появляется по запросу */
+.game-nav-toggle {
+  display: none;
+  position: fixed;
+  right: max(16px, calc((100vw - 480px) / 2 + 16px));
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 30;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #687b9b;
+  border-radius: 17px;
+  color: #fff;
+  background: linear-gradient(145deg, #34435f, #1b263b);
+  box-shadow: 0 6px 22px #0008;
+  font-size: 23px;
+}
+body.game-mode .app {
+  width: 100%;
+  max-width: none;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+}
+body.game-mode .header { display: none; }
+body.game-mode #gamePage { height: 100dvh; }
+body.game-mode #gamePage iframe {
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 calc(50% - 50vw) !important;
+}
+body.game-mode .bottom-nav { display: none; }
+body.game-mode .game-nav-toggle { display: block; }
+body.game-mode.game-nav-open .bottom-nav { display: grid; }
+body.game-mode.game-nav-open .game-nav-toggle {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
 a { color: #55aaff; text-decoration: none; }
 
 .order-card {
@@ -602,6 +640,9 @@ a { color: #55aaff; text-decoration: none; }
     <span class="nav-icon">👤</span>Профиль
   </button>
 </nav>
+<button id="gameNavToggle" class="game-nav-toggle" type="button"
+        aria-label="Открыть меню разделов" aria-expanded="false"
+        onclick="toggleGameNavigation()">☰</button>
 
 <script>
 const API_BASE = "https://starsshopbot27.onrender.com";
@@ -659,6 +700,15 @@ let recipientChecked = false;
 let recipientUsername = "";
 
 function showPage(page) {
+  document.body.classList.toggle("game-mode", page === "game");
+  document.body.classList.remove("game-nav-open");
+  const gameNavToggle = document.getElementById("gameNavToggle");
+  if (gameNavToggle) {
+    gameNavToggle.textContent = "☰";
+    gameNavToggle.setAttribute("aria-expanded", "false");
+    gameNavToggle.setAttribute("aria-label", "Открыть меню разделов");
+  }
+
   document.getElementById("shopPage").classList.toggle("hidden", page !== "shop");
   document.getElementById("gamePage").classList.toggle("hidden", page !== "game");
   document.getElementById("profilePage").classList.toggle("hidden", page !== "profile");
@@ -673,6 +723,17 @@ function showPage(page) {
 
   if (page === "profile") {
     loadTelegramProfile();
+  }
+}
+
+function toggleGameNavigation() {
+  if (!document.body.classList.contains("game-mode")) return;
+  const isOpen = document.body.classList.toggle("game-nav-open");
+  const button = document.getElementById("gameNavToggle");
+  if (button) {
+    button.textContent = isOpen ? "×" : "☰";
+    button.setAttribute("aria-expanded", String(isOpen));
+    button.setAttribute("aria-label", isOpen ? "Закрыть меню разделов" : "Открыть меню разделов");
   }
 }
 

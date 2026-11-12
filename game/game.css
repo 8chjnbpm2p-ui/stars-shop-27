@@ -1316,3 +1316,47 @@ body {
   border-color: #655675;
   opacity: 0.85;
 }
+
+
+/* Каждый мир получает собственную палитру по настроению обложки. */
+.world-card[data-world="1"] { --world-accent: #53d6c5; --world-glow: #1d8c83; }
+.world-card[data-world="2"] { --world-accent: #ff766b; --world-glow: #a52f48; }
+.world-card[data-world="3"] { --world-accent: #a8e7c1; --world-glow: #398e70; }
+.world-card[data-world="4"] { --world-accent: #70c9ff; --world-glow: #276da8; }
+.world-card[data-world="5"] { --world-accent: #ffb34f; --world-glow: #b94c22; }
+.world-card[data-world="6"] { --world-accent: #ff82b8; --world-glow: #963d79; }
+.world-card[data-world="7"] { --world-accent: #9aabff; --world-glow: #454aa6; }
+.world-card[data-world="8"] { --world-accent: #ff8065; --world-glow: #9c332c; }
+.world-card[data-world="9"] { --world-accent: #e6c66b; --world-glow: #75602d; }
+.world-card[data-world] {
+  border-color: color-mix(in srgb, var(--world-accent) 68%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--world-accent) 12%, transparent), 0 8px 22px #0004;
+}
+.world-card[data-world] .world-number,
+.world-card[data-world] .world-status {
+  border-color: color-mix(in srgb, var(--world-accent) 72%, white 10%) !important;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--world-accent) 32%, transparent);
+}
+.world-card[data-world] .world-number { color: #fff; background: color-mix(in srgb, var(--world-glow) 78%, #111 22%); }
+.world-card[data-world] .world-status { background: color-mix(in srgb, var(--world-glow) 82%, #111 18%) !important; }
+.world-card[data-world] .world-illustrated-title,
+.world-card[data-world] .world-first-title { text-shadow: 0 2px 9px #000, 0 0 18px var(--world-glow); }
+.world-card[data-world].world-card-active {
+  outline: 2px solid var(--world-accent);
+  outline-offset: 2px;
+}
+.profile-help {
+  margin: 14px 0 4px;
+  padding: 15px;
+  border: 1px solid #647b91;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1b3442, #19232f);
+  text-align: center;
+}
+.profile-help p { margin: 0 0 10px; color: #c8e4ed; font-size: 13px; font-weight: 700; }
+.profile-help .tutorial-profile-button {
+  margin: 0 auto;
+  border-color: #70b7c5;
+  color: #f1fcff;
+  background: linear-gradient(135deg, #287f91, #24516d);
+}

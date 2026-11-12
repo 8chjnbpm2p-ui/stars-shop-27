@@ -677,14 +677,14 @@ function openSellWindow(index) {
     sellItemPrice.textContent = price + " Скинтов";
   }
 
-  sellOverlay.classList.remove("hidden");
+  sellOverlay.classList.add("active");
 }
 
 function closeSellWindow() {
   itemToSellIndex = null;
 
   if (sellOverlay) {
-    sellOverlay.classList.add("hidden");
+    sellOverlay.classList.remove("active");
   }
 }
 
@@ -800,54 +800,72 @@ function mergeItems(sourceIndex, targetIndex) {
    ПЕРЕТАСКИВАНИЕ И НАЖАТИЯ
 ========================================= */
 
+let lastTappedIndex = null;
+let lastTapAt = 0;
+
 if (boardElement) {
   boardElement.addEventListener("pointerdown", event => {
     const cell = event.target.closest(".board-cell");
-
     if (!cell) return;
-
+    event.preventDefault();
     dragSource = Number(cell.dataset.index);
-
-    pointerStart = {
-      x: event.clientX,
-      y: event.clientY
-    };
-
+    pointerStart = { x: event.clientX, y: event.clientY };
     pointerMoved = false;
+    if (boardElement.setPointerCapture && event.pointerId !== undefined) {
+      try { boardElement.setPointerCapture(event.pointerId); } catch (_) {}
+    }
   });
 
   boardElement.addEventListener("pointermove", event => {
     if (dragSource === null || !pointerStart) return;
-
     const distance = Math.hypot(
       event.clientX - pointerStart.x,
       event.clientY - pointerStart.y
     );
-
-    if (distance > 8) pointerMoved = true;
+    if (distance > 9) pointerMoved = true;
   });
 
   boardElement.addEventListener("pointerup", event => {
     if (dragSource === null) return;
-
     const sourceIndex = dragSource;
-
     const targetCell = document.elementFromPoint(
-      event.clientX,
-      event.clientY
+      event.clientX, event.clientY
     )?.closest(".board-cell");
 
     if (pointerMoved && targetCell) {
       const targetIndex = Number(targetCell.dataset.index);
-
       if (sourceIndex !== targetIndex) {
-        mergeItems(sourceIndex, targetIndex);
+        const board = getCurrentBoard();
+        if (board[sourceIndex] && !board[targetIndex] && !tutorialMode) {
+          board[targetIndex] = board[sourceIndex];
+          board[sourceIndex] = null;
+          state.boardValues[targetIndex] = state.boardValues[sourceIndex] || SUMMON_COST;
+          state.boardValues[sourceIndex] = 0;
+          saveState();
+          renderBoard();
+        } else if (board[sourceIndex] && board[targetIndex]) {
+          mergeItems(sourceIndex, targetIndex);
+        }
       }
+      lastTappedIndex = null;
+      lastTapAt = 0;
     } else if (!pointerMoved) {
       if (tutorialMode) {
         handleTutorialTap(sourceIndex);
+      } else if (state.board[sourceIndex]) {
+        const now = Date.now();
+        if (lastTappedIndex === sourceIndex && now - lastTapAt < 420) {
+          openSellWindow(sourceIndex);
+          lastTappedIndex = null;
+          lastTapAt = 0;
+        } else {
+          lastTappedIndex = sourceIndex;
+          lastTapAt = now;
+          showMessage("Нажми ещё раз, чтобы продать предмет");
+        }
       } else {
-        openSellWindow(sourceIndex);
+        lastTappedIndex = null;
+        lastTapAt = 0;
       }
     }
 
@@ -1145,11 +1163,11 @@ function startTutorial() {
   selectedTutorialCell = null;
 
   if (tutorialOverlay) {
-    tutorialOverlay.classList.remove("hidden");
+    tutorialOverlay.classList.add("active");
   }
 
   if (tutorialCompleteOverlay) {
-    tutorialCompleteOverlay.classList.add("hidden");
+    tutorialCompleteOverlay.classList.remove("active");
   }
 
   showTutorialStep();
@@ -1161,11 +1179,11 @@ function finishTutorial() {
   state.tutorialDone = true;
 
   if (tutorialOverlay) {
-    tutorialOverlay.classList.add("hidden");
+    tutorialOverlay.classList.remove("active");
   }
 
   if (tutorialCompleteOverlay) {
-    tutorialCompleteOverlay.classList.remove("hidden");
+    tutorialCompleteOverlay.classList.add("active");
   }
 
   saveState();
@@ -1297,11 +1315,6 @@ setInterval(() => {
 ========================================= */
 
 document.title = "Приключение Lo";
-
-const gameTitle = document.querySelector(".game-title");
-if (gameTitle) {
-  gameTitle.textContent = "Приключение Lo";
-}
 
 // Не блокируем игру обучением при запуске
 tutorialMode = false;

@@ -1967,3 +1967,33 @@ body[data-world="9"] {
   border-radius: 4px;
 }
 #gameNicknamePanel { margin-top: 12px; }
+
+
+/* Visibility utility used by the nickname editor. */
+.hidden { display: none !important; }
+
+/* Medium avatar size on all screen widths. */
+.profile-avatar-column {
+  flex: 0 0 84px !important;
+  width: 84px !important;
+}
+.profile-identity .profile-avatar {
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  min-height: 72px !important;
+  max-height: 72px !important;
+}
+.profile-identity .avatar-change-button {
+  width: 78px !important;
+  font-size: 10px !important;
+}
+@media (max-width: 360px) {
+  .profile-avatar-column { flex-basis: 84px !important; width: 84px !important; }
+  .profile-identity .profile-avatar {
+    width: 72px !important; height: 72px !important;
+    min-width: 72px !important; max-width: 72px !important;
+    min-height: 72px !important; max-height: 72px !important;
+  }
+}

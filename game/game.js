@@ -1340,7 +1340,8 @@ function createItemVisual(itemId, className = "item-icon") {
     const art = document.createElement("span");
     art.className = className + " item-atlas-icon";
     art.style.backgroundImage = 'url("assets/items-row-' + row + '.png")';
-    art.style.backgroundSize = "1120% 100%";
+    art.style.backgroundSize = "1000% 100%";
+    art.style.clipPath = "inset(3% 3% 3% 3%)";
     art.style.backgroundPosition = (column * 100 / 9) + "% 0";
     art.style.backgroundRepeat = "no-repeat";
     art.setAttribute("role", "img");

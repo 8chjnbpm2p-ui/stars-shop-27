@@ -1323,19 +1323,21 @@ function createItemVisual(itemId, className = "item-icon") {
   else if (/tree|bark|wood|branch|seed/.test(id)) art = '<path d="M24 27Q34 17 47 25Q62 14 76 27L78 70Q64 84 50 74Q34 85 22 70Z" fill="url(#wood)" stroke="#e9d6b3" stroke-width="3"/><path d="M30 33Q43 43 34 65M49 27Q60 45 51 72M66 31Q57 47 69 64" fill="none" stroke="#fff0ce" stroke-opacity=".5" stroke-width="3"/>';
   else art = '<path d="M50 9 76 29 84 61 57 88 25 75 14 43 30 19Z" fill="url(#crystal)" stroke="#effaff" stroke-width="3"/><path d="M50 9V88M14 43 84 61M30 19 57 88" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>';
 
+  const uid = "item-" + id.replace(/[^a-zA-Z0-9_-]/g, "-");
+  art = art.replace(/url\\(#([a-z]+)\\)/g, "url(#" + uid + "-$1)");
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 100 100");
   svg.setAttribute("class", className);
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", items[itemId]?.name || "Игровой предмет");
   svg.innerHTML = '<defs>' +
-    '<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".48" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="crystal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".52" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".6" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '" stop-opacity=".9"/><stop offset="1" stop-color="' + mid + '" stop-opacity=".95"/></linearGradient>' +
-    '<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0c9"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
-    '<linearGradient id="fire" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".55" stop-color="' + hi + '"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
-    '<linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9ad76"/><stop offset="1" stop-color="#65452e"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".48" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-crystal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".52" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-cloth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".6" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '" stop-opacity=".9"/><stop offset="1" stop-color="' + mid + '" stop-opacity=".95"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0c9"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-fire" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".55" stop-color="' + hi + '"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
+    '<linearGradient id="item-PLACEHOLDER-wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9ad76"/><stop offset="1" stop-color="#65452e"/></linearGradient>' +
     '</defs><ellipse cx="51" cy="89" rx="25" ry="4" fill="#050914" opacity=".25"/>' + art;
   return svg;
 }

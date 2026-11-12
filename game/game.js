@@ -192,7 +192,7 @@ function ensureUpgradeItem(itemId) {
     if (!items[rootId]) return;
     const root = items[rootId];
     items[itemId] = {
-      name: (evolutionNames[tier] || "Вознесённая") + " " + root.name,
+      name: root.name + " · " + (evolutionNames[tier] || "Вознесённая"),
       icon: root.icon + (evolutionMarks[tier] || "✧"),
       baseItemId: root.baseItemId || rootId,
       upgradeLevel: 0,

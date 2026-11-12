@@ -1373,7 +1373,8 @@ body[data-world="7"] { --world-a:#a5b5ff; --world-b:#6253c7; --world-c:#211d56; 
 body[data-world="8"] { --world-a:#ff866e; --world-b:#a63b3c; --world-c:#421a24; --world-panel:#3a202b; --world-edge:#ffab8b; --world-halo:#fa6d61; }
 body[data-world="9"] { --world-a:#e7ca72; --world-b:#96733a; --world-c:#3d321c; --world-panel:#382f20; --world-edge:#f4dfa0; --world-halo:#d9b85e; }
 body[data-world] {
-  background: radial-gradient(ellipse at 50% -8%, color-mix(in srgb, var(--world-halo) 34%, transparent) 0%, transparent 52%), linear-gradient(180deg, var(--world-c), #0d0a17 66%);
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--world-halo) 48%, transparent) 0%, transparent 58%), linear-gradient(180deg, var(--world-c) 0%, color-mix(in srgb, var(--world-c) 62%, #090b12) 58%, #090b12 100%) !important;
+  background-attachment: fixed;
 }
 body[data-world] .game-title { text-shadow: 0 0 24px color-mix(in srgb, var(--world-halo) 60%, transparent); }
 body[data-world] .nav-button.active { background: linear-gradient(135deg, var(--world-a), var(--world-b)); border-color: var(--world-edge); box-shadow: 0 6px 20px color-mix(in srgb, var(--world-halo) 34%, transparent); }
@@ -1386,7 +1387,7 @@ body[data-world] .anti-summon-button { border-color: color-mix(in srgb, var(--wo
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 190px;
+  min-height: 145px;
   margin: 0 0 15px;
   padding: 22px 19px 18px;
   border: 1px solid var(--world-edge, #56e0cf);
@@ -1407,6 +1408,7 @@ body[data-world] .anti-summon-button { border-color: color-mix(in srgb, var(--wo
   box-shadow: 0 0 0 18px color-mix(in srgb, var(--world-edge, #56e0cf) 8%, transparent), 0 0 0 40px color-mix(in srgb, var(--world-edge, #56e0cf) 6%, transparent);
 }
 .lobby-banner-content { position: relative; z-index: 1; max-width: 84%; }
+.lobby-banner p, .lobby-eyebrow { display: none !important; }
 .lobby-eyebrow { display: block; margin-bottom: 8px; color: color-mix(in srgb, var(--world-edge, #56e0cf) 82%, white); font-size: 9px; font-weight: 900; letter-spacing: 1.4px; }
 .lobby-banner h2 { margin: 0 0 8px; color: #fff; font-family: Georgia, serif; font-size: clamp(23px, 6vw, 30px); line-height: 1.08; text-shadow: 0 3px 16px #0008; }
 .lobby-banner p { margin: 0 0 14px; color: #f1edf5; font-size: 12px; line-height: 1.45; }

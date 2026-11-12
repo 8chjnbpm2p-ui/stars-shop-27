@@ -184,7 +184,7 @@ const evolutionMarks = ["", "✧", "♛", "♜", "✺", "☼"];
 function ensureUpgradeItem(itemId) {
   if (!itemId || items[itemId]) return;
 
-  const evolvedMatch = itemId.match(/^evolved_(\\d+)_(.+)$/);
+  const evolvedMatch = itemId.match(/^evolved_(\d+)_(.+)$/);
   if (evolvedMatch) {
     const tier = Number(evolvedMatch[1]);
     const rootId = evolvedMatch[2];
@@ -565,6 +565,11 @@ const randomItems = [
 ];
 
 function getRandomSummonItem() {
+  // Пока на поле меньше двух ледяных чешуек, призыв гарантирует недостающие.
+  // Это позволяет восстановить стартовую цепочку ключа даже в старом сохранении.
+  const iceScaleCount = state.board.filter(id => id === "ice_scale").length;
+  if (iceScaleCount < 2) return "ice_scale";
+
   const existing = randomItems.filter(id => state.board.includes(id));
 
   if (existing.length && Math.random() < 0.75) {

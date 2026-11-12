@@ -150,6 +150,79 @@ const items = {
   fire_emblem: {
     name: "Печать огненного полубога",
     icon: "♨️"
+  },
+
+  broken_persik: {
+    name: "Неактивный модуль П.Е.Р.С.И.К.",
+    icon: "🛰️"
+  },
+  power_cell: {
+    name: "Аккумулятор высокой ёмкости",
+    icon: "🔋"
+  },
+  persik_prime: {
+    name: "Активированный модуль П.Е.Р.С.И.К.",
+    icon: "🤖"
+  },
+  identity_chip: {
+    name: "Фрагмент цифрового сертификата",
+    icon: "💳"
+  },
+  forged_document: {
+    name: "Поддельные документы",
+    icon: "📄"
+  },
+  alt_city_pass: {
+    name: "Сертификат Альт-Сити",
+    icon: "🪪"
+  },
+  carbon_shard: {
+    name: "Необогащённый углерод",
+    icon: "⚫"
+  },
+  copper_circuit: {
+    name: "Медная микросхема",
+    icon: "🔌"
+  },
+  enriched_carbon: {
+    name: "Обогащённый углерод",
+    icon: "⬛"
+  },
+  jammer_core: {
+    name: "Основа глушилки",
+    icon: "📡"
+  },
+  stealth_jammer: {
+    name: "Усиленная глушилка",
+    icon: "📶"
+  },
+  archive_key: {
+    name: "Ключ доступа к архиву",
+    icon: "🗝️"
+  },
+  tower_pass: {
+    name: "Пропуск Башни Света",
+    icon: "🏙️"
+  },
+  memory_fragment: {
+    name: "Фрагмент памяти Райи",
+    icon: "🧩"
+  },
+  raya_memory: {
+    name: "Восстановленный блок памяти Райи",
+    icon: "💠"
+  },
+  imperial_cipher: {
+    name: "Шифр Империи",
+    icon: "🔐"
+  },
+  rehoboam_fragment: {
+    name: "Фрагмент ядра Rehoboam",
+    icon: "🖥️"
+  },
+  jdh_cipher: {
+    name: "Зашифрованное послание JDH",
+    icon: "📨"
   }
 };
 
@@ -181,7 +254,16 @@ const recipes = {
   [makePair("tree_bark", "dark_feather")]: "order_core",
   [makePair("order_core", "stone_symbol")]: "order_sign",
   [makePair("strange_glass", "weak_energy")]: "fire_core",
-  [makePair("fire_core", "magic_essence")]: "fire_emblem"
+  [makePair("fire_core", "magic_essence")]: "fire_emblem",
+
+  [makePair("broken_persik", "power_cell")]: "persik_prime",
+  [makePair("identity_chip", "forged_document")]: "alt_city_pass",
+  [makePair("carbon_shard", "copper_circuit")]: "enriched_carbon",
+  [makePair("enriched_carbon", "power_cell")]: "jammer_core",
+  [makePair("jammer_core", "alt_city_pass")]: "stealth_jammer",
+  [makePair("alt_city_pass", "archive_key")]: "tower_pass",
+  [makePair("memory_fragment", "persik_prime")]: "raya_memory",
+  [makePair("raya_memory", "rehoboam_fragment")]: "jdh_cipher"
 };
 
 /* =========================================
@@ -398,6 +480,89 @@ const questData = [
     target: "order_sign",
     rewardSkint: 120,
     rewardAnti: 4
+  },
+  {
+    id: "perfectRayaActivationQuest",
+    world: 3,
+    title: "Пробуждение П.Е.Р.С.И.К.",
+    character: "Райя-Прайм",
+    portrait: "https://images.hiwaifu.com/uploads/Api/robot_avatar/202501/8d98645505c931ccd27e9ceacb0b3729.webp",
+    description: "Ты очнулся в незнакомом мире, а рядом обнаружился неактивный модуль. Я — Райя-Прайм. Найди аккумулятор и активируй П.Е.Р.С.И.К. Нам нужно понять, почему система выбрала именно тебя.",
+    target: "persik_prime",
+    rewardSkint: 60,
+    rewardAnti: 2
+  },
+  {
+    id: "perfectKateIdentityQuest",
+    world: 3,
+    requires: "perfectRayaActivationQuest",
+    title: "Личность под вопросом",
+    character: "Кейт",
+    portrait: "https://cdn.ibispaint.com/movie/855/667/855667098/image855667098.png",
+    description: "Я — RATARETO. Империя не оставляет в покое тех, у кого нет правильных документов. Собери цифровой сертификат, чтобы пройти проверку и попасть в Альт-Сити. И не верь всему, что говорят по громкоговорителям.",
+    target: "alt_city_pass",
+    rewardSkint: 75,
+    rewardAnti: 2
+  },
+  {
+    id: "perfectRadanJammerQuest",
+    world: 3,
+    requires: "perfectKateIdentityQuest",
+    title: "Доверие строится делом",
+    character: "Радан",
+    portrait: "https://pbs.twimg.com/media/Fdbwh_5WAAAJW7g?format=jpg&name=4096x4096",
+    description: "Не думай, что я тебе уже доверяю. Помоги собрать усиленную глушилку: с ней мы сможем безопаснее работать с имперскими системами. И да, не трогай мои инструменты без спроса.",
+    target: "stealth_jammer",
+    rewardSkint: 90,
+    rewardAnti: 3
+  },
+  {
+    id: "perfectKateTowerQuest",
+    world: 3,
+    requires: "perfectRadanJammerQuest",
+    title: "Путь к Башне Света",
+    character: "Кейт",
+    portrait: "https://cdn.ibispaint.com/movie/855/667/855667098/image855667098.png",
+    description: "В центре Альт-Сити находится Башня Света. Нам нужен доступ к её архивам. Подготовь пропуск и будь готов: если нас заметят, обратного пути может не быть.",
+    target: "tower_pass",
+    rewardSkint: 105,
+    rewardAnti: 3
+  },
+  {
+    id: "perfectCalebWarningQuest",
+    world: 3,
+    requires: "perfectKateTowerQuest",
+    title: "Предупреждение главного секретаря",
+    character: "Калеб",
+    portrait: "https://i.pinimg.com/736x/56/1a/cf/561acf2e99081a96f8a5a96db493c9ca.jpg",
+    description: "Ты слишком близко подобрался к правде. Империя следит за каждым шагом, а стирание личности — не пустая угроза. Я не обязан тебе помогать… но кое-что в этой системе давно пошло не так. Добудь шифр, который я оставил.",
+    target: "imperial_cipher",
+    rewardSkint: 120,
+    rewardAnti: 4
+  },
+  {
+    id: "perfectRayaMemoryQuest",
+    world: 3,
+    requires: "perfectCalebWarningQuest",
+    title: "Память, которой не должно быть",
+    character: "Райя-Прайм",
+    portrait: "https://images.hiwaifu.com/uploads/Api/robot_avatar/202501/8d98645505c931ccd27e9ceacb0b3729.webp",
+    description: "В архиве обнаружились данные, связанные с моим прошлым. Мне нужно восстановить повреждённый блок памяти. Возможно, я знаю об этой системе гораздо больше, чем помню.",
+    target: "raya_memory",
+    rewardSkint: 140,
+    rewardAnti: 4
+  },
+  {
+    id: "perfectJdhSignalQuest",
+    world: 3,
+    requires: "perfectRayaMemoryQuest",
+    title: "Сигнал из глубины системы",
+    character: "JDH",
+    portrait: "https://i.pinimg.com/736x/40/d3/79/40d379735827e89f6d2996a2a6016f30.jpg",
+    description: "Это JDH. Ты нашёл след, который должен был оставаться скрытым. Соедини восстановленные данные Райи с фрагментом ядра Rehoboam. Тогда станет ясно, кто стоял за технологиями этого мира и почему их создали.",
+    target: "jdh_cipher",
+    rewardSkint: 180,
+    rewardAnti: 5
   }
 ];
 
@@ -487,10 +652,19 @@ function loadState() {
       "stone_fragment", "glowing_dust", "metal_plate", "tablet_core", "tablet",
       "dense_cloth", "beast_leather", "stable_stone", "cloak_core", "cloak"
     ]);
+    const secondWorldItems = new Set([
+      "strange_glass", "copper_wire", "weak_energy", "anomaly_core", "anomaly_stabilizer",
+      "amulet_fragment", "silver_thread", "magic_essence", "amulet_core", "eola_amulet",
+      "tree_bark", "dark_feather", "stone_symbol", "order_core", "order_sign",
+      "fire_core", "fire_emblem"
+    ]);
     for (let i = 0; i < BOARD_SIZE; i++) {
       if (board[i]) ensureUpgradeItem(board[i]);
       const rootId = items[board[i]]?.baseItemId || board[i];
-      if (board[i] && (!items[board[i]] || (savedWorld >= 2 && firstWorldItems.has(rootId)))) {
+      const belongsToPreviousWorld =
+        (savedWorld >= 2 && firstWorldItems.has(rootId)) ||
+        (savedWorld >= 3 && secondWorldItems.has(rootId));
+      if (board[i] && (!items[board[i]] || belongsToPreviousWorld)) {
         board[i] = null;
         boardValues[i] = 0;
       }
@@ -657,6 +831,18 @@ const worldSummonDrops = {
     { id: "tree_bark", weight: 10 },
     { id: "dark_feather", weight: 5 },
     { id: "stone_symbol", weight: 5 }
+  ],
+  3: [
+    { id: "broken_persik", weight: 15 },
+    { id: "power_cell", weight: 12 },
+    { id: "identity_chip", weight: 12 },
+    { id: "forged_document", weight: 10 },
+    { id: "carbon_shard", weight: 12 },
+    { id: "copper_circuit", weight: 12 },
+    { id: "archive_key", weight: 10 },
+    { id: "memory_fragment", weight: 8 },
+    { id: "imperial_cipher", weight: 5 },
+    { id: "rehoboam_fragment", weight: 4 }
   ]
 };
 
@@ -1290,7 +1476,8 @@ function renderQuests() {
   questListElement.innerHTML = "";
 
   const availableQuests = questData.filter(quest =>
-    Number(quest.world || 1) === Number(state.currentWorld || 1)
+    Number(quest.world || 1) === Number(state.currentWorld || 1) &&
+    (!quest.requires || state.completedQuests.includes(quest.requires))
   );
   const orderedQuests = [...availableQuests].sort((a, b) => {
     return Number(state.completedQuests.includes(a.id)) -
@@ -1440,6 +1627,28 @@ function createQuestGuide(quest) {
     order_sign: [
       ["tree_bark", "dark_feather", "order_core"],
       ["order_core", "stone_symbol", "order_sign"]
+    ],
+    persik_prime: [
+      ["broken_persik", "power_cell", "persik_prime"]
+    ],
+    alt_city_pass: [
+      ["identity_chip", "forged_document", "alt_city_pass"]
+    ],
+    stealth_jammer: [
+      ["carbon_shard", "copper_circuit", "enriched_carbon"],
+      ["enriched_carbon", "power_cell", "jammer_core"],
+      ["jammer_core", "alt_city_pass", "stealth_jammer"]
+    ],
+    tower_pass: [
+      ["identity_chip", "forged_document", "alt_city_pass"],
+      ["alt_city_pass", "archive_key", "tower_pass"]
+    ],
+    raya_memory: [
+      ["memory_fragment", "persik_prime", "raya_memory"]
+    ],
+    jdh_cipher: [
+      ["memory_fragment", "persik_prime", "raya_memory"],
+      ["raya_memory", "rehoboam_fragment", "jdh_cipher"]
     ]
   };
 

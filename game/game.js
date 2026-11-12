@@ -1127,13 +1127,18 @@ function renderQuests() {
   if (!questListElement) return;
   questListElement.innerHTML = "";
 
-  questData.forEach(quest => {
+  const orderedQuests = [...questData].sort((a, b) => {
+    return Number(state.completedQuests.includes(a.id)) -
+      Number(state.completedQuests.includes(b.id));
+  });
+
+  orderedQuests.forEach(quest => {
     const completed = state.completedQuests.includes(quest.id);
     const accepted = state.acceptedQuests.includes(quest.id);
     const hasTarget = state.board.includes(quest.target);
 
     const card = document.createElement("article");
-    card.className = "quest-card";
+    card.className = completed ? "quest-card quest-card-completed" : "quest-card";
 
     const person = document.createElement("div");
     person.className = "quest-person";
@@ -1201,6 +1206,11 @@ function renderQuests() {
 }
 
 function completeQuest(quest) {
+  if (
+    state.completedQuests.includes(quest.id) ||
+    !state.acceptedQuests.includes(quest.id)
+  ) return;
+
   const index = state.board.indexOf(quest.target);
 
   if (index === -1) {
@@ -1208,9 +1218,9 @@ function completeQuest(quest) {
     return;
   }
 
+  // Сдаём один точный предмет, начисляем награду один раз.
   state.board[index] = null;
   state.boardValues[index] = 0;
-
   state.completedQuests.push(quest.id);
   state.skint += quest.rewardSkint;
   state.antiSkint += quest.rewardAnti;
@@ -1218,7 +1228,7 @@ function completeQuest(quest) {
   saveState();
   renderAll();
 
-  showMessage("Задание выполнено! Награда получена.");
+  showMessage("Предмет сдан! Награда получена.");
 }
 
 /* =========================================

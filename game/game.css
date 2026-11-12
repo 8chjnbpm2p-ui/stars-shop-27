@@ -1764,3 +1764,81 @@ body[data-world="9"] {
   .game-nickname-row button,
   .game-friend-search-row button { width: 100%; }
 }
+
+
+/* Новый горизонтальный блок профиля: аватар слева, данные справа */
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 5px 2px 18px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(190, 151, 255, .2);
+}
+.profile-avatar-column {
+  flex: 0 0 104px;
+  width: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profile-identity .profile-avatar {
+  width: 96px !important;
+  height: 96px !important;
+  min-width: 96px;
+  max-width: 96px;
+  min-height: 96px;
+  max-height: 96px;
+  margin: 0 0 9px;
+}
+.profile-identity .avatar-change-button {
+  width: 100%;
+  margin: 0;
+  padding: 7px 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.profile-identity-info {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+.profile-type-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 5px 9px;
+  border: 1px solid rgba(190, 151, 255, .3);
+  border-radius: 999px;
+  color: #cdb2ff;
+  background: rgba(145, 99, 220, .13);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.1px;
+}
+.profile-identity-info #profileName {
+  margin: 0 0 5px;
+  text-align: left;
+  font-size: 21px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.profile-identity-info #profileStatus {
+  margin: 0 0 7px;
+  text-align: left;
+}
+.profile-identity-info .avatar-caption {
+  margin: 0;
+  text-align: left;
+  font-size: 11px;
+}
+@media (max-width: 360px) {
+  .profile-identity { gap: 12px; }
+  .profile-avatar-column { flex-basis: 88px; width: 88px; }
+  .profile-identity .profile-avatar {
+    width: 82px !important; height: 82px !important;
+    min-width: 82px; max-width: 82px;
+    min-height: 82px; max-height: 82px;
+  }
+  .profile-identity-info #profileName { font-size: 18px; }
+  .profile-identity .avatar-change-button { font-size: 10px; }
+}

@@ -1276,7 +1276,7 @@ document.querySelectorAll(".world-card").forEach(card => {
     state.skint = 0;
     state.lastSkintUpdate = Date.now();
     saveState();
-    renderAll();
+    openPage("homePage");
     showMessage("Переход в мир: " + worlds[number - 1].name + ". Скинты сброшены, Анти-скинты сохранены.");
   });
 });

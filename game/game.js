@@ -146,6 +146,28 @@ const items = {
 };
 
 /* =========================================
+   ИЗОБРАЖЕНИЯ ПРЕДМЕТОВ
+========================================= */
+
+// Используем отдельные SVG-иллюстрации Twemoji вместо системных эмодзи.
+// Для улучшенных предметов берём изображение исходного предмета.
+function getItemImageUrl(itemId) {
+  const item = items[itemId];
+  if (!item) return "";
+
+  const rootId = item.baseItemId || itemId;
+  const rootItem = items[rootId] || item;
+  const emoji = (rootItem.icon || item.icon || "").replace(/\\uFE0F/g, "");
+  const codepoints = Array.from(emoji)
+    .map(character => character.codePointAt(0).toString(16))
+    .join("-");
+
+  return codepoints
+    ? "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/" + codepoints + ".svg"
+    : "";
+}
+
+/* =========================================
    РЕЦЕПТЫ ОБЪЕДИНЕНИЯ
 ========================================= */
 
@@ -629,9 +651,17 @@ function renderBoard() {
     cell.dataset.index = index;
 
     if (itemId && items[itemId]) {
-      const icon = document.createElement("span");
+      const icon = document.createElement("img");
       icon.className = "item-icon";
-      icon.textContent = items[itemId].icon;
+      icon.src = getItemImageUrl(itemId);
+      icon.alt = items[itemId].name;
+      icon.draggable = false;
+      icon.onerror = () => {
+        const fallback = document.createElement("span");
+        fallback.className = "item-icon item-icon-fallback";
+        fallback.textContent = items[itemId].icon;
+        icon.replaceWith(fallback);
+      };
       cell.appendChild(icon);
       cell.title = items[itemId].name;
     } else {
@@ -754,7 +784,17 @@ function openSellWindow(index) {
   const price = Math.floor(value * 0.5);
 
   if (sellItemIcon) {
-    sellItemIcon.textContent = items[itemId].icon;
+    sellItemIcon.innerHTML = "";
+    const image = document.createElement("img");
+    image.src = getItemImageUrl(itemId);
+    image.alt = items[itemId].name;
+    image.onerror = () => {
+      const fallback = document.createElement("span");
+      fallback.className = "item-icon-fallback";
+      fallback.textContent = items[itemId].icon;
+      image.replaceWith(fallback);
+    };
+    sellItemIcon.appendChild(image);
   }
 
   if (sellItemName) {

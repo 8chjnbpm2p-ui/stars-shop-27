@@ -1586,9 +1586,15 @@ function appendFriendProfile(container, player, actionLabel, onAction) {
   const name = document.createElement("strong");
   name.textContent = player.nickname;
   const progress = document.createElement("span");
-  const worldName = worlds[(Number(player.current_world) || 1) - 1]?.name || worlds[0].name;
-  progress.textContent = "Мир " + (player.current_world || 1) + " · " + worldName +
-    " · Квестов: " + (player.completed_quests || 0);
+  if (player.current_world !== undefined) {
+    const worldNumber = Number(player.current_world) || 1;
+    const worldName = worlds[worldNumber - 1]?.name || worlds[0].name;
+    progress.textContent = "Мир " + worldNumber + " · " + worldName +
+      " · Квестов: " + (player.completed_quests || 0) +
+      " · Объединений: " + (player.merged_count || 0);
+  } else {
+    progress.textContent = "После добавления будет виден прогресс игрока";
+  }
   info.append(name, progress);
   card.appendChild(info);
   if (actionLabel && onAction) {

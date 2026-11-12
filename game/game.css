@@ -1427,3 +1427,49 @@ body[data-world] .anti-summon-button { border-color: color-mix(in srgb, var(--wo
 .lobby-world-button span { font-size: 15px; }
 .lobby-world-number { position: absolute; right: 13px; bottom: 13px; color: #ffffffa8; font-size: 10px; font-weight: 900; letter-spacing: 1.2px; }
 @media (max-width: 380px) { .lobby-banner { min-height: 180px; padding: 18px 15px; } .lobby-banner-content { max-width: 88%; } }
+
+
+/* FINAL OVERRIDE: убираем старый баннер и гарантируем фон текущего мира. */
+.lobby-banner,
+#lobbyBanner,
+[class~="lobby-banner"] {
+  display: none !important;
+}
+.lobby-banner::before,
+.lobby-banner::after {
+  content: none !important;
+  display: none !important;
+}
+html,
+body {
+  background-color: var(--bg) !important;
+}
+body[data-world="1"] {
+  background:
+    radial-gradient(ellipse at 50% 0%, #14535a 0%, transparent 55%),
+    linear-gradient(180deg, #071f25 0%, #06171d 100%) !important;
+}
+body[data-world="2"] {
+  background: radial-gradient(ellipse at 50% 0%, #6a243b 0%, transparent 55%), linear-gradient(180deg, #240d1c, #160914) !important;
+}
+body[data-world="3"] {
+  background: radial-gradient(ellipse at 50% 0%, #286b4d 0%, transparent 55%), linear-gradient(180deg, #0c241d, #071812) !important;
+}
+body[data-world="4"] {
+  background: radial-gradient(ellipse at 50% 0%, #245b91 0%, transparent 55%), linear-gradient(180deg, #091c32, #061321) !important;
+}
+body[data-world="5"] {
+  background: radial-gradient(ellipse at 50% 0%, #8c451d 0%, transparent 55%), linear-gradient(180deg, #2b160b, #1b0d07) !important;
+}
+body[data-world="6"] {
+  background: radial-gradient(ellipse at 50% 0%, #78366d 0%, transparent 55%), linear-gradient(180deg, #260f29, #17091a) !important;
+}
+body[data-world="7"] {
+  background: radial-gradient(ellipse at 50% 0%, #3d4289 0%, transparent 55%), linear-gradient(180deg, #141735, #0b0d20) !important;
+}
+body[data-world="8"] {
+  background: radial-gradient(ellipse at 50% 0%, #793039 0%, transparent 55%), linear-gradient(180deg, #291116, #190a0e) !important;
+}
+body[data-world="9"] {
+  background: radial-gradient(ellipse at 50% 0%, #74602f 0%, transparent 55%), linear-gradient(180deg, #282112, #171208) !important;
+}

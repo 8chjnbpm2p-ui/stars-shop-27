@@ -872,3 +872,14 @@ button:focus-visible {
   margin-top: 0;
   text-align: left;
 }
+
+
+/* Во время перетаскивания фиксируем страницу, чтобы экран не уезжал */
+html.item-drag-active,
+html.item-drag-active body {
+  overscroll-behavior: none;
+  touch-action: none;
+}
+html.item-drag-active body {
+  overflow: hidden !important;
+}

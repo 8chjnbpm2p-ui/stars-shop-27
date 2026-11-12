@@ -1393,6 +1393,10 @@ function createQuestGuide(quest) {
     anomaly_stabilizer: [
       ["strange_glass", "copper_wire", "anomaly_core"],
       ["anomaly_core", "weak_energy", "anomaly_stabilizer"]
+    ],
+    order_sign: [
+      ["tree_bark", "dark_feather", "order_core"],
+      ["order_core", "stone_symbol", "order_sign"]
     ]
   };
 

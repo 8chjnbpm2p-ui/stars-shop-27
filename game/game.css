@@ -1115,3 +1115,30 @@ html.item-drag-active body {
   .board-wrapper { padding: 10px; }
   .board { gap: 8px; grid-auto-rows: clamp(96px, 27vw, 122px); }
 }
+
+
+/* Возвращаем постоянное игровое поле 3×3 */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  align-content: stretch;
+}
+.board-wrapper { display: block; }
+.board-cell.empty {
+  display: flex;
+  opacity: .45;
+  border: 1px dashed #65547f;
+  background: rgba(255,255,255,.035);
+}
+.board-cell.empty::after {
+  content: "+";
+  color: #b9a8d2;
+  opacity: .45;
+  font-size: 25px;
+  font-weight: 300;
+}
+.item-drag-ghost { pointer-events: none !important; }

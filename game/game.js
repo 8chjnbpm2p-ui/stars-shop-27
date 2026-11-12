@@ -1289,6 +1289,35 @@ function updateSummonButtons() {
   }
 }
 
+
+/* SVG-предметы вместо эмодзи: единый иллюстрированный стиль для всех миров. */
+function createItemVisual(itemId, className = "item-icon") {
+  const id=String(itemId||"");
+  let p=["#d9c8ff","#7656a8","#302448"];
+  if(/time_|echo|paradox|prison/.test(id))p=["#9be7ff","#386cba","#182a58"];
+  else if(/sun|flame|candle|oath|scarab/.test(id))p=["#ffe69a","#d47728","#71351e"];
+  else if(/cosmic|star|origin|heart/.test(id))p=["#e1b7ff","#7951cb","#28215d"];
+  else if(/bunker|filter|branch|mother/.test(id))p=["#b7e5bd","#477e61","#203d3b"];
+  else if(/workshop|mk47|gear|blueprint/.test(id))p=["#d5e1ee","#657d99","#27354b"];
+  else if(/persik|campus|automaton|jdh|mask|chip/.test(id))p=["#a6f2e6","#368b9c","#183b5a"];
+  const hi=p[0],mid=p[1],dark=p[2];
+  let shape='<path d="M50 8 82 34 69 75 50 92 29 73 17 34Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M50 8V92M17 34 82 34M29 73 69 75" stroke="#fff" stroke-opacity=".65" stroke-width="2"/>';
+  if(/persik|automaton|mk47|robot|module/.test(id)) shape='<path d="M50 16 65 31 84 27 76 49 84 71 64 66 50 83 36 66 16 71 24 49 16 27 36 31Z" fill="url(#g)" stroke="#eaffff" stroke-width="3"/><circle cx="50" cy="49" r="15" fill="#132e48" stroke="#b8fff3" stroke-width="4"/><circle cx="50" cy="49" r="6" fill="#9bfff0"/>';
+  else if(/hourglass|time_|memory_sand|echo_thread/.test(id)) shape='<path d="M28 12H72M28 88H72M34 15Q34 34 50 49Q66 34 66 15M34 85Q34 66 50 51Q66 66 66 85" fill="none" stroke="url(#g)" stroke-width="9"/><path d="M39 27Q50 42 61 27L50 47Z M39 73Q50 58 61 73L50 80Z" fill="#baf4ff"/>';
+  else if(/gear|motor|spring|servo/.test(id)) shape='<path d="M42 7H58L62 21 75 27 88 22 94 39 82 49 84 62 94 72 83 88 68 82 58 91H42L36 78 23 74 11 82 5 65 17 54 15 41 6 31 17 15 32 21Z" fill="url(#g)" stroke="#eef6ff" stroke-width="3"/><circle cx="50" cy="50" r="19" fill="#1b2944" stroke="#d3e9ff" stroke-width="4"/><circle cx="50" cy="50" r="7" fill="'+hi+'"/>';
+  else if(/mask|jdh/.test(id)) shape='<path d="M17 22Q50 6 83 22L76 66Q64 86 50 91Q36 86 24 66Z" fill="url(#g)" stroke="#eee5ff" stroke-width="3"/><path d="M28 43 44 49 36 59ZM72 43 56 49 64 59Z" fill="#17213d"/><path d="M41 72Q50 78 59 72" fill="none" stroke="#fff" stroke-width="3"/>';
+  else if(/sun|flame|candle|fire|thirteen/.test(id)) shape='<circle cx="50" cy="50" r="24" fill="url(#g)" stroke="#fff1bd" stroke-width="3"/><circle cx="50" cy="50" r="10" fill="#fff1b1"/><path d="M50 5V17M50 83V95M5 50H17M83 50H95M18 18 27 27M73 73 82 82M82 18 73 27M27 73 18 82" stroke="#ffe8a2" stroke-width="6"/>';
+  else if(/book|diary|journal|scroll|blueprint|tape|film|archive/.test(id)) shape='<path d="M14 20Q33 10 50 24Q67 10 86 20V82Q67 70 50 85Q33 70 14 82Z" fill="url(#g)" stroke="#f1e5ff" stroke-width="3"/><path d="M50 24V84M24 38H42M24 51H42M58 38H76M58 51H76" stroke="#fff" stroke-width="3"/>';
+  else if(/key|pass|certificate|document|cipher|code/.test(id)) shape='<path d="M24 10H61L78 28V89H24Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M61 10V28H78M35 44H67M35 57H67M35 70H58" stroke="#fff4d6" stroke-width="4"/>';
+  else if(/vial|blood|oil|bottle|essence/.test(id)) shape='<path d="M39 10H61V27L71 40V79Q71 88 61 88H39Q29 88 29 79V40L39 27Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M34 58H66V77Q66 82 60 82H40Q34 82 34 77Z" fill="#ff7a9d"/>';
+  else if(/seal|sign|emblem|oath|symbol|rune/.test(id)) shape='<circle cx="50" cy="50" r="36" fill="url(#g)" stroke="#fff0ca" stroke-width="3"/><circle cx="50" cy="50" r="24" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/><path d="M50 25 58 42 75 50 58 58 50 76 42 58 25 50 42 42Z" fill="#fff1bd"/>';
+  else if(/shield|armor|filter|anchor/.test(id)) shape='<path d="M50 8 82 22V49Q77 77 50 92Q23 77 18 49V22Z" fill="url(#g)" stroke="#efffe9" stroke-width="3"/><path d="M50 21V78M29 36H71M34 60 50 73 66 60" fill="none" stroke="#fff" stroke-width="3"/>';
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("class",className);svg.setAttribute("role","img");svg.setAttribute("aria-label",items[itemId]?.name||"Игровой предмет");
+  svg.innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+hi+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="'+dark+'" fill-opacity=".34" stroke="'+hi+'" stroke-opacity=".55" stroke-width="2"/>'+shape;
+  return svg;
+}
+
 /* =========================================
    ОТОБРАЖЕНИЕ ПОЛЯ
 ========================================= */
@@ -1308,11 +1337,7 @@ function renderBoard() {
     cell.dataset.index = index;
 
     if (itemId && items[itemId]) {
-      const icon = document.createElement("span");
-      icon.className = "item-icon";
-      icon.textContent = items[itemId].icon;
-      icon.setAttribute("aria-label", items[itemId].name);
-      cell.appendChild(icon);
+      cell.appendChild(createItemVisual(itemId));
       cell.title = items[itemId].name;
     } else {
       cell.setAttribute("aria-label", "Пустая клетка");
@@ -1434,7 +1459,7 @@ function openSellWindow(index) {
   const price = Math.floor(value * 0.5);
 
   if (sellItemIcon) {
-    sellItemIcon.textContent = items[itemId].icon;
+    sellItemIcon.replaceChildren(createItemVisual(itemId, "sell-item-art"));
   }
 
   if (sellItemName) {
@@ -1649,7 +1674,7 @@ if (boardElement) {
           const sourceIcon = sourceCell.querySelector(".item-icon");
           dragGhost = sourceIcon ? sourceIcon.cloneNode(true) : document.createElement("span");
           dragGhost.className = "item-drag-ghost";
-          if (!sourceIcon) dragGhost.textContent = items[sourceItem].icon;
+          if (!sourceIcon) dragGhost.replaceWith(createItemVisual(sourceItem, "item-drag-ghost"));
           dragGhost.style.width = Math.round(rect.width * 0.76) + "px";
           dragGhost.style.height = Math.round(rect.height * 0.76) + "px";
           dragGhost.style.left = rect.left + "px";

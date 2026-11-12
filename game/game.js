@@ -1511,19 +1511,39 @@ function renderQuests() {
     const person = document.createElement("div");
     person.className = "quest-person";
 
+    const portraitFrame = document.createElement("div");
+    portraitFrame.className = "quest-portrait-frame";
     const portrait = document.createElement("img");
     portrait.className = "quest-portrait";
     portrait.alt = "Портрет персонажа " + quest.character;
     portrait.loading = "lazy";
+    const portraitFallback = document.createElement("span");
+    portraitFallback.className = "quest-portrait-fallback";
+    portraitFallback.textContent = quest.character
+      .split(/[\\s-]+/)
+      .filter(Boolean)
+      .map(part => part[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "✦";
+    portraitFallback.setAttribute("aria-hidden", "true");
+    portraitFrame.append(portrait, portraitFallback);
+
     if (quest.portrait) {
       portrait.src = quest.portrait;
       portrait.onerror = () => {
-        portrait.removeAttribute("src");
-        portrait.classList.add("portrait-fallback");
-        portrait.alt = quest.character;
+        portrait.hidden = true;
+        portraitFallback.hidden = false;
+        portraitFrame.classList.add("quest-portrait-unavailable");
+      };
+      portrait.onload = () => {
+        portrait.hidden = false;
+        portraitFallback.hidden = true;
+        portraitFrame.classList.remove("quest-portrait-unavailable");
       };
     } else {
-      portrait.src = "assets/anti-skint.svg";
+      portrait.hidden = true;
+      portraitFallback.hidden = false;
     }
 
     const giver = document.createElement("div");
@@ -1538,7 +1558,7 @@ function renderQuests() {
     giverName.setAttribute("aria-expanded", "false");
     giverName.setAttribute("aria-label", "Показать, как получить предмет для квеста: " + quest.title);
     giver.append(label, giverName);
-    person.append(portrait, giver);
+    person.append(portraitFrame, giver);
 
     const title = document.createElement("h3");
     title.textContent = quest.title;

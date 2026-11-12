@@ -1567,3 +1567,79 @@ body[data-world="9"] {
   outline: 2px solid #b99ae8;
   outline-offset: 3px;
 }
+
+
+/* Игровой ник и список друзей */
+.game-nickname-panel,
+.game-friends-panel {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid #51406f;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #261d39, #171222);
+}
+.game-nickname-panel label,
+.game-friends-panel h3 {
+  display: block;
+  margin: 0 0 9px;
+  color: #f4eaff;
+  font-weight: 800;
+}
+.game-nickname-row,
+.game-friend-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.game-nickname-row input,
+.game-friend-search-row input {
+  min-width: 0;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #51406f;
+  border-radius: 10px;
+  color: #fff;
+  background: #100d1c;
+  font-size: 14px;
+}
+.game-nickname-row button,
+.game-friend-search-row button,
+.game-friend-card button {
+  padding: 0 12px;
+  border: 1px solid #9a79cb;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #8054c4, #58388d);
+  font-weight: 800;
+}
+.game-nickname-panel small,
+.game-friends-panel > p,
+#gameNicknameStatus,
+#gameFriendsStatus {
+  display: block;
+  margin: 8px 0 0;
+  color: #b9abc9;
+  font-size: 11px;
+  line-height: 1.45;
+}
+#gameNicknameStatus,
+#gameFriendsStatus { overflow-wrap: anywhere; }
+#gameFriendsStatus.error { color: #ff9999; }
+.game-friends-list { display: grid; gap: 8px; margin-top: 12px; }
+.game-friends-list h4 { margin: 9px 0 2px; color: #d8c4f5; }
+.game-friend-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #49385f;
+  border-radius: 11px;
+  background: #21182f;
+}
+.game-friend-info { display: grid; gap: 4px; min-width: 0; }
+.game-friend-info strong { overflow-wrap: anywhere; color: #f4eaff; }
+.game-friend-info span,
+.friend-pending { color: #b9abc9; font-size: 11px; line-height: 1.4; }
+.game-friend-card button { min-height: 36px; flex: 0 0 auto; }
+.friend-search-result { margin-top: 9px; }

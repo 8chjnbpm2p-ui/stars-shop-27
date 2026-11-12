@@ -537,31 +537,25 @@ function updateSummonButtons() {
 
 function renderBoard() {
   if (!boardElement) return;
-
   const board = getCurrentBoard();
-
   boardElement.innerHTML = "";
 
   board.forEach((itemId, index) => {
-    const cell = document.createElement("div");
+    if (!itemId || !items[itemId]) return;
 
-    cell.className = "board-cell";
+    const cell = document.createElement("div");
+    cell.className = "board-cell has-item";
     cell.dataset.index = index;
 
-    if (itemId && items[itemId]) {
-      cell.classList.add("has-item");
-
-      const icon = document.createElement("span");
-      icon.className = "item-icon";
-      icon.textContent = items[itemId].icon;
-
-      cell.appendChild(icon);
-      cell.title = items[itemId].name;
-    }
-
+    const icon = document.createElement("span");
+    icon.className = "item-icon";
+    icon.textContent = items[itemId].icon;
+    cell.appendChild(icon);
+    cell.title = items[itemId].name;
     boardElement.appendChild(cell);
   });
 
+  boardElement.classList.toggle("board-empty", !board.some(Boolean));
   updateSummonButtons();
 }
 
@@ -755,39 +749,34 @@ function mergeItems(sourceIndex, targetIndex) {
     !Number.isInteger(sourceIndex) ||
     !Number.isInteger(targetIndex) ||
     sourceIndex === targetIndex
-  ) {
-    return false;
-  }
+  ) return false;
 
   const board = getCurrentBoard();
-
   if (
-    sourceIndex < 0 ||
-    targetIndex < 0 ||
-    sourceIndex >= board.length ||
-    targetIndex >= board.length
-  ) {
-    return false;
-  }
+    sourceIndex < 0 || targetIndex < 0 ||
+    sourceIndex >= board.length || targetIndex >= board.length
+  ) return false;
 
   const first = board[sourceIndex];
   const second = board[targetIndex];
-
   if (!first || !second) return false;
 
-  let result = recipes[makePair(first, second)];
-
-  // Два одинаковых предмета создают улучшенный предмет
-  if (!result && first === second) {
-    result = getUpgradeId(first);
-  }
-
-  if (!result) {
-    showMessage("Эти предметы нельзя объединить");
+  // Разные предметы не смешиваются — они просто меняются местами.
+  if (first !== second) {
+    if (!tutorialMode) {
+      board[sourceIndex] = second;
+      board[targetIndex] = first;
+      const firstValue = state.boardValues[sourceIndex] || SUMMON_COST;
+      const secondValue = state.boardValues[targetIndex] || SUMMON_COST;
+      state.boardValues[sourceIndex] = secondValue;
+      state.boardValues[targetIndex] = firstValue;
+      saveState();
+      renderBoard();
+    }
     return false;
   }
 
-  // Удаляем исходные предметы и помещаем результат
+  const result = getUpgradeId(first);
   board[sourceIndex] = null;
   board[targetIndex] = result;
 
@@ -798,21 +787,16 @@ function mergeItems(sourceIndex, targetIndex) {
   } else {
     const firstValue = state.boardValues[sourceIndex] || SUMMON_COST;
     const secondValue = state.boardValues[targetIndex] || SUMMON_COST;
-
     state.boardValues[sourceIndex] = 0;
     state.boardValues[targetIndex] = firstValue + secondValue;
-
     state.mergedCount++;
-
     saveState();
     renderQuests();
     renderProfile();
   }
 
   renderBoard();
-
-  showMessage("Получено: " + items[result].name);
-
+  showMessage("Объединено: " + items[result].name);
   return true;
 }
 
@@ -869,31 +853,18 @@ function clearDragVisuals() {
   }
 }
 
+let scrollGesture = false;
+let lastPointerY = 0;
+
 if (boardElement) {
   boardElement.addEventListener("pointerdown", event => {
     const cell = event.target.closest(".board-cell");
     if (!cell) return;
-    const index = Number(cell.dataset.index);
-    const currentBoard = getCurrentBoard();
-    event.preventDefault();
-    dragSource = index;
+    dragSource = Number(cell.dataset.index);
     pointerStart = { x: event.clientX, y: event.clientY };
+    lastPointerY = event.clientY;
     pointerMoved = false;
-    lockPageScroll();
-
-    if (currentBoard[index] && items[currentBoard[index]]) {
-      const rect = cell.getBoundingClientRect();
-      dragOffset = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-      dragGhost = document.createElement("div");
-      dragGhost.className = "item-drag-ghost";
-      dragGhost.textContent = items[currentBoard[index]].icon;
-      dragGhost.style.width = rect.width + "px";
-      dragGhost.style.height = rect.height + "px";
-      dragGhost.style.left = rect.left + "px";
-      dragGhost.style.top = rect.top + "px";
-      document.body.appendChild(dragGhost);
-      cell.classList.add("drag-source");
-    }
+    scrollGesture = false;
     if (boardElement.setPointerCapture && event.pointerId !== undefined) {
       try { boardElement.setPointerCapture(event.pointerId); } catch (_) {}
     }
@@ -901,8 +872,40 @@ if (boardElement) {
 
   boardElement.addEventListener("pointermove", event => {
     if (dragSource === null || !pointerStart) return;
-    const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
-    if (distance > 5) pointerMoved = true;
+    const dx = event.clientX - pointerStart.x;
+    const dy = event.clientY - pointerStart.y;
+    const distance = Math.hypot(dx, dy);
+
+    if (!pointerMoved && distance > 7) {
+      pointerMoved = true;
+      // Вертикальный жест прокручивает страницу, а не таскает предмет.
+      if (Math.abs(dy) > Math.abs(dx) * 1.15) {
+        scrollGesture = true;
+      } else {
+        lockPageScroll();
+        const sourceCell = boardElement.querySelector('[data-index="' + dragSource + '"]');
+        const sourceItem = getCurrentBoard()[dragSource];
+        if (sourceCell && sourceItem && items[sourceItem]) {
+          const rect = sourceCell.getBoundingClientRect();
+          dragOffset = { x: pointerStart.x - rect.left, y: pointerStart.y - rect.top };
+          dragGhost = document.createElement("div");
+          dragGhost.className = "item-drag-ghost";
+          dragGhost.textContent = items[sourceItem].icon;
+          dragGhost.style.width = rect.width + "px";
+          dragGhost.style.height = rect.height + "px";
+          dragGhost.style.left = rect.left + "px";
+          dragGhost.style.top = rect.top + "px";
+          document.body.appendChild(dragGhost);
+          sourceCell.classList.add("drag-source");
+        }
+      }
+    }
+
+    if (scrollGesture) {
+      window.scrollBy(0, lastPointerY - event.clientY);
+      lastPointerY = event.clientY;
+      return;
+    }
     if (!pointerMoved) return;
 
     if (dragGhost) {
@@ -925,7 +928,7 @@ if (boardElement) {
     const sourceIndex = dragSource;
     const targetCell = document.elementFromPoint(event.clientX, event.clientY)?.closest(".board-cell");
 
-    if (pointerMoved && targetCell) {
+    if (pointerMoved && !scrollGesture && targetCell) {
       const targetIndex = Number(targetCell.dataset.index);
       if (sourceIndex !== targetIndex) {
         const currentBoard = getCurrentBoard();
@@ -937,7 +940,11 @@ if (boardElement) {
           saveState();
           renderBoard();
         } else if (currentBoard[sourceIndex] && currentBoard[targetIndex]) {
-          mergeItems(sourceIndex, targetIndex);
+          if (currentBoard[sourceIndex] === currentBoard[targetIndex]) {
+            mergeItems(sourceIndex, targetIndex);
+          } else if (!tutorialMode) {
+            mergeItems(sourceIndex, targetIndex); // Different items swap places.
+          }
         }
       }
       lastTappedIndex = null;
@@ -965,6 +972,7 @@ if (boardElement) {
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
+    scrollGesture = false;
     unlockPageScroll();
   });
 
@@ -973,6 +981,7 @@ if (boardElement) {
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
+    scrollGesture = false;
     unlockPageScroll();
   };
   boardElement.addEventListener("pointercancel", cancelDrag);

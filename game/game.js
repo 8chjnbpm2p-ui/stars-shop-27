@@ -1229,32 +1229,31 @@ function renderQuests() {
     label.className = "quest-giver-label";
     label.textContent = "Задание от";
     const giverName = document.createElement("strong");
-    giverName.className = "quest-giver-name";
+    giverName.className = "quest-giver-name quest-giver-name-clickable";
     giverName.textContent = quest.character;
+    giverName.setAttribute("role", "button");
+    giverName.setAttribute("tabindex", "0");
+    giverName.setAttribute("aria-expanded", "false");
+    giverName.setAttribute("aria-label", "Показать, как получить предмет для квеста: " + quest.title);
     giver.append(label, giverName);
     person.append(portrait, giver);
 
     const title = document.createElement("h3");
-    title.className = "quest-title-clickable";
     title.textContent = quest.title;
-    title.setAttribute("role", "button");
-    title.setAttribute("tabindex", "0");
-    title.setAttribute("aria-expanded", "false");
-    title.setAttribute("aria-label", "Показать, как получить: " + quest.title);
 
     const toggleQuestGuide = () => {
       const existingGuide = card.querySelector(".quest-guide-panel");
       if (existingGuide) {
         existingGuide.remove();
-        title.setAttribute("aria-expanded", "false");
+        giverName.setAttribute("aria-expanded", "false");
         return;
       }
       const guide = createQuestGuide(quest);
-      card.insertBefore(guide, title.nextSibling);
-      title.setAttribute("aria-expanded", "true");
+      card.insertBefore(guide, person.nextSibling);
+      giverName.setAttribute("aria-expanded", "true");
     };
-    title.addEventListener("click", toggleQuestGuide);
-    title.addEventListener("keydown", event => {
+    giverName.addEventListener("click", toggleQuestGuide);
+    giverName.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         toggleQuestGuide();

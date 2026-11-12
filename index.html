@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -10,17 +11,26 @@
 <style>
 * { box-sizing: border-box; }
 body {
-  margin: 0; padding: 0; background: #101522; color: #fff;
+  margin: 0;
+  padding: 0;
+  background: #101522;
+  color: #fff;
   font-family: Arial, sans-serif;
 }
 button, input { font: inherit; }
 button { cursor: pointer; }
+
 .app {
-  max-width: 480px; min-height: 100vh; margin: auto;
+  max-width: 480px;
+  min-height: 100vh;
+  margin: auto;
   padding: 18px 16px calc(112px + env(safe-area-inset-bottom));
 }
+
 .header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 28px;
 }
 .brand { font-size: 21px; font-weight: bold; }
@@ -28,123 +38,225 @@ button { cursor: pointer; }
 h1 { font-size: 27px; margin: 8px 0; }
 .subtitle { color: #aeb9d0; font-size: 14px; line-height: 1.5; }
 .section-title { font-size: 18px; margin: 26px 0 14px; }
+
 .products {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 .card {
-  background: #1b2436; border: 1px solid #303c53;
-  border-radius: 17px; padding: 17px 12px; text-align: center;
+  background: #1b2436;
+  border: 1px solid #303c53;
+  border-radius: 17px;
+  padding: 17px 12px;
+  text-align: center;
 }
 .star { font-size: 29px; }
 .amount { font-size: 22px; font-weight: bold; margin: 9px 0; }
 .price {
-  color: #55d6a7; font-size: 16px; font-weight: bold; margin: 12px 0;
+  color: #55d6a7;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 12px 0;
 }
 .primary-button {
-  width: 100%; padding: 13px; border: 0; border-radius: 12px;
-  color: white; background: #2688ff; font-weight: bold; transition: .2s;
+  width: 100%;
+  padding: 13px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  background: #2688ff;
+  font-weight: bold;
+  transition: .2s;
 }
 .primary-button:active { transform: scale(.98); }
 .primary-button:disabled { opacity: .5; cursor: not-allowed; }
+
 .secondary-button {
-  width: 100%; padding: 12px; border: 1px solid #43536e;
-  border-radius: 12px; color: #dce8fa; background: #26334a;
-  font-weight: bold; margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #43536e;
+  border-radius: 12px;
+  color: #dce8fa;
+  background: #26334a;
+  font-weight: bold;
+  margin-top: 10px;
 }
 .panel {
-  background: #1b2436; border: 1px solid #303c53;
-  border-radius: 17px; padding: 17px; margin-top: 17px;
+  background: #1b2436;
+  border: 1px solid #303c53;
+  border-radius: 17px;
+  padding: 17px;
+  margin-top: 17px;
 }
 .hidden { display: none !important; }
+
 .input-label {
-  display: block; color: #aeb9d0; font-size: 13px; margin-bottom: 9px;
+  display: block;
+  color: #aeb9d0;
+  font-size: 13px;
+  margin-bottom: 9px;
 }
 input {
-  width: 100%; padding: 14px; background: #101522;
-  border: 1px solid #394760; border-radius: 11px;
-  outline: none; color: white; font-size: 16px;
+  width: 100%;
+  padding: 14px;
+  background: #101522;
+  border: 1px solid #394760;
+  border-radius: 11px;
+  outline: none;
+  color: white;
+  font-size: 16px;
 }
 input:focus { border-color: #2688ff; }
+
 .help {
-  font-size: 12px; color: #aeb9d0; line-height: 1.6; margin-top: 10px;
+  font-size: 12px;
+  color: #aeb9d0;
+  line-height: 1.6;
+  margin-top: 10px;
 }
+
 .profile { display: flex; align-items: center; gap: 13px; }
 .avatar {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: #303c53; display: flex; align-items: center;
-  justify-content: center; font-size: 23px; overflow: hidden; flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #303c53;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  overflow: hidden;
+  flex: 0 0 auto;
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-name { font-weight: bold; }
 .profile-username { color: #aeb9d0; font-size: 13px; margin-top: 5px; }
+
 .order-price { color: #55d6a7; font-size: 22px; font-weight: bold; }
 .status {
-  display: inline-block; padding: 7px 11px; border-radius: 20px;
-  background: #44391e; color: #ffd36a; font-size: 12px;
+  display: inline-block;
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #44391e;
+  color: #ffd36a;
+  font-size: 12px;
 }
 .notice {
-  padding: 12px; border-radius: 11px; background: #26334a;
-  color: #c5d3eb; font-size: 13px; line-height: 1.5;
-  margin-top: 13px; overflow-wrap: anywhere;
+  padding: 12px;
+  border-radius: 11px;
+  background: #26334a;
+  color: #c5d3eb;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 13px;
+  overflow-wrap: anywhere;
 }
 .notice.error { background: #472b35; color: #ffc2c2; }
 .notice.success { background: #1d4038; color: #a8f0d2; }
+
 .back-button {
-  background: transparent; border: 0; color: #55aaff;
-  padding: 10px 0; font-size: 14px;
+  background: transparent;
+  border: 0;
+  color: #55aaff;
+  padding: 10px 0;
+  font-size: 14px;
 }
 .unavailable { text-align: center; padding: 65px 15px; }
 .unavailable-icon { font-size: 55px; margin-bottom: 18px; }
 .unavailable h2 { font-size: 24px; }
 .unavailable p { color: #aeb9d0; line-height: 1.5; }
+
 .bottom-nav {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 480px; display: grid;
-  grid-template-columns: repeat(3, 1fr); background: #171f30;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #171f30;
   border-top: 1px solid #303c53;
   padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
   z-index: 10;
 }
 .nav-button {
-  border: 0; background: transparent; color: #8996ae;
-  padding: 8px 3px; font-size: 12px;
+  border: 0;
+  background: transparent;
+  color: #8996ae;
+  padding: 8px 3px;
+  font-size: 12px;
 }
 .nav-button.active { color: #55aaff; font-weight: bold; }
 .nav-icon { display: block; font-size: 21px; margin-bottom: 5px; }
+
 a { color: #55aaff; text-decoration: none; }
+
 .order-card {
-  background: #101522; border: 1px solid #303c53;
-  border-radius: 12px; padding: 13px; margin-top: 12px;
+  background: #101522;
+  border: 1px solid #303c53;
+  border-radius: 12px;
+  padding: 13px;
+  margin-top: 12px;
 }
 .order-card p {
-  color: #aeb9d0; font-size: 13px; margin: 7px 0;
+  color: #aeb9d0;
+  font-size: 13px;
+  margin: 7px 0;
   overflow-wrap: anywhere;
 }
+
 .payment-details {
-  white-space: pre-wrap; overflow-wrap: anywhere;
-  background: #101522; border: 1px solid #394760;
-  border-radius: 11px; padding: 13px; font-size: 14px;
-  line-height: 1.6; margin-top: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #101522;
+  border: 1px solid #394760;
+  border-radius: 11px;
+  padding: 13px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 12px;
 }
 .small-button {
-  border: 0; border-radius: 9px; padding: 9px 12px;
-  background: #303c53; color: white; margin-top: 9px;
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 12px;
+  background: #303c53;
+  color: white;
+  margin-top: 9px;
 }
 
 /* Вкладки магазина */
 .shop-tabs {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;
-  margin: 22px 0 18px; padding: 5px;
-  background: #171f30; border: 1px solid #303c53; border-radius: 13px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin: 22px 0 18px;
+  padding: 5px;
+  background: #171f30;
+  border: 1px solid #303c53;
+  border-radius: 13px;
 }
 .shop-tab {
-  border: 0; border-radius: 9px; padding: 11px 4px;
-  background: transparent; color: #929db2; font-size: 12px;
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 4px;
+  background: transparent;
+  color: #929db2;
+  font-size: 12px;
 }
-.shop-tab.active { background: #2a3850; color: #fff; font-weight: bold; }
+.shop-tab.active {
+  background: #2a3850;
+  color: #fff;
+  font-weight: bold;
+}
 .shop-category-title {
-  display: flex; align-items: center; gap: 8px;
-  margin: 12px 0 13px; font-size: 19px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 13px;
+  font-size: 19px;
 }
 .shop-category-title:first-child { margin-top: 0; }
 
@@ -152,26 +264,46 @@ a { color: #55aaff; text-decoration: none; }
 .profile-page { padding-top: 4px; }
 .user-header { text-align: center; padding: 14px 0 27px; }
 .user-avatar {
-  width: 94px; height: 94px; border-radius: 50%;
-  margin: 0 auto 14px; background: #303c53;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; font-size: 38px; border: 3px solid #35435d;
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  background: #303c53;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 38px;
+  border: 3px solid #35435d;
 }
 .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .user-display-name { font-size: 22px; font-weight: 700; }
 .user-handle { color: #929db2; font-size: 14px; margin-top: 7px; }
+
 .profile-menu-card {
-  background: #1b2436; border: 1px solid #303c53;
-  border-radius: 17px; overflow: hidden; margin-top: 13px;
+  background: #1b2436;
+  border: 1px solid #303c53;
+  border-radius: 17px;
+  overflow: hidden;
+  margin-top: 13px;
 }
 .profile-menu-row {
-  display: flex; align-items: center; gap: 13px;
-  min-height: 82px; padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 82px;
+  padding: 15px;
 }
 .menu-icon {
-  width: 45px; height: 45px; border-radius: 13px;
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 22px; flex: 0 0 auto;
+  width: 45px;
+  height: 45px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  flex: 0 0 auto;
 }
 .menu-icon.orders { background: #218b62; }
 .menu-icon.support-icon { background: #c87528; }
@@ -180,12 +312,17 @@ a { color: #55aaff; text-decoration: none; }
 .menu-subtitle { color: #929db2; font-size: 13px; margin-top: 5px; }
 .menu-arrow { color: #7f8ca4; font-size: 25px; }
 .support-link {
-  color: #55aaff; font-size: 13px; white-space: nowrap;
+  color: #55aaff;
+  font-size: 13px;
+  white-space: nowrap;
   padding-left: 4px;
 }
 .profile-footer {
-  text-align: center; color: #77839a; font-size: 12px;
-  margin-top: 38px; line-height: 1.8;
+  text-align: center;
+  color: #77839a;
+  font-size: 12px;
+  margin-top: 38px;
+  line-height: 1.8;
 }
 .app-version {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -195,6 +332,33 @@ a { color: #55aaff; text-decoration: none; }
 .game-placeholder .game-icon { font-size: 54px; }
 .game-placeholder h2 { margin: 18px 0 8px; }
 .game-placeholder p { color: #aeb9d0; font-size: 14px; line-height: 1.5; }
+
+/* Статистика истории покупок */
+.order-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+.order-stat {
+  background: #101522;
+  border: 1px solid #303c53;
+  border-radius: 13px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.order-stat span {
+  color: #aeb9d0;
+  font-size: 13px;
+}
+.order-stat strong {
+  color: #55d6a7;
+  font-size: 16px;
+  text-align: right;
+}
 </style>
 </head>
 
@@ -283,7 +447,6 @@ a { color: #55aaff; text-decoration: none; }
   </div>
 </section>
 
-
 <section id="gamePage" class="hidden" style="padding:0;margin:0">
   <iframe
     src="./game/game.html"
@@ -293,7 +456,6 @@ a { color: #55aaff; text-decoration: none; }
     allow="clipboard-read; clipboard-write"
   ></iframe>
 </section>
-
 
 <section id="profilePage" class="profile-page hidden">
   <div class="user-header">
@@ -333,23 +495,23 @@ a { color: #55aaff; text-decoration: none; }
   </footer>
 </section>
 
-<!-- Общая форма заказа для Stars и Premium -->
+<!-- Форма заказа -->
 <div id="purchasePanel" class="panel hidden">
   <button class="back-button" onclick="closePurchase()">← Назад к пакетам</button>
   <h2>Оформление заказа</h2>
   <div id="selectedPackage"></div>
 
   <div style="margin-top:20px">
-   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
-  <label class="input-label" style="margin:0">Telegram username получателя</label>
-  <button type="button" onclick="useMyAccount()"
-    style="background:none;border:0;color:#55d6a7;font-size:13px;font-weight:bold;padding:0">
-    Этот аккаунт
-  </button>
-</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+      <label class="input-label" style="margin:0">Telegram username получателя</label>
+      <button type="button" onclick="useMyAccount()"
+        style="background:none;border:0;color:#55d6a7;font-size:13px;font-weight:bold;padding:0">
+        Этот аккаунт
+      </button>
+    </div>
 
-<input id="username" type="text" placeholder="@username"
-       maxlength="33" autocomplete="off">
+    <input id="username" type="text" placeholder="@username"
+           maxlength="33" autocomplete="off">
     <div class="help">
       1. Открой Telegram.<br>
       2. Перейди в профиль получателя.<br>
@@ -358,17 +520,15 @@ a { color: #55aaff; text-decoration: none; }
   </div>
 
   <div id="profilePreview" class="panel hidden">
-  <div class="profile">
-    <div class="avatar" id="recipientAvatar">👤</div>
-    <div>
-      <div id="profileName" class="profile-name">Получатель</div>
-      <div id="profileUsername" class="profile-username"></div>
+    <div class="profile">
+      <div class="avatar" id="recipientAvatar">👤</div>
+      <div>
+        <div id="profileName" class="profile-name">Получатель</div>
+        <div id="profileUsername" class="profile-username"></div>
+      </div>
     </div>
+    <div id="profileMessage" class="notice"></div>
   </div>
-  <div id="profileMessage" class="notice"></div>
-</div>
-
-
 
   <button id="checkButton" class="primary-button"
           style="margin-top:18px" onclick="checkUsername()">
@@ -400,7 +560,7 @@ a { color: #55aaff; text-decoration: none; }
   <div id="paymentMessage" class="notice hidden"></div>
 </div>
 
-
+<!-- История покупок -->
 <div id="orderPanel" class="panel hidden">
   <button class="back-button" onclick="backToShop()">← В профиль</button>
 
@@ -429,7 +589,6 @@ a { color: #55aaff; text-decoration: none; }
   <div id="activeOrdersList"></div>
 </div>
 
-
 </div>
 
 <nav class="bottom-nav">
@@ -449,9 +608,21 @@ const API_BASE = "https://starsshopbot27.onrender.com";
 const SUPPORT_USERNAME = "@JonDayviHar1s";
 
 const tg = window.Telegram?.WebApp;
+
 if (tg) {
   tg.ready();
   tg.expand();
+}
+
+function getInitData() {
+  return tg?.initData || "";
+}
+
+function apiHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "X-Telegram-Init-Data": getInitData()
+  };
 }
 
 function showRecipientAvatar(username) {
@@ -471,7 +642,8 @@ function showRecipientAvatar(username) {
     const img = document.createElement("img");
     img.src = user.photo_url;
     img.alt = "Аватар получателя";
-    img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;";
+    img.style.cssText =
+      "width:100%;height:100%;object-fit:cover;border-radius:50%;";
     avatar.appendChild(img);
   } else {
     avatar.textContent = "👤";
@@ -485,17 +657,6 @@ let currentOrder = null;
 let currentPaymentDetails = "";
 let recipientChecked = false;
 let recipientUsername = "";
-
-function getInitData() {
-  return tg?.initData || "";
-}
-
-function apiHeaders() {
-  return {
-    "Content-Type": "application/json",
-    "X-Telegram-Init-Data": getInitData()
-  };
-}
 
 function showPage(page) {
   document.getElementById("shopPage").classList.toggle("hidden", page !== "shop");
@@ -548,7 +709,9 @@ function loadTelegramProfile() {
     .join(" ");
 
   displayName.textContent = fullName || "Пользователь Telegram";
-  handle.textContent = user.username ? "@" + user.username : "Username не указан";
+  handle.textContent = user.username
+    ? "@" + user.username
+    : "Username не указан";
 
   if (user.photo_url) {
     avatar.innerHTML = "";
@@ -595,8 +758,8 @@ function openPurchase() {
     ? `${selectedQuantity} Telegram Stars`
     : `Telegram Premium на ${selectedMonths} мес.`;
 
-  document.getElementById("selectedPackage").innerHTML =
-    `<div class="order-price">${title}</div>`;
+  document.getElementById("selectedPackage").textContent = title;
+  document.getElementById("selectedPackage").className = "order-price";
 
   document.getElementById("username").value = "";
   document.getElementById("checkMessage").classList.add("hidden");
@@ -607,13 +770,18 @@ function openPurchase() {
   recipientChecked = false;
   recipientUsername = "";
   currentOrder = null;
-  document.getElementById("purchasePanel").scrollIntoView({ behavior: "smooth" });
+
+  document.getElementById("purchasePanel").scrollIntoView({
+    behavior: "smooth"
+  });
 }
 
 function closePurchase() {
   document.getElementById("purchasePanel").classList.add("hidden");
   document.getElementById("paymentPanel").classList.add("hidden");
-  document.getElementById("shopPage").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("shopPage").scrollIntoView({
+    behavior: "smooth"
+  });
 }
 
 function useMyAccount() {
@@ -633,7 +801,8 @@ function useMyAccount() {
   document.getElementById("createOrderButton").classList.add("hidden");
   document.getElementById("profilePreview").classList.add("hidden");
 }
-  function normalizeUsername(value) {
+
+function normalizeUsername(value) {
   return value.trim().replace(/^@+/, "");
 }
 
@@ -655,7 +824,10 @@ async function checkUsername() {
   }
 
   if (!/^[a-zA-Z0-9_]{5,32}$/.test(username)) {
-    showCheckMessage("Проверь username. Он должен содержать от 5 до 32 символов.", "error");
+    showCheckMessage(
+      "Проверь username. Он должен содержать от 5 до 32 символов.",
+      "error"
+    );
     return;
   }
 
@@ -686,7 +858,9 @@ async function checkUsername() {
     const data = await response.json();
 
     if (!response.ok || data.ok === false) {
-      throw new Error(data.error || data.message || "Не удалось проверить получателя.");
+      throw new Error(
+        data.error || data.message || "Не удалось проверить получателя."
+      );
     }
 
     recipientUsername = username;
@@ -694,18 +868,29 @@ async function checkUsername() {
 
     document.getElementById("profilePreview").classList.remove("hidden");
     showRecipientAvatar(username);
-    
+
     document.getElementById("profileName").textContent =
       data.name || data.first_name || username;
-    document.getElementById("profileUsername").textContent = "@" + username;
-    document.getElementById("profileMessage").textContent =
-      data.message || "Получателя можно использовать для оформления заказа.";
 
-    showCheckMessage("Получатель проверен. Можно переходить к оплате.", "success");
+    document.getElementById("profileUsername").textContent =
+      "@" + username;
+
+    document.getElementById("profileMessage").textContent =
+      data.message ||
+      "Получателя можно использовать для оформления заказа.";
+
+    showCheckMessage(
+      "Получатель проверен. Можно переходить к оплате.",
+      "success"
+    );
+
     document.getElementById("createOrderButton").classList.remove("hidden");
 
   } catch (error) {
-    showCheckMessage(error.message || "Ошибка проверки. Попробуй ещё раз.", "error");
+    showCheckMessage(
+      error.message || "Ошибка проверки. Попробуй ещё раз.",
+      "error"
+    );
   } finally {
     button.disabled = false;
     button.textContent = "Проверить username";
@@ -728,13 +913,11 @@ async function createOrder() {
       username: recipientUsername
     };
 
-    
-if (selectedProduct === "STARS") {
-  payload.package_id = String(selectedQuantity);
-} else {
-  payload.months = selectedMonths;
-}
-
+    if (selectedProduct === "STARS") {
+      payload.package_id = String(selectedQuantity);
+    } else {
+      payload.months = selectedMonths;
+    }
 
     const response = await fetch(`${API_BASE}/api/orders`, {
       method: "POST",
@@ -745,10 +928,13 @@ if (selectedProduct === "STARS") {
     const data = await response.json();
 
     if (!response.ok || data.ok === false) {
-      throw new Error(data.error || data.message || "Не удалось создать заказ.");
+      throw new Error(
+        data.error || data.message || "Не удалось создать заказ."
+      );
     }
 
     currentOrder = data.order || data;
+
     currentPaymentDetails =
       data.payment_details ||
       data.paymentDetails ||
@@ -767,12 +953,18 @@ if (selectedProduct === "STARS") {
       `Заказ: ${orderTitle} • Получатель: @${recipientUsername}`;
 
     document.getElementById("paymentDetails").textContent =
-      currentPaymentDetails || "Реквизиты оплаты не получены. Обратись в поддержку.";
+      currentPaymentDetails ||
+      "Реквизиты оплаты не получены. Обратись в поддержку.";
 
-    document.getElementById("paymentPanel").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("paymentPanel").scrollIntoView({
+      behavior: "smooth"
+    });
 
   } catch (error) {
-    showCheckMessage(error.message || "Ошибка создания заказа.", "error");
+    showCheckMessage(
+      error.message || "Ошибка создания заказа.",
+      "error"
+    );
   } finally {
     button.disabled = false;
     button.textContent = "Перейти к оплате";
@@ -806,6 +998,7 @@ async function reportPayment() {
   }
 
   const orderId = currentOrder.id || currentOrder.order_id;
+
   if (!orderId) {
     alert("Не удалось определить номер заказа.");
     return;
@@ -830,11 +1023,15 @@ async function reportPayment() {
     const data = await response.json();
 
     if (!response.ok || data.ok === false) {
-      throw new Error(data.error || data.message || "Не удалось сообщить об оплате.");
+      throw new Error(
+        data.error || data.message || "Не удалось сообщить об оплате."
+      );
     }
 
     message.textContent =
-      data.message || "Сообщение об оплате отправлено. Ожидай проверки администратором.";
+      data.message ||
+      "Сообщение об оплате отправлено. Ожидай проверки администратором.";
+
     message.className = "notice success";
     message.classList.remove("hidden");
     button.textContent = "Отправлено";
@@ -843,6 +1040,7 @@ async function reportPayment() {
     message.textContent = error.message || "Ошибка отправки.";
     message.className = "notice error";
     message.classList.remove("hidden");
+
     button.disabled = false;
     button.textContent = "Я оплатил";
   }
@@ -875,14 +1073,14 @@ function formatOrderStatus(status) {
     PAID: "Оплата проверяется",
     SUBMITTING: "Обрабатывается",
     PROCESSING: "Обрабатывается",
-    SUCCEEDED: "Выполнен",
-    COMPLETED: "Выполнен",
-    FAILED: "Ошибка",
-    NEEDS_REVIEW: "Требует проверки",
-    CANCELLED: "Отменён"
+    SUCCEEDED: "Успешно выполнен",
+    COMPLETED: "Успешно выполнен",
+    NEEDS_REVIEW: "Требует проверки"
   };
 
-  return statuses[String(status || "").toUpperCase()] || status || "Неизвестно";
+  return statuses[String(status || "").toUpperCase()] ||
+    status ||
+    "Неизвестно";
 }
 
 function formatOrderProduct(order) {
@@ -895,18 +1093,31 @@ function formatOrderProduct(order) {
   return `Telegram Stars — ${order.quantity || "?"}`;
 }
 
+/* История заказов и статистика */
 async function loadOrders() {
-  const list = document.getElementById("ordersList");
-  list.innerHTML = '<div class="notice">Загружаю заказы...</div>';
+  const completedList = document.getElementById("completedOrdersList");
+  const activeList = document.getElementById("activeOrdersList");
+
+  const starsElement = document.getElementById("totalStarsBought");
+  const moneyElement = document.getElementById("totalMoneySpent");
+  const countElement = document.getElementById("totalSuccessfulOrders");
+
+  completedList.innerHTML =
+    '<div class="notice">Загружаю историю...</div>';
+
+  activeList.innerHTML =
+    '<div class="notice">Загружаю активные заказы...</div>';
 
   if (!getInitData()) {
-    list.innerHTML =
-      '<div class="notice error">Открой Mini App через Telegram-бота, чтобы увидеть заказы.</div>';
+    completedList.innerHTML =
+      '<div class="notice error">Открой Mini App через Telegram-бота, чтобы увидеть историю.</div>';
+
+    activeList.innerHTML = "";
     return;
   }
 
   try {
-    const response = await fetch(`${API_BASE}/api/orders`, {
+    const response = await fetch(`${API_BASE}/api/orders?limit=5000`, {
       method: "GET",
       headers: apiHeaders()
     });
@@ -914,66 +1125,146 @@ async function loadOrders() {
     const data = await response.json();
 
     if (!response.ok || data.ok === false) {
-      throw new Error(data.error || data.message || "Не удалось загрузить заказы.");
+      throw new Error(
+        data.error || data.message || "Не удалось загрузить заказы."
+      );
     }
 
     const orders = Array.isArray(data)
       ? data
       : (data.orders || data.items || []);
 
-    if (!orders.length) {
-      list.innerHTML = '<div class="notice">У тебя пока нет заказов.</div>';
-      return;
-    }
+    /*
+      SUCCEEDED — статус успешно выполненного заказа
+      в текущей логике твоего бота.
+    */
+    const completedStatuses = ["SUCCEEDED", "COMPLETED"];
 
-    list.innerHTML = "";
+    const failedStatuses = [
+      "FAILED",
+      "CANCELLED",
+      "REJECTED",
+      "API_ERROR"
+    ];
 
-    orders.forEach(order => {
-      const card = document.createElement("div");
-      card.className = "order-card";
+    const completed = orders.filter(order =>
+      completedStatuses.includes(
+        String(order.status || "").toUpperCase()
+      )
+    );
 
-      const title = document.createElement("strong");
-      title.textContent = formatOrderProduct(order);
+    const active = orders.filter(order => {
+      const status = String(order.status || "").toUpperCase();
 
-      const recipient = document.createElement("p");
-      recipient.textContent = "Получатель: @" + (order.username || "не указан");
-
-      const status = document.createElement("div");
-      status.className = "status";
-      status.textContent = formatOrderStatus(order.status);
-
-      const price = document.createElement("p");
-      price.textContent = order.price
-        ? `Сумма: ${Number(order.price).toLocaleString("ru-RU")} сум`
-        : "";
-
-      const date = document.createElement("p");
-      date.textContent = order.created_at
-        ? `Дата: ${new Date(order.created_at).toLocaleString("ru-RU")}`
-        : "";
-
-      card.appendChild(title);
-      card.appendChild(recipient);
-      card.appendChild(status);
-      if (price.textContent) card.appendChild(price);
-      if (date.textContent) card.appendChild(date);
-
-      list.appendChild(card);
+      return !completedStatuses.includes(status) &&
+             !failedStatuses.includes(status);
     });
 
+    /* Подсчёт только реально выполненных покупок */
+    const starsBought = completed.reduce((sum, order) => {
+      const product = String(order.product || "STARS").toUpperCase();
+
+      if (product !== "STARS") {
+        return sum;
+      }
+
+      return sum + Number(order.quantity || 0);
+    }, 0);
+
+    const moneySpent = completed.reduce((sum, order) => {
+      return sum + Number(order.price || 0);
+    }, 0);
+
+    starsElement.textContent =
+      starsBought.toLocaleString("ru-RU") + " ⭐";
+
+    moneyElement.textContent =
+      moneySpent.toLocaleString("ru-RU") + " сум";
+
+    countElement.textContent =
+      completed.length.toLocaleString("ru-RU");
+
+    function renderOrders(container, list, emptyMessage) {
+      container.innerHTML = "";
+
+      if (!list.length) {
+        container.innerHTML =
+          `<div class="notice">${emptyMessage}</div>`;
+        return;
+      }
+
+      list.forEach(order => {
+        const card = document.createElement("div");
+        card.className = "order-card";
+
+        const title = document.createElement("strong");
+        title.textContent = formatOrderProduct(order);
+
+        const recipient = document.createElement("p");
+        recipient.textContent =
+          "Получатель: @" + (order.username || "не указан");
+
+        const status = document.createElement("div");
+        status.className = "status";
+        status.textContent = formatOrderStatus(order.status);
+
+        const price = document.createElement("p");
+        price.textContent =
+          "Сумма: " +
+          Number(order.price || 0).toLocaleString("ru-RU") +
+          " сум";
+
+        const date = document.createElement("p");
+
+        if (order.created_at) {
+          const parsedDate = new Date(order.created_at);
+
+          date.textContent = Number.isNaN(parsedDate.getTime())
+            ? "Дата: " + order.created_at
+            : "Дата: " + parsedDate.toLocaleString("ru-RU");
+        }
+
+        card.appendChild(title);
+        card.appendChild(recipient);
+        card.appendChild(status);
+        card.appendChild(price);
+
+        if (date.textContent) {
+          card.appendChild(date);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    renderOrders(
+      completedList,
+      completed,
+      "Завершённых покупок пока нет."
+    );
+
+    renderOrders(
+      activeList,
+      active,
+      "Активных заказов нет."
+    );
+
   } catch (error) {
-    list.innerHTML = "";
+    completedList.innerHTML = "";
+
     const notice = document.createElement("div");
     notice.className = "notice error";
-    notice.textContent = error.message || "Ошибка загрузки заказов.";
-    list.appendChild(notice);
+    notice.textContent =
+      error.message || "Ошибка загрузки истории.";
+
+    completedList.appendChild(notice);
+    activeList.innerHTML = "";
   }
 }
 
-// При открытии Mini App загружаем профиль Telegram.
+// Загружаем профиль Telegram при открытии Mini App.
 loadTelegramProfile();
 
-// Telegram Main Button не используем — все действия доступны в интерфейсе.
 if (tg) {
   tg.MainButton.hide();
   tg.BackButton.hide();

@@ -69,7 +69,7 @@ const items = {
     icon: "🐾"
   },
   stable_stone: {
-    name: "Стабильный магический камень",
+    name: "Кристалл устойчивости",
     icon: "🔮"
   },
   cloak_core: {
@@ -182,8 +182,11 @@ function getUpgradeId(itemId) {
   const newId = "refined_" + itemId;
 
   if (!items[newId]) {
+    const upgradedNames = {
+      stable_stone: "Совершенный кристалл устойчивости"
+    };
     items[newId] = {
-      name: "Улучшенный: " + items[itemId].name,
+      name: upgradedNames[itemId] || ("Улучшенный " + items[itemId].name.toLowerCase()),
       icon: "✨"
     };
   }
@@ -304,6 +307,7 @@ function createInitialState() {
     acceptedQuests: [],
 
     tutorialDone: false,
+    avatarDataUrl: "",
 
     mergedCount: 0,
     soldCount: 0,
@@ -1160,6 +1164,20 @@ function getPlayTime() {
 }
 
 function renderProfile() {
+  const avatarImage = document.getElementById("profileAvatarImage");
+  const avatarFallback = document.getElementById("profileAvatarFallback");
+  if (avatarImage && avatarFallback) {
+    if (state.avatarDataUrl) {
+      avatarImage.src = state.avatarDataUrl;
+      avatarImage.hidden = false;
+      avatarFallback.hidden = true;
+    } else {
+      avatarImage.removeAttribute("src");
+      avatarImage.hidden = true;
+      avatarFallback.hidden = false;
+    }
+  }
+
   const values = {
     profileName: "Мироходец",
     profileStatus: "Начинающий",
@@ -1177,6 +1195,52 @@ function renderProfile() {
     const element = document.getElementById(id);
 
     if (element) element.textContent = value;
+  });
+}
+
+/* =========================================
+   ПЕРСОНАЛЬНАЯ АВАТАРКА
+========================================= */
+
+const avatarInput = document.getElementById("profileAvatarInput");
+const changeAvatarButton = document.getElementById("changeAvatarButton");
+
+if (changeAvatarButton && avatarInput) {
+  changeAvatarButton.addEventListener("click", () => avatarInput.click());
+  avatarInput.addEventListener("change", () => {
+    const file = avatarInput.files && avatarInput.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showMessage("Выбери изображение.");
+      avatarInput.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const side = 512;
+        const scale = Math.min(1, side / Math.max(image.width, image.height));
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        try {
+          state.avatarDataUrl = canvas.toDataURL("image/jpeg", 0.84);
+          saveState();
+          renderProfile();
+          showMessage("Аватар обновлён!");
+        } catch (error) {
+          showMessage("Не удалось сохранить это изображение.");
+        }
+        avatarInput.value = "";
+      };
+      image.onerror = () => showMessage("Не удалось открыть изображение.");
+      image.src = reader.result;
+    };
+    reader.onerror = () => showMessage("Не удалось загрузить изображение.");
+    reader.readAsDataURL(file);
   });
 }
 

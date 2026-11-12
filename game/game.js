@@ -1292,53 +1292,29 @@ function updateSummonButtons() {
 
 /* SVG-предметы вместо эмодзи: единый иллюстрированный стиль для всех миров. */
 function createItemVisual(itemId, className = "item-icon") {
-  const id = String(itemId || "");
-  let c = ["#dcecff", "#6d91bd", "#2a405f"];
-  if (/time_|echo|paradox|hourglass|memory_sand/.test(id)) c = ["#c8f4ff", "#559ac5", "#203d68"];
-  else if (/sun|flame|candle|oath|scarab|fire/.test(id)) c = ["#fff0b0", "#d78b3e", "#754323"];
-  else if (/cosmic|star|origin|heart|gravity|void/.test(id)) c = ["#ebceff", "#9068d0", "#39265f"];
-  else if (/bunker|filter|branch|mother|tree|bark/.test(id)) c = ["#d4edc8", "#6d965f", "#344b37"];
-  else if (/workshop|mk47|gear|blueprint|motor|circuit|chip|robot|persik/.test(id)) c = ["#e2edf5", "#7a93aa", "#293d56"];
-  else if (/ice|frost|glass|crystal|scale|stone/.test(id)) c = ["#e1faff", "#75b6d1", "#315477"];
-  else if (/blood|vial|oil|essence|seed/.test(id)) c = ["#ffcbd5", "#bd5876", "#642d4d"];
-  const [hi, mid, dark] = c;
-  let art = "";
-
-  if (/key|anchor/.test(id)) art = '<g transform="rotate(-38 50 50)"><circle cx="34" cy="31" r="14" fill="url(#metal)" stroke="#f4f8ff" stroke-width="4"/><circle cx="34" cy="31" r="5" fill="#26354b"/><path d="M43 41 78 76 69 85 60 76 54 82 46 74 53 67 38 52Z" fill="url(#metal)" stroke="#eaf4ff" stroke-width="3" stroke-linejoin="round"/></g>';
-  else if (/hourglass|time_core/.test(id)) art = '<path d="M28 13H72M28 87H72M34 16Q35 35 50 48Q65 35 66 16M34 84Q35 65 50 52Q65 65 66 84" fill="none" stroke="url(#metal)" stroke-width="8" stroke-linecap="round"/><path d="M39 25Q50 40 61 25L50 46Z M39 75Q50 60 61 75L50 54Z" fill="#f3d58c"/><path d="M50 48V55" stroke="#fff3c5" stroke-width="3"/>';
-  else if (/gear|motor|servo|spring/.test(id)) art = '<path d="M43 9H57L61 22 72 27 84 22 91 36 81 46 82 58 91 68 83 82 69 78 58 88H43L37 76 25 72 14 79 8 65 18 55 17 43 8 33 17 19 31 23Z" fill="url(#metal)" stroke="#e8f3ff" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="49" r="19" fill="#293b55" stroke="#c9e4f6" stroke-width="4"/><circle cx="50" cy="49" r="7" fill="' + hi + '"/>';
-  else if (/vial|blood|oil|essence|first_mother|containment_glass/.test(id)) art = '<path d="M40 10H60V27L72 42V79Q72 88 62 88H38Q28 88 28 79V42L40 27Z" fill="url(#glass)" stroke="#f7f2ff" stroke-width="3"/><path d="M34 58H66V78Q66 82 60 82H40Q34 82 34 78Z" fill="' + mid + '" opacity=".9"/><path d="M40 10H60V20H40Z" fill="#d5b77c" stroke="#fff0c9" stroke-width="2"/><path d="M38 46 45 39" stroke="#fff" stroke-opacity=".8" stroke-width="4" stroke-linecap="round"/>';
-  else if (/feather/.test(id)) art = '<path d="M24 79Q18 30 76 14Q83 58 34 84Z" fill="url(#cloth)" stroke="#f3f0ff" stroke-width="2"/><path d="M25 82Q48 50 73 20M42 60 30 48M53 48 42 36M63 37 55 27" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2.5" stroke-linecap="round"/>';
-  else if (/cloth|thread|tape|film|mesh/.test(id)) art = /mesh/.test(id) ? '<path d="M20 20H80V80H20Z" fill="url(#cloth)" stroke="#edf4ff" stroke-width="4"/><path d="M30 20V80M45 20V80M60 20V80M70 20V80M20 30H80M20 45H80M20 60H80M20 70H80" stroke="#fff" stroke-opacity=".65" stroke-width="2"/>' : /thread|tape|film/.test(id) ? '<path d="M25 30Q49 12 74 31Q88 44 72 58L39 81Q22 91 15 76Q10 64 24 55L58 31Q67 26 73 34" fill="none" stroke="url(#cloth)" stroke-width="10" stroke-linecap="round"/><path d="M24 30Q49 12 74 31" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="2.5"/>' : '<path d="M18 26Q34 14 51 25Q68 13 83 25L77 75Q60 64 49 77Q34 64 22 77Z" fill="url(#cloth)" stroke="#f6f1ff" stroke-width="3"/><path d="M25 33Q37 26 47 34M29 44Q39 38 46 45M55 34Q66 26 76 34" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>';
-  else if (/book|diary|journal|scroll|blueprint|document|cipher|map|pass|certificate|code|archive/.test(id)) art = '<path d="M24 17 72 13 82 24 78 83 28 88 18 76Z" fill="url(#paper)" stroke="#fff0cf" stroke-width="3" stroke-linejoin="round"/><path d="M72 13 72 26 82 24" fill="#d6b77e" stroke="#fff0cf" stroke-width="2"/><path d="M32 39 67 35M31 51 68 47M30 63 59 60" stroke="#fff5df" stroke-width="3" stroke-linecap="round"/><path d="M24 17 28 88" stroke="#8b633f" stroke-opacity=".8" stroke-width="3"/>';
-  else if (/mask/.test(id)) art = '<path d="M17 23Q50 5 83 23L77 62Q68 83 50 90Q32 83 23 62Z" fill="url(#metal)" stroke="#f3edff" stroke-width="3"/><path d="M27 43 45 49 35 59ZM73 43 55 49 65 59Z" fill="#17243b"/><path d="M41 72Q50 78 59 72" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>';
-  else if (/sun|flame|candle|fire|thirteen/.test(id)) art = '<path d="M51 10Q76 37 69 57Q65 82 48 86Q24 84 25 59Q25 42 43 25Q39 47 51 48Q61 37 51 10Z" fill="url(#fire)" stroke="#fff0c3" stroke-width="3"/><path d="M49 49Q61 64 50 76Q38 75 40 62Q42 55 49 49Z" fill="#fff5cf"/>';
-  else if (/seal|sign|emblem|oath|rune|symbol/.test(id)) art = '<path d="M50 10 82 25 78 70 50 89 22 70 18 25Z" fill="url(#metal)" stroke="#fff1c9" stroke-width="3"/><path d="M50 23 59 42 78 50 59 58 50 77 41 58 22 50 41 42Z" fill="#fff0bd" stroke="#fff" stroke-width="2"/><circle cx="50" cy="50" r="8" fill="' + dark + '"/>';
-  else if (/robot|persik|automaton|module|chip|circuit|jammer|mk47|filter_core/.test(id)) art = '<path d="M25 23 75 23 84 37 79 77 21 77 16 37Z" fill="url(#metal)" stroke="#edf7ff" stroke-width="3" stroke-linejoin="round"/><rect x="34" y="34" width="32" height="28" rx="6" fill="#172b43" stroke="#bcecff" stroke-width="3"/><circle cx="44" cy="47" r="4" fill="#b7fff1"/><circle cx="56" cy="47" r="4" fill="#b7fff1"/><path d="M42 56H58M31 15V23M69 15V23M31 77V86M69 77V86" stroke="#eaf7ff" stroke-width="4" stroke-linecap="round"/>';
-  else if (/glass|shard|fragment|crystal|ore|scale|stone|obsidian/.test(id)) art = '<path d="M50 9 76 29 84 61 57 88 25 75 14 43 30 19Z" fill="url(#crystal)" stroke="#effaff" stroke-width="3" stroke-linejoin="round"/><path d="M50 9 48 48 14 43M48 48 84 61M48 48 57 88M48 48 76 29" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="2.5"/>';
-  else if (/sand|dust|glowing_dust/.test(id)) art = '<path d="M17 70Q28 48 48 54Q66 34 84 66Q65 82 43 82Q26 82 17 70Z" fill="url(#crystal)" stroke="#effaff" stroke-width="2"/><circle cx="31" cy="35" r="5" fill="#fff4c3"/><circle cx="61" cy="24" r="4" fill="#fff"/><circle cx="75" cy="43" r="3" fill="#fff4c3"/><path d="m48 12 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#fff"/>';
-  else if (/shell|resonance/.test(id)) art = '<path d="M18 72Q12 29 50 18Q88 29 82 72Q50 91 18 72Z" fill="url(#crystal)" stroke="#f3f7ff" stroke-width="3"/><path d="M50 21V80M50 28 31 73M50 28 69 73M50 39 23 68M50 39 77 68" stroke="#fff" stroke-opacity=".65" stroke-width="3" fill="none"/>';
-  else if (/cloak|armor|filter|shield/.test(id)) art = '<path d="M50 13 81 25 74 61Q66 81 50 89Q34 81 26 61L19 25Z" fill="url(#cloth)" stroke="#f2f7ff" stroke-width="3"/><path d="M50 16V82M29 32 50 45 71 32" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>';
-  else if (/amulet|pendant|eola/.test(id)) art = '<path d="M35 17Q50 5 65 17L60 31 50 39 40 31Z" fill="url(#metal)" stroke="#fff0cf" stroke-width="3"/><path d="M50 31 77 55 50 88 23 55Z" fill="url(#crystal)" stroke="#f5f1ff" stroke-width="3"/><path d="M50 42 64 56 50 76 36 56Z" fill="#fff" fill-opacity=".28"/>';
-  else if (/tree|bark|wood|branch|seed/.test(id)) art = '<path d="M24 27Q34 17 47 25Q62 14 76 27L78 70Q64 84 50 74Q34 85 22 70Z" fill="url(#wood)" stroke="#e9d6b3" stroke-width="3"/><path d="M30 33Q43 43 34 65M49 27Q60 45 51 72M66 31Q57 47 69 64" fill="none" stroke="#fff0ce" stroke-opacity=".5" stroke-width="3"/>';
-  else art = '<path d="M50 9 76 29 84 61 57 88 25 75 14 43 30 19Z" fill="url(#crystal)" stroke="#effaff" stroke-width="3"/><path d="M50 9V88M14 43 84 61M30 19 57 88" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>';
-
-  const uid = "item-" + id.replace(/[^a-zA-Z0-9_-]/g, "-");
-  art = art.replace(/url\(#([a-z]+)\)/g, "url(#" + uid + "-$1)");
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 100 100");
-  svg.setAttribute("class", className);
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", items[itemId]?.name || "Игровой предмет");
-  svg.innerHTML = '<defs>' +
-    '<linearGradient id="' + uid + '-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".48" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-crystal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".52" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-cloth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '"/><stop offset=".6" stop-color="' + mid + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + hi + '" stop-opacity=".9"/><stop offset="1" stop-color="' + mid + '" stop-opacity=".95"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0c9"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-fire" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".55" stop-color="' + hi + '"/><stop offset="1" stop-color="' + mid + '"/></linearGradient>' +
-    '<linearGradient id="' + uid + '-wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9ad76"/><stop offset="1" stop-color="#65452e"/></linearGradient>' +
-    '</defs><ellipse cx="51" cy="89" rx="25" ry="4" fill="#050914" opacity=".25"/>' + art;
+  const id=String(itemId||"");
+  let p=["#d9c8ff","#7656a8","#302448"];
+  if(/time_|echo|paradox|prison/.test(id))p=["#9be7ff","#386cba","#182a58"];
+  else if(/sun|flame|candle|oath|scarab/.test(id))p=["#ffe69a","#d47728","#71351e"];
+  else if(/cosmic|star|origin|heart/.test(id))p=["#e1b7ff","#7951cb","#28215d"];
+  else if(/bunker|filter|branch|mother/.test(id))p=["#b7e5bd","#477e61","#203d3b"];
+  else if(/workshop|mk47|gear|blueprint/.test(id))p=["#d5e1ee","#657d99","#27354b"];
+  else if(/persik|campus|automaton|jdh|mask|chip/.test(id))p=["#a6f2e6","#368b9c","#183b5a"];
+  const hi=p[0],mid=p[1],dark=p[2];
+  let shape='<path d="M50 8 82 34 69 75 50 92 29 73 17 34Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M50 8V92M17 34 82 34M29 73 69 75" stroke="#fff" stroke-opacity=".65" stroke-width="2"/>';
+  if(/persik|automaton|mk47|robot|module/.test(id)) shape='<path d="M50 16 65 31 84 27 76 49 84 71 64 66 50 83 36 66 16 71 24 49 16 27 36 31Z" fill="url(#g)" stroke="#eaffff" stroke-width="3"/><circle cx="50" cy="49" r="15" fill="#132e48" stroke="#b8fff3" stroke-width="4"/><circle cx="50" cy="49" r="6" fill="#9bfff0"/>';
+  else if(/hourglass|time_|memory_sand|echo_thread/.test(id)) shape='<path d="M28 12H72M28 88H72M34 15Q34 34 50 49Q66 34 66 15M34 85Q34 66 50 51Q66 66 66 85" fill="none" stroke="url(#g)" stroke-width="9"/><path d="M39 27Q50 42 61 27L50 47Z M39 73Q50 58 61 73L50 80Z" fill="#baf4ff"/>';
+  else if(/gear|motor|spring|servo/.test(id)) shape='<path d="M42 7H58L62 21 75 27 88 22 94 39 82 49 84 62 94 72 83 88 68 82 58 91H42L36 78 23 74 11 82 5 65 17 54 15 41 6 31 17 15 32 21Z" fill="url(#g)" stroke="#eef6ff" stroke-width="3"/><circle cx="50" cy="50" r="19" fill="#1b2944" stroke="#d3e9ff" stroke-width="4"/><circle cx="50" cy="50" r="7" fill="'+hi+'"/>';
+  else if(/mask|jdh/.test(id)) shape='<path d="M17 22Q50 6 83 22L76 66Q64 86 50 91Q36 86 24 66Z" fill="url(#g)" stroke="#eee5ff" stroke-width="3"/><path d="M28 43 44 49 36 59ZM72 43 56 49 64 59Z" fill="#17213d"/><path d="M41 72Q50 78 59 72" fill="none" stroke="#fff" stroke-width="3"/>';
+  else if(/sun|flame|candle|fire|thirteen/.test(id)) shape='<circle cx="50" cy="50" r="24" fill="url(#g)" stroke="#fff1bd" stroke-width="3"/><circle cx="50" cy="50" r="10" fill="#fff1b1"/><path d="M50 5V17M50 83V95M5 50H17M83 50H95M18 18 27 27M73 73 82 82M82 18 73 27M27 73 18 82" stroke="#ffe8a2" stroke-width="6"/>';
+  else if(/book|diary|journal|scroll|blueprint|tape|film|archive/.test(id)) shape='<path d="M14 20Q33 10 50 24Q67 10 86 20V82Q67 70 50 85Q33 70 14 82Z" fill="url(#g)" stroke="#f1e5ff" stroke-width="3"/><path d="M50 24V84M24 38H42M24 51H42M58 38H76M58 51H76" stroke="#fff" stroke-width="3"/>';
+  else if(/key|pass|certificate|document|cipher|code/.test(id)) shape='<path d="M24 10H61L78 28V89H24Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M61 10V28H78M35 44H67M35 57H67M35 70H58" stroke="#fff4d6" stroke-width="4"/>';
+  else if(/vial|blood|oil|bottle|essence/.test(id)) shape='<path d="M39 10H61V27L71 40V79Q71 88 61 88H39Q29 88 29 79V40L39 27Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M34 58H66V77Q66 82 60 82H40Q34 82 34 77Z" fill="#ff7a9d"/>';
+  else if(/seal|sign|emblem|oath|symbol|rune/.test(id)) shape='<circle cx="50" cy="50" r="36" fill="url(#g)" stroke="#fff0ca" stroke-width="3"/><circle cx="50" cy="50" r="24" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/><path d="M50 25 58 42 75 50 58 58 50 76 42 58 25 50 42 42Z" fill="#fff1bd"/>';
+  else if(/shield|armor|filter|anchor/.test(id)) shape='<path d="M50 8 82 22V49Q77 77 50 92Q23 77 18 49V22Z" fill="url(#g)" stroke="#efffe9" stroke-width="3"/><path d="M50 21V78M29 36H71M34 60 50 73 66 60" fill="none" stroke="#fff" stroke-width="3"/>';
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("class",className);svg.setAttribute("role","img");svg.setAttribute("aria-label",items[itemId]?.name||"Игровой предмет");
+  svg.innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+hi+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="'+dark+'" fill-opacity=".34" stroke="'+hi+'" stroke-opacity=".55" stroke-width="2"/>'+shape;
   return svg;
 }
 

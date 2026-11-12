@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#100d1b">
-  <title>Merge Worlds</title>
+  <title>Приключение Lo</title>
   <link rel="stylesheet" href="game.css">
 </head>
 
@@ -16,31 +16,10 @@
     <!-- ШАПКА -->
     <header class="top">
       <div class="top-title">
-        <h1>MERGE WORLDS</h1>
-        <p>Объединяй. Развивайся. Открывай миры.</p>
+        <h1 class="game-title">Приключение Lo</h1>
+        <p>Объединяй предметы. Исследуй девять миров.</p>
       </div>
     </header>
-
-    <!-- ВАЛЮТЫ -->
-    <section class="currencies">
-      <div class="currency">
-        <img
-          class="currency-icon"
-          src="https://i.postimg.cc/VLRYxRHq/IMG-1746.webp"
-          alt="Скинт"
-        >
-        <span id="skint">100</span>
-      </div>
-
-      <div class="currency">
-        <img
-          class="currency-icon anti-currency-icon"
-          src="https://i.postimg.cc/0jvL2THf/IMG-1749.webp"
-          alt="Анти-скинт"
-        >
-        <span id="antiSkint">0</span>
-      </div>
-    </section>
 
     <!-- НАВИГАЦИЯ -->
     <nav class="game-tabs">
@@ -105,7 +84,7 @@
         </div>
 
         <p class="hint" id="boardHint">
-          Нажми на предмет, чтобы продать его, или перетащи на другой для объединения.
+          Перетащи предмет на другой, чтобы объединить, или на пустую клетку, чтобы переместить. Дважды нажми на предмет, чтобы продать его.
         </p>
 
       </section>
@@ -121,6 +100,7 @@
         <div class="world-list">
 
           <article class="world-card" data-world="1">
+            <img class="world-cover" src="https://i.postimg.cc/XvKZ3vkY/5820E301-A9D2-4954-BE7D-2F44838DDD98.png" alt="Обложка мира Новое Поколение">
             <div class="world-number">01</div>
             <div class="world-content">
               <h3>Новое Поколение</h3>
@@ -221,7 +201,7 @@
 
         <div class="section-heading">
           <h2>Мой профиль</h2>
-          <p>Твоя статистика в Merge Worlds.</p>
+          <p>Твоя статистика в Приключении Lo.</p>
         </div>
 
         <div class="profile-card">
@@ -418,24 +398,6 @@
 
   <script src="game.js"></script>
 
-  <!-- Кнопка отмены продажи -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const secondaryCancel = document.getElementById(
-        "sellCancelButtonSecondary"
-      );
-
-      const primaryCancel = document.getElementById(
-        "sellCancelButton"
-      );
-
-      if (secondaryCancel && primaryCancel) {
-        secondaryCancel.addEventListener("click", function () {
-          primaryCancel.click();
-        });
-      }
-    });
-  </script>
 
 </body>
 </html>

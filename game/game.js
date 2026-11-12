@@ -255,6 +255,7 @@ const questData = [
     id: "keyQuest",
     title: "Ключ Расшифровки",
     character: "Лефтарион",
+    portrait: "https://i.ytimg.com/vi/QmDd6KExmMA/maxresdefault.jpg",
     description: "Брат оставил записку. Мне нужен способ её прочесть.",
     target: "key",
     rewardSkint: 25,
@@ -264,6 +265,7 @@ const questData = [
     id: "tabletQuest",
     title: "Фрагмент Скрижали",
     character: "Лефтарион",
+    portrait: "https://i.ytimg.com/vi/QmDd6KExmMA/maxresdefault.jpg",
     description: "Собери целый фрагмент древней Скрижали.",
     target: "tablet",
     rewardSkint: 40,
@@ -894,11 +896,12 @@ if (boardElement) {
         if (sourceCell && sourceItem && items[sourceItem]) {
           const rect = sourceCell.getBoundingClientRect();
           dragOffset = { x: pointerStart.x - rect.left, y: pointerStart.y - rect.top };
-          dragGhost = document.createElement("div");
+          const sourceIcon = sourceCell.querySelector(".item-icon");
+          dragGhost = sourceIcon ? sourceIcon.cloneNode(true) : document.createElement("span");
           dragGhost.className = "item-drag-ghost";
-          dragGhost.textContent = items[sourceItem].icon;
-          dragGhost.style.width = rect.width + "px";
-          dragGhost.style.height = rect.height + "px";
+          if (!sourceIcon) dragGhost.textContent = items[sourceItem].icon;
+          dragGhost.style.width = Math.round(rect.width * 0.76) + "px";
+          dragGhost.style.height = Math.round(rect.height * 0.76) + "px";
           dragGhost.style.left = rect.left + "px";
           dragGhost.style.top = rect.top + "px";
           document.body.appendChild(dragGhost);
@@ -949,7 +952,7 @@ if (boardElement) {
           if (currentBoard[sourceIndex] === currentBoard[targetIndex]) {
             mergeItems(sourceIndex, targetIndex);
           } else if (!tutorialMode) {
-            mergeItems(sourceIndex, targetIndex); // Different items swap places.
+            showMessage("Объединяются только одинаковые предметы.");
           }
         }
       }

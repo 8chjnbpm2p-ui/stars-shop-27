@@ -1302,75 +1302,15 @@ function updateSummonButtons() {
 }
 
 
-/* SVG-предметы вместо эмодзи: единый иллюстрированный стиль для всех миров. */
-const ITEM_ATLAS_SLOTS = {
-  ice_scale:13, dim_crystal:5, rune_cloth:41, key_core:24, key:24,
-  stone_fragment:37, glowing_dust:52, metal_plate:12, tablet_core:10, tablet:7,
-  dense_cloth:4, beast_leather:33, stable_stone:44, cloak_core:4, cloak:4,
-  strange_glass:13, copper_wire:17, weak_energy:38, anomaly_core:12, anomaly_stabilizer:0,
-  amulet_fragment:14, silver_thread:17, magic_essence:11, amulet_core:9, eola_amulet:9,
-  tree_bark:37, dark_feather:18, stone_symbol:3, order_core:28, order_sign:28,
-  fire_core:26, fire_emblem:16, broken_persik:34, power_cell:30, persik_prime:1,
-  identity_chip:27, forged_document:23, alt_city_pass:23, carbon_shard:37, copper_circuit:27,
-  enriched_carbon:6, jammer_core:12, stealth_jammer:40, archive_key:24, tower_pass:23,
-  memory_fragment:22, raya_memory:30, imperial_cipher:7, rehoboam_fragment:42, jdh_cipher:22,
-  time_ash:52, echo_thread:41, cracked_hourglass:35, void_gear:48, paradox_glass:13,
-  memory_sand:52, time_core:30, time_key:24, echo_compass:3, echo_seal:28,
-  prison_core:50, prison_seal:29, sun_sand:52, black_obsidian:37, sacred_oil:58,
-  gold_thread:9, scarab_shell:26, flame_heart:54, altar_core:32, thirteen_candle:31,
-  sun_disc:36, scarab_emblem:53, oath_core:23, oath_seal:3,
-  broken_mask:15, data_tape:41, synth_chip:27, memory_film:41, servo_motor:12,
-  code_fragment:22, campus_core:42, campus_pass:23, automaton_core:51, automaton_key:24,
-  mask_core:25, jdh_mask:46, cosmic_dust:35, star_ore:57, gravity_crystal:38,
-  void_ink:7, origin_seed:43, resonance_shell:2, cosmic_core:35, cosmic_lens:2,
-  heart_core:30, heart_fragment:59, origin_core:29, origin_key:20,
-  bunker_scrap:37, filter_mesh:21, skint_blood:31, branch_map:41, time_cell:30,
-  containment_glass:47, filter_core:12, shelter_filter:39, branch_core:48, branch_anchor:19,
-  mother_core:31, first_mother_vial:8, workshop_ore:37, gear_spring:48, blueprint:22,
-  arcane_alloy:56, living_core:30, crystal_logic:1, mk47_core:42, mk47_module:49,
-  workshop_core:42, workshop_key:24, evolution_core:45, evolution_blueprint:55
-};
-
+/* Стикеры-предметы: у каждого мира свои эмодзи из каталога items. */
 function createItemVisual(itemId, className = "item-icon") {
-  const id=String(itemId||"");
-  const atlasSlot = ITEM_ATLAS_SLOTS[id];
-  if (Number.isInteger(atlasSlot)) {
-    const row = Math.floor(atlasSlot / 10);
-    const column = atlasSlot % 10;
-    const art = document.createElement("span");
-    art.className = className + " item-atlas-icon";
-    art.style.backgroundImage = 'url("assets/items-row-' + row + '.png")';
-    art.style.backgroundSize = "1000% 100%";
-    art.style.clipPath = "inset(3% 3% 3% 3%)";
-    art.style.backgroundPosition = (column * 100 / 9) + "% 0";
-    art.style.backgroundRepeat = "no-repeat";
-    art.setAttribute("role", "img");
-    art.setAttribute("aria-label", items[itemId]?.name || id);
-    return art;
-  }
-  let p=["#d9c8ff","#7656a8","#302448"];
-  if(/time_|echo|paradox|prison/.test(id))p=["#9be7ff","#386cba","#182a58"];
-  else if(/sun|flame|candle|oath|scarab/.test(id))p=["#ffe69a","#d47728","#71351e"];
-  else if(/cosmic|star|origin|heart/.test(id))p=["#e1b7ff","#7951cb","#28215d"];
-  else if(/bunker|filter|branch|mother/.test(id))p=["#b7e5bd","#477e61","#203d3b"];
-  else if(/workshop|mk47|gear|blueprint/.test(id))p=["#d5e1ee","#657d99","#27354b"];
-  else if(/persik|campus|automaton|jdh|mask|chip/.test(id))p=["#a6f2e6","#368b9c","#183b5a"];
-  const hi=p[0],mid=p[1],dark=p[2];
-  let shape='<path d="M50 8 82 34 69 75 50 92 29 73 17 34Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M50 8V92M17 34 82 34M29 73 69 75" stroke="#fff" stroke-opacity=".65" stroke-width="2"/>';
-  if(/persik|automaton|mk47|robot|module/.test(id)) shape='<path d="M50 16 65 31 84 27 76 49 84 71 64 66 50 83 36 66 16 71 24 49 16 27 36 31Z" fill="url(#g)" stroke="#eaffff" stroke-width="3"/><circle cx="50" cy="49" r="15" fill="#132e48" stroke="#b8fff3" stroke-width="4"/><circle cx="50" cy="49" r="6" fill="#9bfff0"/>';
-  else if(/hourglass|time_|memory_sand|echo_thread/.test(id)) shape='<path d="M28 12H72M28 88H72M34 15Q34 34 50 49Q66 34 66 15M34 85Q34 66 50 51Q66 66 66 85" fill="none" stroke="url(#g)" stroke-width="9"/><path d="M39 27Q50 42 61 27L50 47Z M39 73Q50 58 61 73L50 80Z" fill="#baf4ff"/>';
-  else if(/gear|motor|spring|servo/.test(id)) shape='<path d="M42 7H58L62 21 75 27 88 22 94 39 82 49 84 62 94 72 83 88 68 82 58 91H42L36 78 23 74 11 82 5 65 17 54 15 41 6 31 17 15 32 21Z" fill="url(#g)" stroke="#eef6ff" stroke-width="3"/><circle cx="50" cy="50" r="19" fill="#1b2944" stroke="#d3e9ff" stroke-width="4"/><circle cx="50" cy="50" r="7" fill="'+hi+'"/>';
-  else if(/mask|jdh/.test(id)) shape='<path d="M17 22Q50 6 83 22L76 66Q64 86 50 91Q36 86 24 66Z" fill="url(#g)" stroke="#eee5ff" stroke-width="3"/><path d="M28 43 44 49 36 59ZM72 43 56 49 64 59Z" fill="#17213d"/><path d="M41 72Q50 78 59 72" fill="none" stroke="#fff" stroke-width="3"/>';
-  else if(/sun|flame|candle|fire|thirteen/.test(id)) shape='<circle cx="50" cy="50" r="24" fill="url(#g)" stroke="#fff1bd" stroke-width="3"/><circle cx="50" cy="50" r="10" fill="#fff1b1"/><path d="M50 5V17M50 83V95M5 50H17M83 50H95M18 18 27 27M73 73 82 82M82 18 73 27M27 73 18 82" stroke="#ffe8a2" stroke-width="6"/>';
-  else if(/book|diary|journal|scroll|blueprint|tape|film|archive/.test(id)) shape='<path d="M14 20Q33 10 50 24Q67 10 86 20V82Q67 70 50 85Q33 70 14 82Z" fill="url(#g)" stroke="#f1e5ff" stroke-width="3"/><path d="M50 24V84M24 38H42M24 51H42M58 38H76M58 51H76" stroke="#fff" stroke-width="3"/>';
-  else if(/key|pass|certificate|document|cipher|code/.test(id)) shape='<path d="M24 10H61L78 28V89H24Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M61 10V28H78M35 44H67M35 57H67M35 70H58" stroke="#fff4d6" stroke-width="4"/>';
-  else if(/vial|blood|oil|bottle|essence/.test(id)) shape='<path d="M39 10H61V27L71 40V79Q71 88 61 88H39Q29 88 29 79V40L39 27Z" fill="url(#g)" stroke="#fff" stroke-width="3"/><path d="M34 58H66V77Q66 82 60 82H40Q34 82 34 77Z" fill="#ff7a9d"/>';
-  else if(/seal|sign|emblem|oath|symbol|rune/.test(id)) shape='<circle cx="50" cy="50" r="36" fill="url(#g)" stroke="#fff0ca" stroke-width="3"/><circle cx="50" cy="50" r="24" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/><path d="M50 25 58 42 75 50 58 58 50 76 42 58 25 50 42 42Z" fill="#fff1bd"/>';
-  else if(/shield|armor|filter|anchor/.test(id)) shape='<path d="M50 8 82 22V49Q77 77 50 92Q23 77 18 49V22Z" fill="url(#g)" stroke="#efffe9" stroke-width="3"/><path d="M50 21V78M29 36H71M34 60 50 73 66 60" fill="none" stroke="#fff" stroke-width="3"/>';
-  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-  svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("class",className);svg.setAttribute("role","img");svg.setAttribute("aria-label",items[itemId]?.name||"Игровой предмет");
-  svg.innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+hi+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="'+dark+'" fill-opacity=".34" stroke="'+hi+'" stroke-opacity=".55" stroke-width="2"/>'+shape;
-  return svg;
+  const id = String(itemId || "");
+  const sticker = document.createElement("span");
+  sticker.className = className;
+  sticker.textContent = items[id]?.icon || "✨";
+  sticker.setAttribute("role", "img");
+  sticker.setAttribute("aria-label", items[id]?.name || id || "Игровой предмет");
+  return sticker;
 }
 
 /* =========================================

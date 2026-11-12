@@ -57,7 +57,7 @@ const items = {
   },
   tablet: {
     name: "Фрагмент Скрижали",
-    icon: "📜"
+    icon: "🧱"
   },
 
   dense_cloth: {
@@ -108,7 +108,7 @@ const items = {
   },
   silver_thread: {
     name: "Серебряная нить",
-    icon: "🧵"
+    icon: "🪡"
   },
   magic_essence: {
     name: "Магическая эссенция",
@@ -120,7 +120,7 @@ const items = {
   },
   eola_amulet: {
     name: "Починенный фрагмент Амулета Эолы",
-    icon: "📿"
+    icon: "🪬"
   },
 
   tree_bark: {
@@ -141,7 +141,7 @@ const items = {
   },
   order_sign: {
     name: "Защитный знак Ордена",
-    icon: "🛡️"
+    icon: "🔰"
   }
 };
 

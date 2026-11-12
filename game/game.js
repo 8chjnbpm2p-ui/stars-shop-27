@@ -357,6 +357,15 @@ function loadState() {
       boardValues.push(0);
     }
 
+    // Убираем только неизвестные старые ID, чтобы они не занимали место невидимыми.
+    // Валюты и все распознанные предметы остаются в сохранении.
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      if (board[i] && !items[board[i]]) {
+        board[i] = null;
+        boardValues[i] = 0;
+      }
+    }
+
     return {
       ...initial,
       ...parsed,
@@ -540,22 +549,26 @@ function renderBoard() {
   const board = getCurrentBoard();
   boardElement.innerHTML = "";
 
-  board.forEach((itemId, index) => {
-    if (!itemId || !items[itemId]) return;
-
+  for (let index = 0; index < BOARD_SIZE; index++) {
+    const itemId = board[index] || null;
     const cell = document.createElement("div");
-    cell.className = "board-cell has-item";
+    cell.className = itemId && items[itemId]
+      ? "board-cell has-item"
+      : "board-cell empty";
     cell.dataset.index = index;
 
-    const icon = document.createElement("span");
-    icon.className = "item-icon";
-    icon.textContent = items[itemId].icon;
-    cell.appendChild(icon);
-    cell.title = items[itemId].name;
+    if (itemId && items[itemId]) {
+      const icon = document.createElement("span");
+      icon.className = "item-icon";
+      icon.textContent = items[itemId].icon;
+      cell.appendChild(icon);
+      cell.title = items[itemId].name;
+    } else {
+      cell.setAttribute("aria-label", "Пустая клетка");
+    }
     boardElement.appendChild(cell);
-  });
+  }
 
-  boardElement.classList.toggle("board-empty", !board.some(Boolean));
   updateSummonButtons();
 }
 
@@ -761,18 +774,9 @@ function mergeItems(sourceIndex, targetIndex) {
   const second = board[targetIndex];
   if (!first || !second) return false;
 
-  // Разные предметы не смешиваются — они просто меняются местами.
+  // Объединять можно только два совершенно одинаковых предмета.
   if (first !== second) {
-    if (!tutorialMode) {
-      board[sourceIndex] = second;
-      board[targetIndex] = first;
-      const firstValue = state.boardValues[sourceIndex] || SUMMON_COST;
-      const secondValue = state.boardValues[targetIndex] || SUMMON_COST;
-      state.boardValues[sourceIndex] = secondValue;
-      state.boardValues[targetIndex] = firstValue;
-      saveState();
-      renderBoard();
-    }
+    showMessage("Объединять можно только одинаковые предметы.");
     return false;
   }
 

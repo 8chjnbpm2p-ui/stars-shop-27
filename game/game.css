@@ -2166,4 +2166,3 @@ body[data-world="9"] {
   filter:drop-shadow(0 3px 4px rgba(0,0,0,.42));
 }
 .sell-item-art{font-size:clamp(48px,14vw,76px);}
-.item-atlas-icon{background-color:transparent;background-repeat:no-repeat;image-rendering:auto;}

@@ -372,7 +372,7 @@ const questData = [
     title: "Испытание огнём",
     character: "Люциус",
     portrait: "https://i.pinimg.com/736x/73/45/f1/7345f1dc85ce5ba7a5c476e223cf805b.jpg",
-    description: "Полубог огня не собирается доверять тебе просто так. Подготовь укреплённый плащ, способный выдержать жар и опасности пути. Со временем между вами может появиться настоящая дружба.",
+    description: "Полубог огня не собирается доверять тебе просто так. Создай печать огненного полубога, чтобы доказать, что способен выдержать его испытание. Со временем между вами может появиться настоящая дружба.",
     target: "fire_emblem",
     rewardSkint: 70,
     rewardAnti: 2
@@ -383,7 +383,7 @@ const questData = [
     title: "Уроки магии",
     character: "Бастиан и Воланд",
     portrait: "https://i.pinimg.com/736x/f8/19/72/f81972f93dfe250d149afd3e236c7421.jpg",
-    description: "Опытные маги предлагают помощь. Собери фрагмент Скрижали — он понадобится для изучения древних магических знаний.",
+    description: "Опытные маги предлагают помощь. Восстанови фрагмент Амулета Эолы — он поможет изучать древнюю магию этого мира.",
     target: "eola_amulet",
     rewardSkint: 80,
     rewardAnti: 2
@@ -1428,6 +1428,14 @@ function createQuestGuide(quest) {
     anomaly_stabilizer: [
       ["strange_glass", "copper_wire", "anomaly_core"],
       ["anomaly_core", "weak_energy", "anomaly_stabilizer"]
+    ],
+    eola_amulet: [
+      ["amulet_fragment", "silver_thread", "amulet_core"],
+      ["amulet_core", "magic_essence", "eola_amulet"]
+    ],
+    fire_emblem: [
+      ["strange_glass", "weak_energy", "fire_core"],
+      ["fire_core", "magic_essence", "fire_emblem"]
     ],
     order_sign: [
       ["tree_bark", "dark_feather", "order_core"],

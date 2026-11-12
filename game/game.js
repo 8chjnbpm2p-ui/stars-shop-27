@@ -361,6 +361,7 @@ function createInitialState() {
 
     completedQuests: [],
     acceptedQuests: [],
+    nickname: "",
 
     tutorialDone: false,
     avatarDataUrl: "",
@@ -437,6 +438,7 @@ function loadState() {
       acceptedQuests: Array.isArray(parsed.acceptedQuests)
         ? parsed.acceptedQuests
         : [],
+      nickname: typeof parsed.nickname === "string" ? parsed.nickname : "",
 
       unlockedWorld: Math.min(
         9,
@@ -460,6 +462,7 @@ let state = loadState();
 function saveState() {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    if (state.nickname) scheduleGameProfileSync();
   } catch (error) {
     console.error("Ошибка сохранения:", error);
   }
@@ -1368,6 +1371,9 @@ function completeQuest(quest) {
   state.board[index] = null;
   state.boardValues[index] = 0;
   state.completedQuests.push(quest.id);
+  if (areCurrentWorldQuestsComplete() && state.currentWorld < 9) {
+    state.unlockedWorld = Math.max(state.unlockedWorld, state.currentWorld + 1);
+  }
   state.skint = Number(state.skint || 0) + Number(quest.rewardSkint || 0);
   state.antiSkint = Number(state.antiSkint || 0) + Number(quest.rewardAnti || 0);
 
@@ -1393,6 +1399,15 @@ function renderWorlds() {
   });
 }
 
+function getWorldQuests(worldNumber) {
+  return questData.filter(quest => (quest.world || 1) === worldNumber);
+}
+
+function areCurrentWorldQuestsComplete() {
+  const currentQuests = getWorldQuests(state.currentWorld);
+  return currentQuests.every(quest => state.completedQuests.includes(quest.id));
+}
+
 document.querySelectorAll(".world-card").forEach(card => {
   card.addEventListener("click", () => {
     const number = Number(card.dataset.world);
@@ -1409,12 +1424,28 @@ document.querySelectorAll(".world-card").forEach(card => {
       return;
     }
 
+    if (!areCurrentWorldQuestsComplete()) {
+      const remaining = getWorldQuests(state.currentWorld)
+        .filter(quest => !state.completedQuests.includes(quest.id)).length;
+      showMessage("Сначала выполни все задания текущего мира. Осталось: " + remaining + ".");
+      openPage("questsPage");
+      return;
+    }
+
+    const destination = worlds[number - 1];
+    const confirmed = window.confirm(
+      "Перейти в мир «" + destination.name + "»?\n\n" +
+      "Скинты будут сброшены, Анти-скинты сохранятся."
+    );
+    if (!confirmed) return;
+
     state.currentWorld = number;
     state.skint = 0;
     state.lastSkintUpdate = Date.now();
     saveState();
+    renderAll();
     openPage("homePage");
-    showMessage("Переход в мир: " + worlds[number - 1].name + ". Скинты сброшены, Анти-скинты сохранены.");
+    showMessage("Ты перешёл в мир: " + destination.name + ".");
   });
 });
 
@@ -1455,7 +1486,7 @@ function renderProfile() {
   }
 
   const values = {
-    profileName: "Мироходец",
+    profileName: state.nickname || "Мироходец",
     profileStatus: "Начинающий",
     profileRank: "—",
     profileWorld: worlds[(state.currentWorld || 1) - 1]?.name || worlds[0].name,
@@ -1473,6 +1504,241 @@ function renderProfile() {
     if (element) element.textContent = value;
   });
 }
+
+/* =========================================
+   ИГРОВОЙ ПРОФИЛЬ И ДРУЗЬЯ
+========================================= */
+
+const GAME_API_BASE = "https://starsshopbot27.onrender.com";
+let gameProfileSyncTimer = null;
+let friendSearchPlayer = null;
+
+function getGameTelegramInitData() {
+  try {
+    return window.Telegram?.WebApp?.initData ||
+      window.parent?.Telegram?.WebApp?.initData ||
+      "";
+  } catch (_) {
+    return "";
+  }
+}
+
+async function gameApi(path, options = {}) {
+  const initData = getGameTelegramInitData();
+  if (!initData) {
+    throw new Error("Открой игру через Telegram, чтобы пользоваться друзьями.");
+  }
+  const response = await fetch(GAME_API_BASE + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "X-Telegram-Init-Data": initData,
+      ...(options.headers || {})
+    }
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || data.message || "Ошибка сервера.");
+  return data;
+}
+
+function getPublicGameProgress() {
+  return {
+    currentWorld: state.currentWorld,
+    unlockedWorld: state.unlockedWorld,
+    completedQuests: state.completedQuests.length,
+    mergedCount: state.mergedCount
+  };
+}
+
+function scheduleGameProfileSync() {
+  if (gameProfileSyncTimer) clearTimeout(gameProfileSyncTimer);
+  gameProfileSyncTimer = setTimeout(syncGameProfile, 1200);
+}
+
+async function syncGameProfile() {
+  if (!state.nickname) return;
+  try {
+    await gameApi("/api/game/profile", {
+      method: "POST",
+      body: JSON.stringify({
+        nickname: state.nickname,
+        progress: getPublicGameProgress()
+      })
+    });
+  } catch (error) {
+    console.warn("Не удалось обновить игровой профиль:", error.message);
+  }
+}
+
+function setSocialStatus(message, isError = false) {
+  const element = document.getElementById("gameFriendsStatus");
+  if (element) {
+    element.textContent = message;
+    element.classList.toggle("error", isError);
+  }
+}
+
+function appendFriendProfile(container, player, actionLabel, onAction) {
+  const card = document.createElement("div");
+  card.className = "game-friend-card";
+  const info = document.createElement("div");
+  info.className = "game-friend-info";
+  const name = document.createElement("strong");
+  name.textContent = player.nickname;
+  const progress = document.createElement("span");
+  const worldName = worlds[(Number(player.current_world) || 1) - 1]?.name || worlds[0].name;
+  progress.textContent = "Мир " + (player.current_world || 1) + " · " + worldName +
+    " · Квестов: " + (player.completed_quests || 0);
+  info.append(name, progress);
+  card.appendChild(info);
+  if (actionLabel && onAction) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = actionLabel;
+    button.addEventListener("click", onAction);
+    card.appendChild(button);
+  }
+  container.appendChild(card);
+}
+
+async function refreshGameFriends() {
+  const list = document.getElementById("gameFriendsList");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!state.nickname) {
+    setSocialStatus("Сначала создай игровой ник в профиле.");
+    return;
+  }
+  try {
+    const data = await gameApi("/api/game/friends");
+    setSocialStatus("");
+    if (data.incoming?.length) {
+      const heading = document.createElement("h4");
+      heading.textContent = "Входящие заявки";
+      list.appendChild(heading);
+      data.incoming.forEach(request => {
+        appendFriendProfile(list, { nickname: request.nickname }, "Принять", async () => {
+          try {
+            await gameApi("/api/game/friends/respond", {
+              method: "POST",
+              body: JSON.stringify({ request_id: request.id, accept: true })
+            });
+            await refreshGameFriends();
+          } catch (error) {
+            setSocialStatus(error.message, true);
+          }
+        });
+      });
+    }
+    if (data.friends?.length) {
+      const heading = document.createElement("h4");
+      heading.textContent = "Мои друзья";
+      list.appendChild(heading);
+      data.friends.forEach(friend => appendFriendProfile(list, friend));
+    }
+    if (data.outgoing?.length) {
+      const heading = document.createElement("h4");
+      heading.textContent = "Ожидают ответа";
+      list.appendChild(heading);
+      data.outgoing.forEach(nickname => {
+        const pending = document.createElement("p");
+        pending.className = "friend-pending";
+        pending.textContent = nickname + " · заявка отправлена";
+        list.appendChild(pending);
+      });
+    }
+    if (!data.incoming?.length && !data.friends?.length && !data.outgoing?.length) {
+      const empty = document.createElement("p");
+      empty.className = "friend-pending";
+      empty.textContent = "Пока здесь пусто. Найди друга по нику выше.";
+      list.appendChild(empty);
+    }
+  } catch (error) {
+    setSocialStatus(error.message, true);
+  }
+}
+
+const saveGameNicknameButton = document.getElementById("saveGameNicknameButton");
+if (saveGameNicknameButton) {
+  saveGameNicknameButton.addEventListener("click", async () => {
+    const input = document.getElementById("gameNicknameInput");
+    const status = document.getElementById("gameNicknameStatus");
+    const nickname = (input?.value || "").trim();
+    if (!/^[A-Za-z0-9_]{3,16}$/.test(nickname)) {
+      if (status) status.textContent = "Ник: 3–16 символов, латиница, цифры и _.";
+      return;
+    }
+    saveGameNicknameButton.disabled = true;
+    if (status) status.textContent = "Сохраняю ник…";
+    try {
+      const data = await gameApi("/api/game/profile", {
+        method: "POST",
+        body: JSON.stringify({ nickname, progress: getPublicGameProgress() })
+      });
+      state.nickname = data.profile.nickname;
+      saveState();
+      renderProfile();
+      if (status) status.textContent = "Ник сохранён!";
+      await refreshGameFriends();
+    } catch (error) {
+      if (status) status.textContent = error.message;
+    } finally {
+      saveGameNicknameButton.disabled = false;
+    }
+  });
+}
+
+const searchFriendButton = document.getElementById("searchFriendButton");
+if (searchFriendButton) {
+  searchFriendButton.addEventListener("click", async () => {
+    const input = document.getElementById("friendNicknameInput");
+    const result = document.getElementById("friendSearchResult");
+    const nickname = (input?.value || "").trim();
+    if (result) result.innerHTML = "";
+    if (!nickname) {
+      setSocialStatus("Введи ник игрока.", true);
+      return;
+    }
+    searchFriendButton.disabled = true;
+    try {
+      const data = await gameApi("/api/game/friends/search", {
+        method: "POST",
+        body: JSON.stringify({ nickname })
+      });
+      friendSearchPlayer = data.player;
+      setSocialStatus("");
+      if (result) {
+        appendFriendProfile(result, data.player, "Добавить", async () => {
+          try {
+            const response = await gameApi("/api/game/friends/request", {
+              method: "POST",
+              body: JSON.stringify({ nickname: data.player.nickname })
+            });
+            setSocialStatus(response.message || "Заявка отправлена.");
+            result.innerHTML = "";
+            await refreshGameFriends();
+          } catch (error) {
+            setSocialStatus(error.message, true);
+          }
+        });
+      }
+    } catch (error) {
+      setSocialStatus(error.message, true);
+    } finally {
+      searchFriendButton.disabled = false;
+    }
+  });
+}
+
+const nicknameInput = document.getElementById("gameNicknameInput");
+if (nicknameInput && state.nickname) nicknameInput.value = state.nickname;
+if (state.nickname) {
+  syncGameProfile();
+  refreshGameFriends();
+}
+setInterval(() => {
+  if (state.nickname) syncGameProfile();
+}, 60000);
 
 /* =========================================
    ПЕРСОНАЛЬНАЯ АВАТАРКА

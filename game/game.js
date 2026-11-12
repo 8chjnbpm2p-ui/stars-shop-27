@@ -704,6 +704,7 @@ const questData = [
     world: 4,
     title: "След временной петли",
     character: "Джодах",
+    portrait: "https://i.pinimg.com/originals/03/d7/ab/03d7ab4a275895f3ed6883307f3b1ab9.jpg",
     description: "Ты снова замечаешь следы временной петли. Собери ключ, чтобы открыть путь к запечатанным воспоминаниям.",
     target: "time_key",
     rewardSkint: 115,
@@ -726,6 +727,7 @@ const questData = [
     requires: "voiceFaragondaQuest",
     title: "Тюрьма для парадокса",
     character: "Эбардо",
+    portrait: "https://i.pinimg.com/736x/db/82/fa/db82fa36b7dbc2d0cd88961f5beda470.jpg",
     description: "Парадокс нельзя оставить без контроля. Подготовь печать Видомнии — она удержит разлом хотя бы на время.",
     target: "prison_seal",
     rewardSkint: 160,
@@ -737,6 +739,7 @@ const questData = [
 
     title: "Знак солнечного храма",
     character: "Окетра",
+    portrait: "https://i.pinimg.com/736x/69/9b/8e/699b8e07c38b7b959407eeeaf06918c9.jpg",
     description: "Храм не примет чужака без подношения. Восстанови алтарь и зажги тринадцатый огонь.",
     target: "thirteen_candle",
     rewardSkint: 125,
@@ -784,6 +787,7 @@ const questData = [
 
     title: "Память на плёнке",
     character: "Дилан",
+    portrait: "https://i.pinimg.com/736x/38/53/8a/38538a712b4ef350f441e9f22ab66106.jpg",
     description: "Записи Тима могут помочь разобраться с автоматонами. Собери ключ перепрошивки, не повредив их память.",
     target: "automaton_key",
     rewardSkint: 150,
@@ -796,6 +800,7 @@ const questData = [
 
     title: "Маска для плана",
     character: "Саймон Солус",
+    portrait: "https://i.pinimg.com/736x/f6/06/14/f60614f5569b7aa95edfac94e121525c.jpg",
     description: "Нам нужно перехитрить систему и защитить друзей. Подготовь маску, связанную с кодом JDH.",
     target: "jdh_mask",
     rewardSkint: 185,
@@ -807,6 +812,7 @@ const questData = [
 
     title: "Звёздная оптика",
     character: "Шангрин",
+    portrait: "https://i.pinimg.com/736x/2c/c4/6c/2cc46c676d7fba85fe6e5e49c6fb7a3f.jpg",
     description: "Звёздная пыль реагирует на гравитацию. Создай линзу, чтобы увидеть структуру пространства между мирами.",
     target: "cosmic_lens",
     rewardSkint: 145,
@@ -831,6 +837,7 @@ const questData = [
 
     title: "Первоисточник",
     character: "Джодах",
+    portrait: "https://i.pinimg.com/originals/03/d7/ab/03d7ab4a275895f3ed6883307f3b1ab9.jpg",
     description: "Чтобы понять устройство ветвей, найди след первозданной материи и создай ключ к её истоку.",
     target: "origin_key",
     rewardSkint: 205,

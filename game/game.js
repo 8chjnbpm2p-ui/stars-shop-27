@@ -1564,11 +1564,6 @@ function renderLobby() {
   if (number) number.textContent = "МИР " + String(world.number).padStart(2, "0");
 }
 
-const lobbyChangeWorldButton = document.getElementById("lobbyChangeWorldButton");
-if (lobbyChangeWorldButton) {
-  lobbyChangeWorldButton.addEventListener("click", () => openPage("worldsPage"));
-}
-
 function renderAll() {
   renderLobby();
   renderBoard();

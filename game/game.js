@@ -157,7 +157,7 @@ function getItemImageUrl(itemId) {
 
   const rootId = item.baseItemId || itemId;
   const rootItem = items[rootId] || item;
-  const emoji = (rootItem.icon || item.icon || "").replace(/\\uFE0F/g, "");
+  const emoji = (rootItem.icon || item.icon || "").replace(/\uFE0F/g, "");
   const codepoints = Array.from(emoji)
     .map(character => character.codePointAt(0).toString(16))
     .join("-");

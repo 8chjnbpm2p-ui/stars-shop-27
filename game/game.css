@@ -1288,3 +1288,31 @@ body {
   background: linear-gradient(135deg, #493466, #302342);
   font-weight: 750;
 }
+
+
+/* Нативный input скрыт: выбор фото открывается красивой кнопкой */
+.avatar-file-input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
+/* Выполненные задания аккуратно отделены и остаются внизу списка */
+.quest-card-completed {
+  border-color: #5b496f;
+  background: linear-gradient(145deg, #1d1928, #171321);
+  opacity: 0.82;
+}
+.quest-card-completed button:disabled {
+  color: #d6c8e6;
+  background: #40364f;
+  border-color: #655675;
+  opacity: 0.85;
+}

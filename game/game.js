@@ -1553,7 +1553,24 @@ function showMessage(message) {
    ОБНОВЛЕНИЕ ИГРЫ
 ========================================= */
 
+function renderLobby() {
+  const world = worlds[(state.currentWorld || 1) - 1] || worlds[0];
+  document.body.dataset.world = String(world.number);
+  const name = document.getElementById("lobbyWorldName");
+  const description = document.getElementById("lobbyWorldDescription");
+  const number = document.getElementById("lobbyWorldNumber");
+  if (name) name.textContent = world.name;
+  if (description) description.textContent = world.description;
+  if (number) number.textContent = "МИР " + String(world.number).padStart(2, "0");
+}
+
+const lobbyChangeWorldButton = document.getElementById("lobbyChangeWorldButton");
+if (lobbyChangeWorldButton) {
+  lobbyChangeWorldButton.addEventListener("click", () => openPage("worldsPage"));
+}
+
 function renderAll() {
+  renderLobby();
   renderBoard();
   renderCurrencies();
   renderQuests();

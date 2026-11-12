@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#100d1b">
   <title>Приключение Lo</title>
-  <link rel="stylesheet" href="game.css?v=20261112-mini-nick1">
+  <link rel="stylesheet" href="game.css?v=20261112-tap-nickname1">
 </head>
 
 <body>
@@ -217,8 +217,7 @@
       <section class="page" id="profilePage">
 
         <div class="section-heading">
-          <h2>Меню</h2>
-          <p>Твоя статистика в Приключении Lo.</p>
+          <h2>Мироходец</h2>
         </div>
 
         <div class="profile-card">
@@ -233,14 +232,15 @@
               <button class="avatar-change-button" id="changeAvatarButton" type="button">Изменить фото</button>
             </div>
             <div class="profile-identity-info">
-              <div class="profile-nickname-mini">
+              <button class="profile-nickname-mini" id="profileNicknameButton" type="button" aria-expanded="false" aria-controls="gameNicknamePanel">
                 <span>НИК</span>
                 <strong id="profileName">name_993</strong>
-              </div>
+                <small>Изменить</small>
+              </button>
             </div>
           </div>
 
-          <div class="game-nickname-panel">
+          <div class="game-nickname-panel hidden" id="gameNicknamePanel">
             <label for="gameNicknameInput">Твой игровой ник</label>
             <div class="game-nickname-row">
               <input id="gameNicknameInput" type="text" maxlength="16" minlength="3"

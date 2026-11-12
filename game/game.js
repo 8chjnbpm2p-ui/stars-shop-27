@@ -807,48 +807,87 @@ function mergeItems(sourceIndex, targetIndex) {
 
 let lastTappedIndex = null;
 let lastTapAt = 0;
+let dragGhost = null;
+let dragTargetCell = null;
+let dragOffset = { x: 0, y: 0 };
+
+function clearDragVisuals() {
+  if (dragGhost) dragGhost.remove();
+  dragGhost = null;
+  if (dragTargetCell) dragTargetCell.classList.remove("drop-target");
+  dragTargetCell = null;
+  if (boardElement) {
+    boardElement.querySelectorAll(".drag-source").forEach(el => el.classList.remove("drag-source"));
+  }
+}
 
 if (boardElement) {
   boardElement.addEventListener("pointerdown", event => {
     const cell = event.target.closest(".board-cell");
     if (!cell) return;
+    const index = Number(cell.dataset.index);
+    const currentBoard = getCurrentBoard();
     event.preventDefault();
-    dragSource = Number(cell.dataset.index);
+    dragSource = index;
     pointerStart = { x: event.clientX, y: event.clientY };
     pointerMoved = false;
-    if (boardElement.setPointerCapture && event.pointerId !== undefined) {
-      try { boardElement.setPointerCapture(event.pointerId); } catch (_) {}
+
+    if (currentBoard[index] && items[currentBoard[index]]) {
+      const rect = cell.getBoundingClientRect();
+      dragOffset = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      dragGhost = document.createElement("div");
+      dragGhost.className = "item-drag-ghost";
+      dragGhost.textContent = items[currentBoard[index]].icon;
+      dragGhost.style.width = rect.width + "px";
+      dragGhost.style.height = rect.height + "px";
+      dragGhost.style.left = rect.left + "px";
+      dragGhost.style.top = rect.top + "px";
+      document.body.appendChild(dragGhost);
+      cell.classList.add("drag-source");
+    }
+    if (cell.setPointerCapture && event.pointerId !== undefined) {
+      try { cell.setPointerCapture(event.pointerId); } catch (_) {}
     }
   });
 
   boardElement.addEventListener("pointermove", event => {
     if (dragSource === null || !pointerStart) return;
-    const distance = Math.hypot(
-      event.clientX - pointerStart.x,
-      event.clientY - pointerStart.y
-    );
-    if (distance > 9) pointerMoved = true;
+    const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+    if (distance > 5) pointerMoved = true;
+    if (!pointerMoved) return;
+
+    if (dragGhost) {
+      dragGhost.style.left = (event.clientX - dragOffset.x) + "px";
+      dragGhost.style.top = (event.clientY - dragOffset.y) + "px";
+      dragGhost.classList.add("dragging");
+    }
+
+    const underPointer = document.elementFromPoint(event.clientX, event.clientY);
+    const nextTarget = underPointer?.closest(".board-cell") || null;
+    if (dragTargetCell !== nextTarget) {
+      if (dragTargetCell) dragTargetCell.classList.remove("drop-target");
+      dragTargetCell = nextTarget;
+      if (dragTargetCell) dragTargetCell.classList.add("drop-target");
+    }
   });
 
   boardElement.addEventListener("pointerup", event => {
     if (dragSource === null) return;
     const sourceIndex = dragSource;
-    const targetCell = document.elementFromPoint(
-      event.clientX, event.clientY
-    )?.closest(".board-cell");
+    const targetCell = document.elementFromPoint(event.clientX, event.clientY)?.closest(".board-cell");
 
     if (pointerMoved && targetCell) {
       const targetIndex = Number(targetCell.dataset.index);
       if (sourceIndex !== targetIndex) {
-        const board = getCurrentBoard();
-        if (board[sourceIndex] && !board[targetIndex] && !tutorialMode) {
-          board[targetIndex] = board[sourceIndex];
-          board[sourceIndex] = null;
+        const currentBoard = getCurrentBoard();
+        if (currentBoard[sourceIndex] && !currentBoard[targetIndex] && !tutorialMode) {
+          currentBoard[targetIndex] = currentBoard[sourceIndex];
+          currentBoard[sourceIndex] = null;
           state.boardValues[targetIndex] = state.boardValues[sourceIndex] || SUMMON_COST;
           state.boardValues[sourceIndex] = 0;
           saveState();
           renderBoard();
-        } else if (board[sourceIndex] && board[targetIndex]) {
+        } else if (currentBoard[sourceIndex] && currentBoard[targetIndex]) {
           mergeItems(sourceIndex, targetIndex);
         }
       }
@@ -866,7 +905,7 @@ if (boardElement) {
         } else {
           lastTappedIndex = sourceIndex;
           lastTapAt = now;
-          showMessage("Нажми ещё раз, чтобы продать предмет");
+          showMessage("Перетащи предмет на другой или на пустую клетку. Двойное нажатие — продажа.");
         }
       } else {
         lastTappedIndex = null;
@@ -874,16 +913,20 @@ if (boardElement) {
       }
     }
 
+    clearDragVisuals();
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
   });
 
-  boardElement.addEventListener("pointercancel", () => {
+  const cancelDrag = () => {
+    clearDragVisuals();
     dragSource = null;
     pointerStart = null;
     pointerMoved = false;
-  });
+  };
+  boardElement.addEventListener("pointercancel", cancelDrag);
+  boardElement.addEventListener("lostpointercapture", cancelDrag);
 }
 
 function handleTutorialTap(index) {

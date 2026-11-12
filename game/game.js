@@ -1298,7 +1298,7 @@ const ITEM_ATLAS_SLOTS = {
   strange_glass:13, copper_wire:17, weak_energy:38, anomaly_core:12, anomaly_stabilizer:0,
   amulet_fragment:14, silver_thread:17, magic_essence:11, amulet_core:9, eola_amulet:9,
   tree_bark:37, dark_feather:18, stone_symbol:3, order_core:28, order_sign:28,
-  fire_core:26, fire_emblem:16, broken_persik:42, power_cell:30, persik_prime:1,
+  fire_core:26, fire_emblem:16, broken_persik:34, power_cell:30, persik_prime:1,
   identity_chip:27, forged_document:23, alt_city_pass:23, carbon_shard:37, copper_circuit:27,
   enriched_carbon:6, jammer_core:12, stealth_jammer:40, archive_key:24, tower_pass:23,
   memory_fragment:22, raya_memory:30, imperial_cipher:7, rehoboam_fragment:42, jdh_cipher:22,

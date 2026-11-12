@@ -163,7 +163,7 @@ function getItemImageUrl(itemId) {
     .join("-");
 
   return codepoints
-    ? "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/" + codepoints + ".svg"
+    ? "assets/items/" + codepoints + ".svg"
     : "";
 }
 

@@ -224,6 +224,86 @@ const items = {
     name: "Зашифрованное послание JDH",
     icon: "📨"
   }
+
+  ,
+  time_ash: { name: "Пепел остановленного времени", icon: "⌛" },
+  echo_thread: { name: "Нить временного эха", icon: "🧵" },
+  cracked_hourglass: { name: "Треснувшие песочные часы", icon: "⏳" },
+  void_gear: { name: "Шестерня Междумирья", icon: "⚙️" },
+  paradox_glass: { name: "Парадоксальное стекло", icon: "🪞" },
+  memory_sand: { name: "Песок утраченных воспоминаний", icon: "🏺" },
+  time_core: { name: "Сердцевина времени", icon: "🌀" },
+  time_key: { name: "Ключ временной тюрьмы", icon: "🗝️" },
+  echo_compass: { name: "Компас временного эха", icon: "🧭" },
+  echo_seal: { name: "Печать временного парадокса", icon: "🔮" },
+  prison_core: { name: "Основа печати Видомнии", icon: "🔗" },
+  prison_seal: { name: "Печать Видомнии", icon: "⛓️" },
+
+  sun_sand: { name: "Песок солнечного храма", icon: "🌞" },
+  black_obsidian: { name: "Осколок чёрного обсидиана", icon: "🪨" },
+  sacred_oil: { name: "Священное масло", icon: "🫙" },
+  gold_thread: { name: "Золотая нить жреца", icon: "🧵" },
+  scarab_shell: { name: "Панцирь скарабея", icon: "🪲" },
+  flame_heart: { name: "Уголь божественного пламени", icon: "🔥" },
+  altar_core: { name: "Основа солнечного алтаря", icon: "🛕" },
+  thirteen_candle: { name: "Тринадцатый огонь", icon: "🕯️" },
+  sun_disc: { name: "Диск Окетры", icon: "☀️" },
+  scarab_emblem: { name: "Печать песчаного культа", icon: "🔱" },
+  oath_core: { name: "Основа клятвы", icon: "📜" },
+  oath_seal: { name: "Клятва тринадцати огней", icon: "✨" },
+
+  broken_mask: { name: "Повреждённая маска автоматона", icon: "🎭" },
+  data_tape: { name: "Лента университетского архива", icon: "📼" },
+  synth_chip: { name: "Синтетический чип", icon: "💾" },
+  memory_film: { name: "Плёнка воспоминаний", icon: "🎞️" },
+  servo_motor: { name: "Сервопривод", icon: "🔩" },
+  code_fragment: { name: "Фрагмент кода JDH", icon: "💻" },
+  campus_core: { name: "Основа пропуска Lucky Charms", icon: "🎓" },
+  campus_pass: { name: "Пропуск университета", icon: "🪪" },
+  automaton_core: { name: "Ядро перепрошивки", icon: "🤖" },
+  automaton_key: { name: "Ключ свободы автоматонов", icon: "🔑" },
+  mask_core: { name: "Основа маски путешественника", icon: "🎭" },
+  jdh_mask: { name: "Маска JDH", icon: "🕶️" },
+
+  cosmic_dust: { name: "Звёздная пыль", icon: "🌌" },
+  star_ore: { name: "Руда далёкой звезды", icon: "☄️" },
+  gravity_crystal: { name: "Кристалл гравитации", icon: "💠" },
+  void_ink: { name: "Чернила пустоты", icon: "🖋️" },
+  origin_seed: { name: "Семя первозданной материи", icon: "🌱" },
+  resonance_shell: { name: "Оболочка резонанса", icon: "🐚" },
+  cosmic_core: { name: "Основа космической линзы", icon: "🔭" },
+  cosmic_lens: { name: "Линза мироздания", icon: "🔮" },
+  heart_core: { name: "Сердцевина Вселенной", icon: "❤️‍🔥" },
+  heart_fragment: { name: "Фрагмент Сердца Вселенной", icon: "💗" },
+  origin_core: { name: "Основа первоисточника", icon: "🌀" },
+  origin_key: { name: "Ключ первозданной ветви", icon: "🗝️" },
+
+  bunker_scrap: { name: "Металлолом убежища", icon: "🧱" },
+  filter_mesh: { name: "Фильтрующая сетка", icon: "🕸️" },
+  skint_blood: { name: "Сгусток скинта", icon: "🩸" },
+  branch_map: { name: "Карта умирающей ветки", icon: "🗺️" },
+  time_cell: { name: "Ячейка времени", icon: "🔋" },
+  containment_glass: { name: "Защитное стекло", icon: "🧪" },
+  filter_core: { name: "Основа фильтра убежища", icon: "⚗️" },
+  shelter_filter: { name: "Фильтр для бункера", icon: "🛡️" },
+  branch_core: { name: "Якорь ветки", icon: "⚓" },
+  branch_anchor: { name: "Стабилизатор живой ветки", icon: "🌿" },
+  mother_core: { name: "Основа сосуда Первой Матери", icon: "🏺" },
+  first_mother_vial: { name: "Сосуд крови Первой Матери", icon: "🧬" },
+
+  workshop_ore: { name: "Руда Мастерской", icon: "⛏️" },
+  gear_spring: { name: "Пружина точного механизма", icon: "⚙️" },
+  blueprint: { name: "Чертёж неизвестной конструкции", icon: "📐" },
+  arcane_alloy: { name: "Дуговой сплав", icon: "🔩" },
+  living_core: { name: "Живое ядро", icon: "💚" },
+  crystal_logic: { name: "Кристалл логики", icon: "💎" },
+  mk47_core: { name: "Основа модуля МК-47", icon: "🧩" },
+  mk47_module: { name: "Модуль МК-47", icon: "🤖" },
+  workshop_core: { name: "Ядро Мастерской", icon: "🏭" },
+  workshop_key: { name: "Ключ второго этапа", icon: "🔑" },
+  evolution_core: { name: "Основа эволюционного чертежа", icon: "📘" },
+  evolution_blueprint: { name: "Чертёж следующей формы", icon: "✨" }
+
 };
 
 /* =========================================
@@ -264,6 +344,45 @@ const recipes = {
   [makePair("alt_city_pass", "archive_key")]: "tower_pass",
   [makePair("memory_fragment", "persik_prime")]: "raya_memory",
   [makePair("raya_memory", "rehoboam_fragment")]: "jdh_cipher"
+
+  ,
+  [makePair("time_ash", "echo_thread")]: "time_core",
+  [makePair("time_core", "cracked_hourglass")]: "time_key",
+  [makePair("paradox_glass", "void_gear")]: "echo_compass",
+  [makePair("echo_compass", "memory_sand")]: "echo_seal",
+  [makePair("memory_sand", "time_ash")]: "prison_core",
+  [makePair("prison_core", "echo_thread")]: "prison_seal",
+  [makePair("sun_sand", "black_obsidian")]: "altar_core",
+  [makePair("altar_core", "sacred_oil")]: "thirteen_candle",
+  [makePair("scarab_shell", "gold_thread")]: "sun_disc",
+  [makePair("sun_disc", "flame_heart")]: "scarab_emblem",
+  [makePair("sacred_oil", "flame_heart")]: "oath_core",
+  [makePair("oath_core", "black_obsidian")]: "oath_seal",
+  [makePair("data_tape", "synth_chip")]: "campus_core",
+  [makePair("campus_core", "memory_film")]: "campus_pass",
+  [makePair("broken_mask", "servo_motor")]: "automaton_core",
+  [makePair("automaton_core", "code_fragment")]: "automaton_key",
+  [makePair("memory_film", "code_fragment")]: "mask_core",
+  [makePair("mask_core", "broken_mask")]: "jdh_mask",
+  [makePair("cosmic_dust", "star_ore")]: "cosmic_core",
+  [makePair("cosmic_core", "gravity_crystal")]: "cosmic_lens",
+  [makePair("gravity_crystal", "resonance_shell")]: "heart_core",
+  [makePair("heart_core", "void_ink")]: "heart_fragment",
+  [makePair("origin_seed", "void_ink")]: "origin_core",
+  [makePair("origin_core", "cosmic_dust")]: "origin_key",
+  [makePair("bunker_scrap", "filter_mesh")]: "filter_core",
+  [makePair("filter_core", "containment_glass")]: "shelter_filter",
+  [makePair("branch_map", "time_cell")]: "branch_core",
+  [makePair("branch_core", "skint_blood")]: "branch_anchor",
+  [makePair("skint_blood", "containment_glass")]: "mother_core",
+  [makePair("mother_core", "time_cell")]: "first_mother_vial",
+  [makePair("workshop_ore", "gear_spring")]: "mk47_core",
+  [makePair("mk47_core", "blueprint")]: "mk47_module",
+  [makePair("arcane_alloy", "crystal_logic")]: "workshop_core",
+  [makePair("workshop_core", "living_core")]: "workshop_key",
+  [makePair("living_core", "crystal_logic")]: "evolution_core",
+  [makePair("evolution_core", "blueprint")]: "evolution_blueprint"
+
 };
 
 /* =========================================
@@ -579,6 +698,203 @@ const questData = [
     target: "jdh_cipher",
     rewardSkint: 180,
     rewardAnti: 5
+  },
+  {
+    id: "voiceJodahQuest",
+    world: 4,
+    title: "След временной петли",
+    character: "Джодах",
+    description: "Ты снова замечаешь следы временной петли. Собери ключ, чтобы открыть путь к запечатанным воспоминаниям.",
+    target: "time_key",
+    rewardSkint: 115,
+    rewardAnti: 4
+  },
+  {
+    id: "voiceFaragondaQuest",
+    world: 4,
+    requires: ""
+    title: "Компас потерянных мгновений",
+    character: "Фарагонда",
+    description: "Временное эхо сбивает ориентиры. Создай компас и закрепи его печатью, чтобы найти правильную ветвь.",
+    target: "echo_seal",
+    rewardSkint: 135,
+    rewardAnti: 4
+  },
+  {
+    id: "voiceEbardoQuest",
+    world: 4,
+    requires: ""
+    title: "Тюрьма для парадокса",
+    character: "Эбардо",
+    description: "Парадокс нельзя оставить без контроля. Подготовь печать Видомнии — она удержит разлом хотя бы на время.",
+    target: "prison_seal",
+    rewardSkint: 160,
+    rewardAnti: 5
+  },
+  {
+    id: "flamesOketraQuest",
+    world: 5,
+
+    title: "Знак солнечного храма",
+    character: "Окетра",
+    description: "Храм не примет чужака без подношения. Восстанови алтарь и зажги тринадцатый огонь.",
+    target: "thirteen_candle",
+    rewardSkint: 125,
+    rewardAnti: 4
+  },
+  {
+    id: "flamesSindbadQuest",
+    world: 5,
+
+    title: "Путь через пески",
+    character: "Синдбад",
+    description: "Мне нужен знак, который укажет безопасный путь через пустыню. Собери диск и наполни его жаром древнего пламени.",
+    target: "sun_disc",
+    rewardSkint: 145,
+    rewardAnti: 4
+  },
+  {
+    id: "flamesSderikQuest",
+    world: 5,
+
+    title: "Клятва тринадцати",
+    character: "Сдерик",
+    description: "Боги не должны решать судьбу каждого. Создай печать клятвы, чтобы объединить тех, кто готов сопротивляться.",
+    target: "oath_seal",
+    rewardSkint: 175,
+    rewardAnti: 5
+  },
+  {
+    id: "realityJennaQuest",
+    world: 6,
+
+    title: "Студенческий пропуск",
+    character: "Дженна",
+    description: "Без записи в базе Lucky Charms тебе не попасть в общежитие. Восстанови архивные данные и оформи пропуск.",
+    target: "campus_pass",
+    rewardSkint: 130,
+    rewardAnti: 4
+  },
+  {
+    id: "realityDylanQuest",
+    world: 6,
+
+    title: "Память на плёнке",
+    character: "Дилан",
+    description: "Записи Тима могут помочь разобраться с автоматонами. Собери ключ перепрошивки, не повредив их память.",
+    target: "automaton_key",
+    rewardSkint: 150,
+    rewardAnti: 4
+  },
+  {
+    id: "realitySolusQuest",
+    world: 6,
+
+    title: "Маска для плана",
+    character: "Саймон Солус",
+    description: "Нам нужно перехитрить систему и защитить друзей. Подготовь маску, связанную с кодом JDH.",
+    target: "jdh_mask",
+    rewardSkint: 185,
+    rewardAnti: 5
+  },
+  {
+    id: "heartShangrinQuest",
+    world: 7,
+
+    title: "Звёздная оптика",
+    character: "Шангрин",
+    description: "Звёздная пыль реагирует на гравитацию. Создай линзу, чтобы увидеть структуру пространства между мирами.",
+    target: "cosmic_lens",
+    rewardSkint: 145,
+    rewardAnti: 4
+  },
+  {
+    id: "heartWatcherQuest",
+    world: 7,
+
+    title: "Пульс мироздания",
+    character: "Смотрящий",
+    description: "Сердце Вселенной откликается на резонанс. Собери фрагмент, способный удержать его импульс.",
+    target: "heart_fragment",
+    rewardSkint: 175,
+    rewardAnti: 5
+  },
+  {
+    id: "heartJodahQuest",
+    world: 7,
+
+    title: "Первоисточник",
+    character: "Джодах",
+    description: "Чтобы понять устройство ветвей, найди след первозданной материи и создай ключ к её истоку.",
+    target: "origin_key",
+    rewardSkint: 205,
+    rewardAnti: 6
+  },
+  {
+    id: "pointLaiyaQuest",
+    world: 8,
+
+    title: "Воздух для убежища",
+    character: "Лайетана",
+    description: "В убежище нельзя долго оставаться без фильтрации. Собери надёжный фильтр из уцелевших деталей.",
+    target: "shelter_filter",
+    rewardSkint: 150,
+    rewardAnti: 4
+  },
+  {
+    id: "pointValdharQuest",
+    world: 8,
+
+    title: "Якорь живой ветки",
+    character: "Вальдхар",
+    description: "Ветка умирает, а времени почти не осталось. Создай якорь, который поможет удержать её от распада.",
+    target: "branch_anchor",
+    rewardSkint: 185,
+    rewardAnti: 5
+  },
+  {
+    id: "pointKacperQuest",
+    world: 8,
+
+    title: "Сосуд Первой Матери",
+    character: "Кацпер Малецки",
+    description: "Для исследования нужен защищённый сосуд. Подготовь его и сохрани образец крови Первой Матери.",
+    target: "first_mother_vial",
+    rewardSkint: 220,
+    rewardAnti: 6
+  },
+  {
+    id: "workshopAitorQuest",
+    world: 9,
+
+    title: "Сборка МК-47",
+    character: "Айтор",
+    description: "Новый этап требует самостоятельности. Собери базовый модуль МК-47 из руды, пружины и чертежа.",
+    target: "mk47_module",
+    rewardSkint: 160,
+    rewardAnti: 5
+  },
+  {
+    id: "workshopMilandraQuest",
+    world: 9,
+
+    title: "Ядро Мастерской",
+    character: "Миландра",
+    description: "После катаклизма лагерю нужна новая опора. Создай ядро и активируй ключ Мастерской.",
+    target: "workshop_key",
+    rewardSkint: 190,
+    rewardAnti: 5
+  },
+  {
+    id: "workshopWatcherQuest",
+    world: 9,
+
+    title: "Следующая форма",
+    character: "Смотрящий",
+    description: "Предел развития ещё не достигнут. Объедини живое ядро с кристаллом логики и восстанови чертёж следующей формы.",
+    target: "evolution_blueprint",
+    rewardSkint: 230,
+    rewardAnti: 7
   }
 ];
 
@@ -674,12 +990,26 @@ function loadState() {
       "tree_bark", "dark_feather", "stone_symbol", "order_core", "order_sign",
       "fire_core", "fire_emblem"
     ]);
+    const world3Items = new Set(["broken_persik","power_cell","persik_prime","identity_chip","forged_document","alt_city_pass","carbon_shard","copper_circuit","enriched_carbon","jammer_core","stealth_jammer","archive_key","tower_pass","memory_fragment","raya_memory","imperial_cipher","rehoboam_fragment","jdh_cipher"]);
+    const world4Items = new Set(["time_ash","echo_thread","cracked_hourglass","void_gear","paradox_glass","memory_sand","time_core","time_key","echo_compass","echo_seal","prison_core","prison_seal"]);
+    const world5Items = new Set(["sun_sand","black_obsidian","sacred_oil","gold_thread","scarab_shell","flame_heart","altar_core","thirteen_candle","sun_disc","scarab_emblem","oath_core","oath_seal"]);
+    const world6Items = new Set(["broken_mask","data_tape","synth_chip","memory_film","servo_motor","code_fragment","campus_core","campus_pass","automaton_core","automaton_key","mask_core","jdh_mask"]);
+    const world7Items = new Set(["cosmic_dust","star_ore","gravity_crystal","void_ink","origin_seed","resonance_shell","cosmic_core","cosmic_lens","heart_core","heart_fragment","origin_core","origin_key"]);
+    const world8Items = new Set(["bunker_scrap","filter_mesh","skint_blood","branch_map","time_cell","containment_glass","filter_core","shelter_filter","branch_core","branch_anchor","mother_core","first_mother_vial"]);
+    const world9Items = new Set(["workshop_ore","gear_spring","blueprint","arcane_alloy","living_core","crystal_logic","mk47_core","mk47_module","workshop_core","workshop_key","evolution_core","evolution_blueprint"]);
     for (let i = 0; i < BOARD_SIZE; i++) {
       if (board[i]) ensureUpgradeItem(board[i]);
       const rootId = items[board[i]]?.baseItemId || board[i];
       const belongsToPreviousWorld =
         (savedWorld >= 2 && firstWorldItems.has(rootId)) ||
-        (savedWorld >= 3 && secondWorldItems.has(rootId));
+        (savedWorld >= 3 && secondWorldItems.has(rootId)) ||
+        (savedWorld >= 4 && world3Items.has(rootId)) ||
+        (savedWorld >= 5 && world4Items.has(rootId)) ||
+        (savedWorld >= 6 && world5Items.has(rootId)) ||
+        (savedWorld >= 7 && world6Items.has(rootId)) ||
+        (savedWorld >= 8 && world7Items.has(rootId)) ||
+        (savedWorld >= 9 && world8Items.has(rootId)) ||
+        (savedWorld >= 10 && world9Items.has(rootId));
       if (board[i] && (!items[board[i]] || belongsToPreviousWorld)) {
         board[i] = null;
         boardValues[i] = 0;
@@ -860,6 +1190,39 @@ const worldSummonDrops = {
     { id: "imperial_cipher", weight: 5 },
     { id: "rehoboam_fragment", weight: 4 }
   ]
+
+  ,
+  4: [
+    { id: "time_ash", weight: 16 }, { id: "echo_thread", weight: 16 },
+    { id: "cracked_hourglass", weight: 14 }, { id: "void_gear", weight: 14 },
+    { id: "paradox_glass", weight: 14 }, { id: "memory_sand", weight: 14 }
+  ],
+  5: [
+    { id: "sun_sand", weight: 17 }, { id: "black_obsidian", weight: 16 },
+    { id: "sacred_oil", weight: 15 }, { id: "gold_thread", weight: 14 },
+    { id: "scarab_shell", weight: 14 }, { id: "flame_heart", weight: 12 }
+  ],
+  6: [
+    { id: "broken_mask", weight: 17 }, { id: "data_tape", weight: 16 },
+    { id: "synth_chip", weight: 16 }, { id: "memory_film", weight: 15 },
+    { id: "servo_motor", weight: 14 }, { id: "code_fragment", weight: 10 }
+  ],
+  7: [
+    { id: "cosmic_dust", weight: 18 }, { id: "star_ore", weight: 16 },
+    { id: "gravity_crystal", weight: 16 }, { id: "void_ink", weight: 14 },
+    { id: "origin_seed", weight: 14 }, { id: "resonance_shell", weight: 12 }
+  ],
+  8: [
+    { id: "bunker_scrap", weight: 18 }, { id: "filter_mesh", weight: 17 },
+    { id: "skint_blood", weight: 12 }, { id: "branch_map", weight: 15 },
+    { id: "time_cell", weight: 14 }, { id: "containment_glass", weight: 14 }
+  ],
+  9: [
+    { id: "workshop_ore", weight: 18 }, { id: "gear_spring", weight: 17 },
+    { id: "blueprint", weight: 14 }, { id: "arcane_alloy", weight: 15 },
+    { id: "living_core", weight: 12 }, { id: "crystal_logic", weight: 14 }
+  ]
+
 };
 
 function getRandomSummonItem() {
@@ -1702,6 +2065,27 @@ function createQuestGuide(quest) {
       ["memory_fragment", "persik_prime", "raya_memory"],
       ["raya_memory", "rehoboam_fragment", "jdh_cipher"]
     ]
+
+    ,
+    time_key: [["time_ash","echo_thread","time_core"],["time_core","cracked_hourglass","time_key"]],
+    echo_seal: [["paradox_glass","void_gear","echo_compass"],["echo_compass","memory_sand","echo_seal"]],
+    prison_seal: [["memory_sand","time_ash","prison_core"],["prison_core","echo_thread","prison_seal"]],
+    thirteen_candle: [["sun_sand","black_obsidian","altar_core"],["altar_core","sacred_oil","thirteen_candle"]],
+    sun_disc: [["scarab_shell","gold_thread","sun_disc"]],
+    oath_seal: [["sacred_oil","flame_heart","oath_core"],["oath_core","black_obsidian","oath_seal"]],
+    campus_pass: [["data_tape","synth_chip","campus_core"],["campus_core","memory_film","campus_pass"]],
+    automaton_key: [["broken_mask","servo_motor","automaton_core"],["automaton_core","code_fragment","automaton_key"]],
+    jdh_mask: [["memory_film","code_fragment","mask_core"],["mask_core","broken_mask","jdh_mask"]],
+    cosmic_lens: [["cosmic_dust","star_ore","cosmic_core"],["cosmic_core","gravity_crystal","cosmic_lens"]],
+    heart_fragment: [["gravity_crystal","resonance_shell","heart_core"],["heart_core","void_ink","heart_fragment"]],
+    origin_key: [["origin_seed","void_ink","origin_core"],["origin_core","cosmic_dust","origin_key"]],
+    shelter_filter: [["bunker_scrap","filter_mesh","filter_core"],["filter_core","containment_glass","shelter_filter"]],
+    branch_anchor: [["branch_map","time_cell","branch_core"],["branch_core","skint_blood","branch_anchor"]],
+    first_mother_vial: [["skint_blood","containment_glass","mother_core"],["mother_core","time_cell","first_mother_vial"]],
+    mk47_module: [["workshop_ore","gear_spring","mk47_core"],["mk47_core","blueprint","mk47_module"]],
+    workshop_key: [["arcane_alloy","crystal_logic","workshop_core"],["workshop_core","living_core","workshop_key"]],
+    evolution_blueprint: [["living_core","crystal_logic","evolution_core"],["evolution_core","blueprint","evolution_blueprint"]]
+
   };
 
   const steps = guideRecipes[quest.target] || [];

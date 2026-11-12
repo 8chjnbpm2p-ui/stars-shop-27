@@ -1688,6 +1688,23 @@ async function refreshGameFriends() {
   }
 }
 
+const profileNicknameButton = document.getElementById("profileNicknameButton");
+const gameNicknamePanel = document.getElementById("gameNicknamePanel");
+if (profileNicknameButton && gameNicknamePanel) {
+  profileNicknameButton.addEventListener("click", () => {
+    const isOpening = gameNicknamePanel.classList.contains("hidden");
+    gameNicknamePanel.classList.toggle("hidden", !isOpening);
+    profileNicknameButton.setAttribute("aria-expanded", String(isOpening));
+    if (isOpening) {
+      const nicknameInput = document.getElementById("gameNicknameInput");
+      if (nicknameInput) {
+        nicknameInput.value = state.nickname || "";
+        nicknameInput.focus();
+      }
+    }
+  });
+}
+
 const saveGameNicknameButton = document.getElementById("saveGameNicknameButton");
 if (saveGameNicknameButton) {
   saveGameNicknameButton.addEventListener("click", async () => {
@@ -1709,6 +1726,8 @@ if (saveGameNicknameButton) {
       saveState();
       renderProfile();
       if (status) status.textContent = "Ник сохранён!";
+      if (gameNicknamePanel) gameNicknamePanel.classList.add("hidden");
+      if (profileNicknameButton) profileNicknameButton.setAttribute("aria-expanded", "false");
       await refreshGameFriends();
     } catch (error) {
       if (status) status.textContent = error.message;

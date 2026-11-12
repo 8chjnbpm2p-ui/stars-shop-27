@@ -1360,3 +1360,57 @@ body {
   color: #f1fcff;
   background: linear-gradient(135deg, #287f91, #24516d);
 }
+
+
+/* Лобби: цвет и настроение меняются вместе с выбранным миром. */
+body[data-world="1"] { --world-a:#27c9b6; --world-b:#167e91; --world-c:#0b343d; --world-panel:#12333b; --world-edge:#56e0cf; --world-halo:#28cbb4; }
+body[data-world="2"] { --world-a:#ff766d; --world-b:#b63250; --world-c:#3c142d; --world-panel:#381b32; --world-edge:#ff9a80; --world-halo:#fa566d; }
+body[data-world="3"] { --world-a:#83dca9; --world-b:#368e70; --world-c:#123b32; --world-panel:#183c32; --world-edge:#a9f0c1; --world-halo:#65d99a; }
+body[data-world="4"] { --world-a:#63c9ff; --world-b:#326eb5; --world-c:#102c4b; --world-panel:#172f4b; --world-edge:#8cdbff; --world-halo:#5abaff; }
+body[data-world="5"] { --world-a:#ffbd58; --world-b:#d66b32; --world-c:#49210f; --world-panel:#402515; --world-edge:#ffd080; --world-halo:#ff9a3e; }
+body[data-world="6"] { --world-a:#ff80bd; --world-b:#a33c88; --world-c:#401b43; --world-panel:#3a1d3d; --world-edge:#ffa2d1; --world-halo:#f16bb3; }
+body[data-world="7"] { --world-a:#a5b5ff; --world-b:#6253c7; --world-c:#211d56; --world-panel:#242451; --world-edge:#c0c8ff; --world-halo:#8f9bff; }
+body[data-world="8"] { --world-a:#ff866e; --world-b:#a63b3c; --world-c:#421a24; --world-panel:#3a202b; --world-edge:#ffab8b; --world-halo:#fa6d61; }
+body[data-world="9"] { --world-a:#e7ca72; --world-b:#96733a; --world-c:#3d321c; --world-panel:#382f20; --world-edge:#f4dfa0; --world-halo:#d9b85e; }
+body[data-world] {
+  background: radial-gradient(ellipse at 50% -8%, color-mix(in srgb, var(--world-halo) 34%, transparent) 0%, transparent 52%), linear-gradient(180deg, var(--world-c), #0d0a17 66%);
+}
+body[data-world] .game-title { text-shadow: 0 0 24px color-mix(in srgb, var(--world-halo) 60%, transparent); }
+body[data-world] .nav-button.active { background: linear-gradient(135deg, var(--world-a), var(--world-b)); border-color: var(--world-edge); box-shadow: 0 6px 20px color-mix(in srgb, var(--world-halo) 34%, transparent); }
+body[data-world] .board-wrapper { border-color: color-mix(in srgb, var(--world-edge) 55%, #ffffff22); background: linear-gradient(145deg, var(--world-panel), #10111d); box-shadow: 0 12px 34px #0005, 0 0 22px color-mix(in srgb, var(--world-halo) 17%, transparent); }
+body[data-world] .board-cell { border-color: color-mix(in srgb, var(--world-edge) 40%, #ffffff20); background: linear-gradient(145deg, color-mix(in srgb, var(--world-a) 22%, #222333), color-mix(in srgb, var(--world-b) 26%, #171626)); }
+body[data-world] .game-currencies .currency { border-color: color-mix(in srgb, var(--world-edge) 54%, #ffffff22); background: linear-gradient(145deg, color-mix(in srgb, var(--world-panel) 88%, var(--world-a)), #171525); }
+body[data-world] .summon-button { border-color: var(--world-edge); background: linear-gradient(145deg, var(--world-a), var(--world-b)); }
+body[data-world] .anti-summon-button { border-color: color-mix(in srgb, var(--world-edge) 65%, #8a8aaf); background: linear-gradient(145deg, color-mix(in srgb, var(--world-b) 70%, #29253a), #171525); }
+.lobby-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 190px;
+  margin: 0 0 15px;
+  padding: 22px 19px 18px;
+  border: 1px solid var(--world-edge, #56e0cf);
+  border-radius: 22px;
+  background: linear-gradient(118deg, color-mix(in srgb, var(--world-a, #27c9b6) 35%, #121827), color-mix(in srgb, var(--world-b, #167e91) 52%, #111321) 65%, #171323);
+  box-shadow: 0 12px 30px #0005, inset 0 1px #ffffff22, 0 0 24px color-mix(in srgb, var(--world-halo, #28cbb4) 22%, transparent);
+}
+.lobby-banner::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 190px;
+  height: 190px;
+  right: -55px;
+  top: -65px;
+  border: 1px solid color-mix(in srgb, var(--world-edge, #56e0cf) 60%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px color-mix(in srgb, var(--world-edge, #56e0cf) 8%, transparent), 0 0 0 40px color-mix(in srgb, var(--world-edge, #56e0cf) 6%, transparent);
+}
+.lobby-banner-content { position: relative; z-index: 1; max-width: 84%; }
+.lobby-eyebrow { display: block; margin-bottom: 8px; color: color-mix(in srgb, var(--world-edge, #56e0cf) 82%, white); font-size: 9px; font-weight: 900; letter-spacing: 1.4px; }
+.lobby-banner h2 { margin: 0 0 8px; color: #fff; font-family: Georgia, serif; font-size: clamp(23px, 6vw, 30px); line-height: 1.08; text-shadow: 0 3px 16px #0008; }
+.lobby-banner p { margin: 0 0 14px; color: #f1edf5; font-size: 12px; line-height: 1.45; }
+.lobby-world-button { display: inline-flex; align-items: center; gap: 9px; padding: 9px 13px; border: 1px solid color-mix(in srgb, var(--world-edge, #56e0cf) 75%, white); border-radius: 11px; color: #fff; background: #10131c99; font-size: 12px; font-weight: 800; }
+.lobby-world-button span { font-size: 15px; }
+.lobby-world-number { position: absolute; right: 13px; bottom: 13px; color: #ffffffa8; font-size: 10px; font-weight: 900; letter-spacing: 1.2px; }
+@media (max-width: 380px) { .lobby-banner { min-height: 180px; padding: 18px 15px; } .lobby-banner-content { max-width: 88%; } }

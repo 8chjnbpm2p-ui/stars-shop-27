@@ -554,10 +554,21 @@ button:focus-visible {
 }
 
 .sell-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 95px;
   height: 95px;
   margin: 0 auto 10px;
+}
+.sell-item-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+}
+.sell-item-icon .item-icon-fallback {
+  font-size: 64px;
 }
 
 .sell-item-name {
@@ -908,9 +919,12 @@ body {
   justify-content: center;
   width: 82%;
   height: 82%;
-  font-size: clamp(37px, 11vw, 58px);
+  object-fit: contain;
   line-height: 1;
   pointer-events: none;
+}
+.item-icon-fallback {
+  font-size: clamp(37px, 11vw, 58px);
 }
 .board-cell.drag-source { opacity: .28; }
 .board-cell.drop-target {
@@ -1479,4 +1493,12 @@ body[data-world="9"] {
 .game-message,
 .game-message.visible {
   display: none !important;
+}
+
+
+.asset-credit {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
 }

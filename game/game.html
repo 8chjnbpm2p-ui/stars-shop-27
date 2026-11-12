@@ -17,7 +17,7 @@
     <header class="top">
       <div class="top-title">
         <h1 class="game-title">Приключение Lo</h1>
-        <p>Объединяй предметы. Исследуй девять миров.</p>
+        <p>Собирай редкости, создавай артефакты и открывай миры.</p>
       </div>
     </header>
 
@@ -51,7 +51,7 @@
 
         <div class="section-heading">
           <h2>Игровое поле</h2>
-          <p>Объединяй одинаковые предметы или создавай новые.</p>
+          <p>Перетаскивай предметы друг на друга — одинаковые объединяются.</p>
         </div>
 
         <div class="board-wrapper">
@@ -83,11 +83,7 @@
 
         </div>
 
-        <p class="hint" id="boardHint">
-          Перетащи предмет на другой, чтобы объединить, или на пустую клетку, чтобы переместить. Дважды нажми на предмет, чтобы продать его.
-        </p>
-
-      </section>
+</section>
 
       <!-- МИРЫ -->
       <section class="page" id="worldsPage">
@@ -216,7 +212,7 @@
 
         <div class="profile-card">
 
-          <div class="profile-avatar">🌌</div>
+          <div class="profile-avatar" role="img" aria-label="Аватар персонажа"><span>🧑🏻‍🚀</span></div>
 
           <h2 id="profileName">Мироходец</h2>
           <p id="profileStatus">Начинающий</p>
@@ -273,15 +269,7 @@
 
         </div>
 
-        <button
-          class="secondary-button"
-          id="restartTutorialButton"
-          type="button"
-        >
-          Повторить обучение
-        </button>
-
-      </section>
+</section>
 
     </main>
 
@@ -333,80 +321,7 @@
 
     </div>
 
-  </div>
-
-  <!-- ОБУЧЕНИЕ -->
-  <div class="tutorial-overlay" id="tutorialOverlay">
-
-    <div class="tutorial-tooltip">
-
-      <div class="tutorial-step-label" id="tutorialStepLabel">
-        ОБУЧЕНИЕ · 1/6
-      </div>
-
-      <div class="tutorial-progress-track">
-        <div
-          class="tutorial-progress"
-          id="tutorialProgress"
-          style="width: 16.6%"
-        ></div>
-      </div>
-
-      <h2 id="tutorialTitle">Добро пожаловать!</h2>
-
-      <p id="tutorialText">
-        Добро пожаловать в Merge Worlds.
-      </p>
-
-      <button
-        class="primary-button"
-        id="tutorialButton"
-        type="button"
-      >
-        Начать
-      </button>
-
-      <button
-        class="secondary-button"
-        id="tutorialSkipButton"
-        type="button"
-      >
-        Пропустить обучение
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- ЗАВЕРШЕНИЕ ОБУЧЕНИЯ -->
-  <div
-    class="modal-overlay"
-    id="tutorialCompleteOverlay"
-  >
-
-    <div class="modal-card">
-
-      <div class="sell-item-icon">🌌</div>
-
-      <h2>Обучение завершено!</h2>
-
-      <p>
-        Теперь ты готов начать своё путешествие по мирам.
-      </p>
-
-      <button
-        class="primary-button"
-        id="tutorialCompleteButton"
-        type="button"
-      >
-        Начать игру
-      </button>
-
-    </div>
-
-  </div>
-
-  <script src="game.js"></script>
+  </div><script src="game.js"></script>
 
 
 </body>

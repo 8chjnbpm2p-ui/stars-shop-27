@@ -1268,3 +1268,23 @@ body {
 .board-cell.selected { outline: 3px solid #e7c77b; outline-offset: -4px; transform: scale(.97); }
 #homePage > .section-heading { display: none !important; }
 .top-title > p { display: none !important; }
+
+
+/* Подпись и действие под круглой аватаркой */
+.avatar-caption {
+  margin: -3px 0 10px;
+  color: #bdb0d2;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+.avatar-change-button {
+  display: block;
+  margin: 0 auto 14px;
+  padding: 9px 16px;
+  border: 1px solid #8d6bc0;
+  border-radius: 12px;
+  color: #f4eaff;
+  background: linear-gradient(135deg, #493466, #302342);
+  font-weight: 750;
+}

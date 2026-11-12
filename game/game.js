@@ -1491,22 +1491,23 @@ function renderQuests() {
   if (!questListElement) return;
   questListElement.innerHTML = "";
 
-  const availableQuests = questData.filter(quest =>
-    Number(quest.world || 1) === Number(state.currentWorld || 1) &&
-    (!quest.requires || state.completedQuests.includes(quest.requires))
+  // Показываем все задания текущего мира; сюжетные зависимости только блокируют принятие.
+  const visibleQuests = questData.filter(quest =>
+    Number(quest.world || 1) === Number(state.currentWorld || 1)
   );
-  const orderedQuests = [...availableQuests].sort((a, b) => {
-    return Number(state.completedQuests.includes(a.id)) -
-      Number(state.completedQuests.includes(b.id));
-  });
 
-  orderedQuests.forEach(quest => {
+  visibleQuests.forEach(quest => {
     const completed = state.completedQuests.includes(quest.id);
     const accepted = state.acceptedQuests.includes(quest.id);
     const hasTarget = state.board.includes(quest.target);
+    const locked = Boolean(
+      quest.requires && !state.completedQuests.includes(quest.requires)
+    );
 
     const card = document.createElement("article");
-    card.className = completed ? "quest-card quest-card-completed" : "quest-card";
+    card.className = "quest-card" +
+      (completed ? " quest-card-completed" : "") +
+      (locked ? " quest-card-locked" : "");
 
     const person = document.createElement("div");
     person.className = "quest-person";
@@ -1602,6 +1603,17 @@ function renderQuests() {
     if (completed) {
       button.textContent = "Задание выполнено";
       button.disabled = true;
+    } else if (locked) {
+      const requiredQuest = questData.find(item => item.id === quest.requires);
+      button.textContent = "🔒 Сначала заверши: " +
+        (requiredQuest?.title || "предыдущий квест");
+      button.disabled = true;
+      const lockNote = document.createElement("p");
+      lockNote.className = "quest-lock-note";
+      lockNote.textContent = "Это задание откроется после выполнения предыдущего по сюжету.";
+      card.append(person, title, worldLabel, description, reward, lockNote, button);
+      questListElement.appendChild(card);
+      return;
     } else if (!accepted) {
       button.textContent = "Принять задание";
       button.addEventListener("click", () => {

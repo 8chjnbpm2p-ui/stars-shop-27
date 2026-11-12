@@ -338,6 +338,17 @@ function loadState() {
       ? parsed.boardValues.slice(0, BOARD_SIZE)
       : board.map(item => item ? SUMMON_COST : 0);
 
+    // Старые пустые сохранения получают стартовую пару для первого объединения.
+    const neverPlayed = Number(parsed.summonedCount || 0) === 0 &&
+      Number(parsed.mergedCount || 0) === 0 &&
+      Number(parsed.soldCount || 0) === 0;
+    if (neverPlayed && board.every(item => !item)) {
+      board[0] = "ice_scale";
+      board[1] = "ice_scale";
+      boardValues[0] = SUMMON_COST;
+      boardValues[1] = SUMMON_COST;
+    }
+
     while (boardValues.length < BOARD_SIZE) {
       boardValues.push(0);
     }
@@ -879,8 +890,8 @@ if (boardElement) {
       document.body.appendChild(dragGhost);
       cell.classList.add("drag-source");
     }
-    if (cell.setPointerCapture && event.pointerId !== undefined) {
-      try { cell.setPointerCapture(event.pointerId); } catch (_) {}
+    if (boardElement.setPointerCapture && event.pointerId !== undefined) {
+      try { boardElement.setPointerCapture(event.pointerId); } catch (_) {}
     }
   });
 
@@ -939,7 +950,6 @@ if (boardElement) {
         } else {
           lastTappedIndex = sourceIndex;
           lastTapAt = now;
-          showMessage("Перетащи предмет на другой или на пустую клетку. Двойное нажатие — продажа.");
         }
       } else {
         lastTappedIndex = null;

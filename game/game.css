@@ -2152,3 +2152,6 @@ body[data-world="9"] {
 
 /* Иллюстрированные предметы вместо эмодзи */
 .item-icon,.sell-item-art{display:block;width:72%;height:72%;max-width:100%;max-height:100%;pointer-events:none;user-select:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.42))}.sell-item-art{width:82%;height:82%}.item-drag-ghost{pointer-events:none!important;filter:drop-shadow(0 8px 12px rgba(0,0,0,.5))}
+
+/* Compact transparent PNG atlas sprites */
+.item-atlas-icon{background-color:transparent;background-repeat:no-repeat;image-rendering:auto;}

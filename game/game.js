@@ -1078,6 +1078,16 @@ function loadState() {
 
 let state = loadState();
 
+// Прямая ссылка для просмотра мира без прохождения предыдущих заданий.
+// Параметр действует только в этой вкладке и не перезаписывает сохранение.
+const previewWorldParam = Number(new URLSearchParams(window.location.search).get("world"));
+if (Number.isInteger(previewWorldParam) && previewWorldParam >= 1 && previewWorldParam <= 9) {
+  state.currentWorld = previewWorldParam;
+  state.unlockedWorld = Math.max(state.unlockedWorld, previewWorldParam);
+  state.board = Array(BOARD_SIZE).fill(null);
+  state.boardValues = Array(BOARD_SIZE).fill(0);
+}
+
 function saveState() {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));

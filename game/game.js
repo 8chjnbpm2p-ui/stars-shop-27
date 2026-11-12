@@ -954,7 +954,15 @@ if (boardElement) {
           if (currentBoard[sourceIndex] === currentBoard[targetIndex]) {
             mergeItems(sourceIndex, targetIndex);
           } else if (!tutorialMode) {
-            showMessage("Объединяются только одинаковые предметы.");
+            const sourceItem = currentBoard[sourceIndex];
+            const targetItem = currentBoard[targetIndex];
+            currentBoard[sourceIndex] = targetItem;
+            currentBoard[targetIndex] = sourceItem;
+            const sourceValue = state.boardValues[sourceIndex] || SUMMON_COST;
+            state.boardValues[sourceIndex] = state.boardValues[targetIndex] || SUMMON_COST;
+            state.boardValues[targetIndex] = sourceValue;
+            saveState();
+            renderBoard();
           }
         }
       }

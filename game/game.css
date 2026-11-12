@@ -1550,3 +1550,21 @@ body[data-world="9"] {
   color: #bcaed0 !important;
   font-size: 10px !important;
 }
+
+
+/* Рецепт открывается именно нажатием на название квеста. */
+.quest-title-clickable {
+  cursor: pointer;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 6px;
+}
+.quest-title-clickable:focus-visible {
+  outline: 2px solid #b99ae8;
+  outline-offset: 4px;
+}
+.quest-title-clickable::after {
+  content: "  ▾";
+  color: #c8a9f2;
+  font: 700 12px sans-serif;
+}

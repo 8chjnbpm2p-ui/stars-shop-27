@@ -1182,3 +1182,89 @@ body {
 .board-cell:active {
   transform: none;
 }
+
+/* Profile refresh: real circular crop, compact avatar and clean stat layout. */
+.profile-card { padding: 20px 16px; border-radius: 20px; }
+.profile-avatar {
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px;
+  max-width: 112px;
+  min-height: 112px;
+  max-height: 112px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #b99ae8;
+  background: #21182f;
+  box-shadow: 0 0 0 5px #9b79ce22, 0 10px 24px #0005;
+}
+.profile-avatar img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center;
+  border-radius: 50% !important;
+}
+.profile-avatar img[hidden] { display: none !important; }
+.profile-avatar span { font-size: 48px; line-height: 1; }
+.profile-card > #profileName { text-align: center; margin: 5px 0 2px; }
+.profile-card > #profileStatus { text-align: center; margin: 0 0 12px; }
+.profile-card .profile-stat { margin-top: 8px; }
+.tutorial-profile-button {
+  display: block;
+  margin: 12px auto 0;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid #8e70bd;
+  border-radius: 12px;
+  color: #f4eaff;
+  background: linear-gradient(135deg,#4d386c,#30223f);
+  font-weight: 800;
+}
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #080611dc;
+  backdrop-filter: blur(8px);
+}
+.tutorial-overlay.active { display: flex; }
+.tutorial-card {
+  width: min(100%, 360px);
+  padding: 22px;
+  border: 1px solid #6e568d;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#2b203d,#171222);
+  box-shadow: 0 20px 60px #0008;
+}
+.tutorial-step-label {
+  color: #c8a8f3;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+.tutorial-progress-track { height: 5px; margin: 10px 0 20px; overflow: hidden; border-radius: 9px; background: #ffffff18; }
+.tutorial-progress-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg,#a982e5,#f2d08a); transition: width .2s; }
+.tutorial-card h2 { margin: 0 0 10px; color: #fff6ff; font: 800 23px Georgia,serif; }
+.tutorial-card p { margin: 0 0 22px; color: #d4c8e1; font-size: 14px; line-height: 1.6; }
+.tutorial-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tutorial-next-button,.tutorial-skip-button {
+  min-height: 42px; padding: 0 16px; border-radius: 12px; font-weight: 800;
+}
+.tutorial-next-button { border: 1px solid #aa8bd6; color: #fff; background: linear-gradient(135deg,#8054c4,#55347f); }
+.tutorial-skip-button { border: 1px solid #62516f; color: #cfc1dc; background: #211a2d; }
+.board-cell.selected { outline: 3px solid #e7c77b; outline-offset: -4px; transform: scale(.97); }
+#homePage > .section-heading { display: none !important; }
+.top-title > p { display: none !important; }

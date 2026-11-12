@@ -1491,10 +1491,14 @@ function renderQuests() {
   if (!questListElement) return;
   questListElement.innerHTML = "";
 
-  // Показываем все задания текущего мира; сюжетные зависимости только блокируют принятие.
-  const visibleQuests = questData.filter(quest =>
+  // Показываем все задания текущего мира, но выполненные всегда отправляем в конец списка.
+  const worldQuests = questData.filter(quest =>
     Number(quest.world || 1) === Number(state.currentWorld || 1)
   );
+  const visibleQuests = [
+    ...worldQuests.filter(quest => !state.completedQuests.includes(quest.id)),
+    ...worldQuests.filter(quest => state.completedQuests.includes(quest.id))
+  ];
 
   visibleQuests.forEach(quest => {
     const completed = state.completedQuests.includes(quest.id);

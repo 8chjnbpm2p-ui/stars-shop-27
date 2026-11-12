@@ -1372,6 +1372,17 @@ body[data-world="6"] { --world-a:#ff80bd; --world-b:#a33c88; --world-c:#401b43; 
 body[data-world="7"] { --world-a:#a5b5ff; --world-b:#6253c7; --world-c:#211d56; --world-panel:#242451; --world-edge:#c0c8ff; --world-halo:#8f9bff; }
 body[data-world="8"] { --world-a:#ff866e; --world-b:#a63b3c; --world-c:#421a24; --world-panel:#3a202b; --world-edge:#ffab8b; --world-halo:#fa6d61; }
 body[data-world="9"] { --world-a:#e7ca72; --world-b:#96733a; --world-c:#3d321c; --world-panel:#382f20; --world-edge:#f4dfa0; --world-halo:#d9b85e; }
+
+/* Полная цветовая тема мира: фон, карточки, панели и акценты. */
+body[data-world="1"] { --bg:#071f25; --bg-light:#0d3038; --panel:#12333b; --panel-light:#194650; --border:#28616a; --purple:#168f91; --purple-light:#54d9c8; }
+body[data-world="2"] { --bg:#240d1c; --bg-light:#351326; --panel:#381b32; --panel-light:#51213d; --border:#74334e; --purple:#bd3d59; --purple-light:#ff8a86; }
+body[data-world="3"] { --bg:#0c241d; --bg-light:#12372a; --panel:#183c32; --panel-light:#22513f; --border:#39745a; --purple:#368e70; --purple-light:#a9f0c1; }
+body[data-world="4"] { --bg:#091c32; --bg-light:#102a46; --panel:#172f4b; --panel-light:#204365; --border:#315f87; --purple:#326eb5; --purple-light:#8cdbff; }
+body[data-world="5"] { --bg:#2b160b; --bg-light:#3b1e10; --panel:#402515; --panel-light:#5a321b; --border:#87502a; --purple:#c66a31; --purple-light:#ffd080; }
+body[data-world="6"] { --bg:#260f29; --bg-light:#351638; --panel:#3a1d3d; --panel-light:#51264f; --border:#793d70; --purple:#a33c88; --purple-light:#ffa2d1; }
+body[data-world="7"] { --bg:#141735; --bg-light:#20244b; --panel:#242451; --panel-light:#30366a; --border:#4c5792; --purple:#6253c7; --purple-light:#c0c8ff; }
+body[data-world="8"] { --bg:#291116; --bg-light:#3a191f; --panel:#3a202b; --panel-light:#512b35; --border:#7d3c43; --purple:#a63b3c; --purple-light:#ffab8b; }
+body[data-world="9"] { --bg:#241d10; --bg-light:#352a16; --panel:#382f20; --panel-light:#504329; --border:#79633a; --purple:#96733a; --purple-light:#f4dfa0; }
 body[data-world] {
   background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--world-halo) 48%, transparent) 0%, transparent 58%), linear-gradient(180deg, var(--world-c) 0%, color-mix(in srgb, var(--world-c) 62%, #090b12) 58%, #090b12 100%) !important;
   background-attachment: fixed;

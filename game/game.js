@@ -716,7 +716,6 @@ const questData = [
     requires: "voiceJodahQuest",
     title: "Компас потерянных мгновений",
     character: "Фарагонда",
-    portrait: "https://lololoshka.fandom.com/ru/wiki/Special:FilePath/%D0%93%D0%BE%D0%BD%D0%B4%D0%BE%D0%BB%D0%BE%D1%88%D0%BA%D0%B0.png",
     description: "Временное эхо сбивает ориентиры. Создай компас и закрепи его печатью, чтобы найти правильную ветвь.",
     target: "echo_seal",
     rewardSkint: 135,

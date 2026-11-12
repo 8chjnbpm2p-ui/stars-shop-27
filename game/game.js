@@ -1718,17 +1718,23 @@ if (saveGameNicknameButton) {
     saveGameNicknameButton.disabled = true;
     if (status) status.textContent = "Сохраняю ник…";
     try {
-      const data = await gameApi("/api/game/profile", {
-        method: "POST",
-        body: JSON.stringify({ nickname, progress: getPublicGameProgress() })
-      });
-      state.nickname = data.profile.nickname;
+      if (getGameTelegramInitData()) {
+        const data = await gameApi("/api/game/profile", {
+          method: "POST",
+          body: JSON.stringify({ nickname, progress: getPublicGameProgress() })
+        });
+        state.nickname = data.profile.nickname;
+        await refreshGameFriends();
+      } else {
+        state.nickname = nickname;
+      }
       saveState();
       renderProfile();
-      if (status) status.textContent = "Ник сохранён!";
+      if (status) status.textContent = getGameTelegramInitData()
+        ? "Ник сохранён!"
+        : "Ник сохранён на этом устройстве.";
       if (gameNicknamePanel) gameNicknamePanel.classList.add("hidden");
       if (profileNicknameButton) profileNicknameButton.setAttribute("aria-expanded", "false");
-      await refreshGameFriends();
     } catch (error) {
       if (status) status.textContent = error.message;
     } finally {

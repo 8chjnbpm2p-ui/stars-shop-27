@@ -2107,6 +2107,11 @@ function createQuestGuide(quest) {
 
   const steps = guideRecipes[quest.target] || [];
   const list = document.createElement("ol");
+  if (quest.target === "imperial_cipher") {
+    const directDrop = document.createElement("p");
+    directDrop.textContent = "Шифр Империи не создаётся в мастерской. Он выпадает напрямую при обычном или усиленном призыве предметов в 3-м мире «Идеальный Мир». Переключись на 3-й мир и используй кнопку призыва, пока предмет не выпадет.";
+    guide.appendChild(directDrop);
+  }
   steps.forEach((recipe, index) => {
     const [firstId, secondId, resultId] = recipe;
     const first = items[firstId];

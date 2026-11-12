@@ -185,6 +185,35 @@ def init_db():
         """)
 
         conn.execute("""
+            CREATE TABLE IF NOT EXISTS game_profiles (
+                user_id INTEGER PRIMARY KEY,
+                nickname TEXT NOT NULL COLLATE NOCASE UNIQUE,
+                current_world INTEGER NOT NULL DEFAULT 1,
+                unlocked_world INTEGER NOT NULL DEFAULT 1,
+                completed_quests INTEGER NOT NULL DEFAULT 0,
+                merged_count INTEGER NOT NULL DEFAULT 0,
+                updated_at TEXT NOT NULL
+            )
+        """)
+
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS game_friendships (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                requester_id INTEGER NOT NULL,
+                addressee_id INTEGER NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending',
+                created_at TEXT NOT NULL,
+                UNIQUE(requester_id, addressee_id),
+                CHECK(requester_id != addressee_id)
+            )
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_game_friendships_addressee
+            ON game_friendships (addressee_id, status)
+        """)
+
+        conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_orders_buyer_created
             ON orders (buyer_id, created_at)
         """)
@@ -542,6 +571,215 @@ async def read_json(request):
         raise web.HTTPBadRequest(
             text="Некорректный JSON"
         )
+
+
+# =========================================================
+# GAME SOCIAL API
+# =========================================================
+
+def valid_game_nickname(value):
+    nickname = str(value or "").strip()
+    if not re.fullmatch(r"[A-Za-z0-9_]{3,16}", nickname):
+        return None
+    return nickname
+
+
+def game_profile_dict(row):
+    return {
+        "nickname": row["nickname"],
+        "current_world": int(row["current_world"]),
+        "unlocked_world": int(row["unlocked_world"]),
+        "completed_quests": int(row["completed_quests"]),
+        "merged_count": int(row["merged_count"]),
+        "updated_at": row["updated_at"],
+    }
+
+
+async def api_game_profile(request):
+    user, error = api_user_or_error(request)
+    if error:
+        return error
+
+    body = await read_json(request)
+    nickname = valid_game_nickname(body.get("nickname"))
+    if not nickname:
+        return web.json_response(
+            {"error": "Ник должен содержать 3–16 символов: латинские буквы, цифры или _."},
+            status=400,
+        )
+
+    progress = body.get("progress") or {}
+    current_world = max(1, min(9, int(progress.get("currentWorld", 1) or 1)))
+    unlocked_world = max(current_world, min(9, int(progress.get("unlockedWorld", 1) or 1)))
+    completed_quests = max(0, min(1000, int(progress.get("completedQuests", 0) or 0)))
+    merged_count = max(0, min(100000000, int(progress.get("mergedCount", 0) or 0)))
+    now = datetime.now(timezone.utc).isoformat()
+
+    try:
+        with db() as conn:
+            existing = conn.execute(
+                "SELECT user_id FROM game_profiles WHERE user_id = ?",
+                (user["id"],),
+            ).fetchone()
+            collision = conn.execute(
+                "SELECT user_id FROM game_profiles WHERE nickname = ? COLLATE NOCASE AND user_id != ?",
+                (nickname, user["id"]),
+            ).fetchone()
+            if collision:
+                return web.json_response({"error": "Этот ник уже занят. Выбери другой."}, status=409)
+
+            if existing:
+                conn.execute("""
+                    UPDATE game_profiles
+                    SET nickname = ?,
+                        current_world = ?,
+                        unlocked_world = MAX(unlocked_world, ?),
+                        completed_quests = ?,
+                        merged_count = ?,
+                        updated_at = ?
+                    WHERE user_id = ?
+                """, (nickname, current_world, unlocked_world, completed_quests, merged_count, now, user["id"]))
+            else:
+                conn.execute("""
+                    INSERT INTO game_profiles
+                    (user_id, nickname, current_world, unlocked_world, completed_quests, merged_count, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (user["id"], nickname, current_world, unlocked_world, completed_quests, merged_count, now))
+    except (ValueError, TypeError):
+        return web.json_response({"error": "Некорректные данные прогресса."}, status=400)
+    except sqlite3.IntegrityError:
+        return web.json_response({"error": "Этот ник уже занят. Выбери другой."}, status=409)
+
+    with db() as conn:
+        row = conn.execute("SELECT * FROM game_profiles WHERE user_id = ?", (user["id"],)).fetchone()
+    return web.json_response({"profile": game_profile_dict(row)})
+
+
+async def api_game_friends(request):
+    user, error = api_user_or_error(request)
+    if error:
+        return error
+
+    with db() as conn:
+        own = conn.execute("SELECT * FROM game_profiles WHERE user_id = ?", (user["id"],)).fetchone()
+        if not own:
+            return web.json_response({"error": "Сначала придумай игровой ник в профиле."}, status=409)
+
+        friends = conn.execute("""
+            SELECT p.* FROM game_profiles p
+            JOIN game_friendships f
+              ON ((f.requester_id = ? AND f.addressee_id = p.user_id)
+               OR (f.addressee_id = ? AND f.requester_id = p.user_id))
+            WHERE f.status = 'accepted'
+            ORDER BY p.nickname COLLATE NOCASE
+        """, (user["id"], user["id"])).fetchall()
+
+        incoming = conn.execute("""
+            SELECT f.id, p.nickname FROM game_friendships f
+            JOIN game_profiles p ON p.user_id = f.requester_id
+            WHERE f.addressee_id = ? AND f.status = 'pending'
+            ORDER BY f.created_at DESC
+        """, (user["id"],)).fetchall()
+
+        outgoing = conn.execute("""
+            SELECT p.nickname FROM game_friendships f
+            JOIN game_profiles p ON p.user_id = f.addressee_id
+            WHERE f.requester_id = ? AND f.status = 'pending'
+            ORDER BY f.created_at DESC
+        """, (user["id"],)).fetchall()
+
+    return web.json_response({
+        "profile": game_profile_dict(own),
+        "friends": [game_profile_dict(row) for row in friends],
+        "incoming": [{"id": row["id"], "nickname": row["nickname"]} for row in incoming],
+        "outgoing": [row["nickname"] for row in outgoing],
+    })
+
+
+async def api_game_friend_search(request):
+    user, error = api_user_or_error(request)
+    if error:
+        return error
+    body = await read_json(request)
+    nickname = valid_game_nickname(body.get("nickname"))
+    if not nickname:
+        return web.json_response({"error": "Введи ник из 3–16 символов."}, status=400)
+
+    with db() as conn:
+        row = conn.execute(
+            "SELECT * FROM game_profiles WHERE nickname = ? COLLATE NOCASE AND user_id != ?",
+            (nickname, user["id"]),
+        ).fetchone()
+    if not row:
+        return web.json_response({"error": "Игрок с таким ником не найден."}, status=404)
+    return web.json_response({"player": game_profile_dict(row)})
+
+
+async def api_game_friend_request(request):
+    user, error = api_user_or_error(request)
+    if error:
+        return error
+    body = await read_json(request)
+    nickname = valid_game_nickname(body.get("nickname"))
+    if not nickname:
+        return web.json_response({"error": "Проверь игровой ник."}, status=400)
+
+    now = datetime.now(timezone.utc).isoformat()
+    with db() as conn:
+        target = conn.execute(
+            "SELECT user_id FROM game_profiles WHERE nickname = ? COLLATE NOCASE",
+            (nickname,),
+        ).fetchone()
+        if not target:
+            return web.json_response({"error": "Игрок не найден. Попроси его сначала создать ник."}, status=404)
+        target_id = int(target["user_id"])
+        if target_id == user["id"]:
+            return web.json_response({"error": "Нельзя добавить самого себя."}, status=400)
+
+        existing = conn.execute("""
+            SELECT id, status FROM game_friendships
+            WHERE (requester_id = ? AND addressee_id = ?)
+               OR (requester_id = ? AND addressee_id = ?)
+        """, (user["id"], target_id, target_id, user["id"])).fetchone()
+
+        if existing:
+            if existing["status"] == "accepted":
+                return web.json_response({"message": "Вы уже друзья."})
+            if existing["status"] == "pending":
+                return web.json_response({"message": "Заявка уже отправлена или ожидает твоего ответа."})
+            conn.execute("DELETE FROM game_friendships WHERE id = ?", (existing["id"],))
+
+        conn.execute("""
+            INSERT INTO game_friendships
+            (requester_id, addressee_id, status, created_at)
+            VALUES (?, ?, 'pending', ?)
+        """, (user["id"], target_id, now))
+    return web.json_response({"message": "Заявка в друзья отправлена."})
+
+
+async def api_game_friend_respond(request):
+    user, error = api_user_or_error(request)
+    if error:
+        return error
+    body = await read_json(request)
+    try:
+        request_id = int(body.get("request_id", 0))
+    except (TypeError, ValueError):
+        request_id = 0
+    accept = body.get("accept") is True
+
+    with db() as conn:
+        row = conn.execute("""
+            SELECT id FROM game_friendships
+            WHERE id = ? AND addressee_id = ? AND status = 'pending'
+        """, (request_id, user["id"])).fetchone()
+        if not row:
+            return web.json_response({"error": "Заявка не найдена или уже обработана."}, status=404)
+        if accept:
+            conn.execute("UPDATE game_friendships SET status = 'accepted' WHERE id = ?", (request_id,))
+        else:
+            conn.execute("DELETE FROM game_friendships WHERE id = ?", (request_id,))
+    return web.json_response({"message": "Заявка принята." if accept else "Заявка отклонена."})
 
 
 # =========================================================
@@ -2361,6 +2599,31 @@ async def main():
     web_app.router.add_post(
         "/api/recipient/check",
         api_check_recipient,
+    )
+
+    web_app.router.add_post(
+        "/api/game/profile",
+        api_game_profile,
+    )
+
+    web_app.router.add_get(
+        "/api/game/friends",
+        api_game_friends,
+    )
+
+    web_app.router.add_post(
+        "/api/game/friends/search",
+        api_game_friend_search,
+    )
+
+    web_app.router.add_post(
+        "/api/game/friends/request",
+        api_game_friend_request,
+    )
+
+    web_app.router.add_post(
+        "/api/game/friends/respond",
+        api_game_friend_respond,
     )
 
     web_app.router.add_post(

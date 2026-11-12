@@ -1870,3 +1870,70 @@ body[data-world="9"] {
   .profile-identity-info #profileName { font-size: 18px; }
   .profile-identity .avatar-change-button { font-size: 10px; }
 }
+
+
+/* Compact player identity: small avatar and nickname beside it. */
+.profile-identity {
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 2px 0 12px !important;
+  margin-bottom: 12px !important;
+}
+.profile-avatar-column {
+  flex: 0 0 60px !important;
+  width: 60px !important;
+}
+.profile-identity .profile-avatar {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  margin: 0 0 4px !important;
+  border-width: 2px !important;
+}
+.profile-identity .avatar-change-button {
+  width: 60px !important;
+  padding: 3px 1px !important;
+  font-size: 9px !important;
+  line-height: 1.1 !important;
+  white-space: normal !important;
+}
+.profile-nickname-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.profile-nickname-mini span {
+  color: #b8abc9;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .8px;
+}
+.profile-nickname-mini strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 360px) {
+  .profile-avatar-column { flex-basis: 60px !important; width: 60px !important; }
+  .profile-identity .profile-avatar {
+    width: 52px !important; height: 52px !important;
+    min-width: 52px !important; max-width: 52px !important;
+    min-height: 52px !important; max-height: 52px !important;
+  }
+}

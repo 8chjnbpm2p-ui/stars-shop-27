@@ -212,7 +212,7 @@ button:focus-visible {
   background: linear-gradient(145deg, #302647, #211a34);
   cursor: pointer;
   user-select: none;
-  touch-action: pan-y;
+  touch-action: none;
   transition: border-color 0.15s, background 0.15s, transform 0.15s;
 }
 
@@ -232,7 +232,9 @@ button:focus-visible {
 }
 
 .board-cell.empty {
-  opacity: 0.75;
+  opacity: 0.34;
+  border-style: dashed;
+  background: rgba(255,255,255,.025);
 }
 
 .item-icon {
@@ -947,4 +949,96 @@ html.item-drag-active body {
 .world-chapter-divider small {
   color: #c9b9dc;
   font-size: 11px;
+}
+
+
+/* Чистый интерфейс и удобное поле на телефоне */
+.top-title, .section-heading, .profile-card {
+  text-align: center;
+}
+.top-title p, .section-heading p {
+  color: #b9aecb;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: .15px;
+}
+.game-title, .section-heading h2, .profile-card h2, .profile-card h3,
+.modal-card h2, .modal-card h3, .quest-card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: .25px;
+  text-wrap: balance;
+}
+.section-heading h2 {
+  font-size: clamp(23px, 6vw, 28px);
+  text-shadow: 0 3px 18px #9b7be855;
+}
+.board-wrapper {
+  padding: 10px;
+  background: linear-gradient(145deg, #1b1728, #15111f);
+}
+.board-cell {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.board-cell.empty {
+  position: relative;
+}
+.board-cell.empty::after {
+  content: "+";
+  color: #a89bbd;
+  opacity: .5;
+  font-size: 22px;
+  font-weight: 300;
+}
+.board-cell.has-item {
+  border-color: #76619d;
+  background: radial-gradient(circle at 50% 35%, #44345f, #211a32 78%);
+}
+.item-icon {
+  font-size: clamp(40px, 12vw, 58px);
+}
+.hint { display: none !important; }
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  margin: 2px auto 14px;
+  overflow: hidden;
+  border: 1px solid #5e4d80;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #47335f, #171322 75%);
+  box-shadow: 0 0 34px #9b7be833, inset 0 0 20px #ffffff0b;
+}
+.profile-avatar span {
+  font-size: 76px;
+  line-height: 1;
+  filter: drop-shadow(0 8px 12px #0008);
+}
+.profile-card {
+  text-align: left;
+}
+.profile-card > .profile-avatar,
+.profile-card > #profileName,
+.profile-card > #profileStatus {
+  text-align: center;
+}
+.profile-card > #profileName {
+  margin: 0 0 4px;
+  font-size: 25px;
+}
+.profile-card > #profileStatus {
+  margin: 0;
+  color: #bca4ef;
+  font-weight: 700;
+}
+.tutorial-overlay, #tutorialCompleteOverlay {
+  display: none !important;
+}
+@media (max-width: 380px) {
+  .board-wrapper { padding: 8px; }
+  .board { gap: 7px; }
+  .profile-avatar { width: 116px; height: 116px; }
 }

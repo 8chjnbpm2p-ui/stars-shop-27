@@ -1081,3 +1081,37 @@ html.item-drag-active body {
   font-weight: 750;
 }
 .avatar-change-button:active { transform: scale(.97); }
+
+
+/* Поле без пустых клеток: показываем только существующие предметы */
+.board {
+  aspect-ratio: auto;
+  grid-auto-rows: clamp(104px, 27vw, 142px);
+  align-content: start;
+  min-height: 0;
+}
+.board:empty { display: none; }
+.board-wrapper:has(.board:empty) { display: none; }
+.board-cell.empty { display: none; }
+.board-cell { touch-action: none; }
+.board-empty { min-height: 0; }
+.game-currencies {
+  margin: 0 0 14px;
+}
+.currency-icon-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  font-size: 25px;
+}
+.currency-value {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 420px) {
+  body { padding-bottom: 24px; }
+  .board-wrapper { padding: 10px; }
+  .board { gap: 8px; grid-auto-rows: clamp(96px, 27vw, 122px); }
+}

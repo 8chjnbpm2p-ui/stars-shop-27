@@ -475,6 +475,34 @@ button:focus-visible {
   font-weight: 800;
 }
 
+.profile-nickname-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 100%;
+  margin: 12px 0 4px;
+  padding: 9px 13px;
+  border: 1px solid #9a79cb;
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(128, 84, 196, .28), rgba(35, 25, 54, .95));
+  box-shadow: inset 0 1px rgba(255,255,255,.07), 0 5px 16px rgba(0,0,0,.18);
+}
+
+.profile-nickname-chip span {
+  color: #cbb4eb;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.profile-nickname-chip strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+}
+
 .profile-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;

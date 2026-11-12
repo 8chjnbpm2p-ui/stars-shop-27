@@ -629,7 +629,7 @@ function summonMainItem() {
   saveState();
   renderAll();
 
-  showMessage("Получен предмет: " + items[itemId].name);
+  // Предмет добавляется без всплывающей надписи.
 }
 
 /* =========================================

@@ -635,17 +635,32 @@ async def api_order_history(request):
     return web.json_response({"orders": [order_to_dict(row) for row in rows]})
 
 
-async def api_order_status(request):
+
+async def api_order_history(request):
     user, error = api_user_or_error(request)
+
     if error:
         return error
-    order_id = request.match_info.get("order_id", "")
-    if not valid_order_id(order_id):
-        return web.json_response({"error": "Некорректный номер заказа."}, status=400)
-    order = get_order(order_id)
-    if not order or order["buyer_id"] != user["id"]:
-        return web.json_response({"error": "Заказ не найден."}, status=404)
-    return web.json_response({"order": order_to_dict(order)})
+
+    try:
+        limit = int(request.query.get("limit", "5000"))
+    except (ValueError, TypeError):
+        limit = 5000
+
+    limit = max(1, min(limit, 5000))
+
+    with db() as conn:
+        rows = conn.execute("""
+            SELECT * FROM orders
+            WHERE buyer_id = ?
+            ORDER BY created_at DESC
+            LIMIT ?
+        """, (user["id"], limit)).fetchall()
+
+    return web.json_response({
+        "orders": [order_to_dict(row) for row in rows]
+    })
+
 
 
 # ---------------- TELEGRAM MENU ----------------

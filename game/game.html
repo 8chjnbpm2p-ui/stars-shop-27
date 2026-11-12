@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#100d1b">
   <title>Приключение Lo</title>
-  <link rel="stylesheet" href="game.css?v=20261112-dragfix2">
+  <link rel="stylesheet" href="game.css?v=20261112-profiletutorial3">
 </head>
 
 <body>
@@ -17,7 +17,6 @@
     <header class="top">
       <div class="top-title">
         <h1 class="game-title">Приключение Lo</h1>
-        <p>Собирай редкости, создавай артефакты и открывай миры.</p>
       </div>
     </header>
 
@@ -48,11 +47,6 @@
     <main>
 
       <section class="page active" id="homePage">
-
-        <div class="section-heading">
-          <h2>Игровое поле</h2>
-          <p>Перетаскивай предметы друг на друга — одинаковые объединяются.</p>
-        </div>
 
         <div class="currencies game-currencies" aria-label="Баланс валют">
           <div class="currency currency-skint">
@@ -238,6 +232,7 @@
 
           <h2 id="profileName">Мироходец</h2>
           <p id="profileStatus">Начинающий</p>
+          <button class="tutorial-profile-button" id="restartTutorialButton" type="button">✦ Как играть</button>
 
           <div class="profile-divider"></div>
 
@@ -343,8 +338,30 @@
 
     </div>
 
-  </div><script src="game.js?v=20261112-dragfix2"></script>
+  </div><script src="game.js?v=20261112-profiletutorial3"></script>
 
+
+
+    <div class="tutorial-overlay" id="tutorialOverlay" aria-modal="true" role="dialog">
+      <div class="tutorial-card">
+        <div class="tutorial-step-label" id="tutorialStepLabel">ОБУЧЕНИЕ · 1/5</div>
+        <div class="tutorial-progress-track"><div class="tutorial-progress-fill" id="tutorialProgress"></div></div>
+        <h2 id="tutorialTitle">Как играть</h2>
+        <p id="tutorialText"></p>
+        <div class="tutorial-actions">
+          <button class="tutorial-skip-button" id="tutorialSkipButton" type="button">Закрыть</button>
+          <button class="tutorial-next-button" id="tutorialButton" type="button">Далее</button>
+        </div>
+      </div>
+    </div>
+    <div class="tutorial-overlay" id="tutorialCompleteOverlay" aria-modal="true" role="dialog">
+      <div class="tutorial-card">
+        <div class="tutorial-step-label">ГОТОВО</div>
+        <h2>Теперь ты знаешь основы</h2>
+        <p>Выбирай предметы касанием, перемещай их по клеткам, объединяй одинаковые и открывай новые миры.</p>
+        <button class="tutorial-next-button" id="tutorialCompleteButton" type="button">Понятно</button>
+      </div>
+    </div>
 
 </body>
 </html>

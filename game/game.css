@@ -1140,3 +1140,45 @@ body {
   .quest-person { grid-template-columns: 56px minmax(0,1fr); }
   .quest-portrait { width: 56px; height: 56px; }
 }
+
+
+/* Fix: portrait images stay compact inside quest cards. */
+.quest-person {
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 10px;
+}
+.quest-portrait {
+  display: block;
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px;
+  max-width: 56px;
+  min-height: 56px;
+  max-height: 56px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Only the item icon follows the finger; the 3x3 cells stay fixed. */
+.item-drag-ghost {
+  position: fixed !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transform: scale(1.08);
+  font-size: clamp(37px, 11vw, 58px);
+  line-height: 1;
+}
+.board-cell:active {
+  transform: none;
+}

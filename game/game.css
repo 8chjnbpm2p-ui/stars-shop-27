@@ -2196,7 +2196,7 @@ body[data-world="9"] {
 
 /* Карточка даты выхода второй главы — в стиле списка миров */
 .world-chapter-card {
-  min-height: 238px;
+  min-height: 180px;
   border-color: #a27bd4;
   background: linear-gradient(145deg, #49316a, #1b142b);
   text-align: center;

@@ -1184,7 +1184,7 @@ body {
 /* Карточка анонса следующего мира */
 .world-release-card {
   position: relative;
-  min-height: 220px;
+  min-height: 238px;
   overflow: hidden;
   isolation: isolate;
   border: 1px solid #70c9ff;
@@ -2196,8 +2196,9 @@ body[data-world="9"] {
 
 /* Карточка даты выхода второй главы — в стиле списка миров */
 .world-chapter-card {
+  min-height: 238px;
   border-color: #a27bd4;
-  background: linear-gradient(145deg, #302044, #1b142b);
+  background: linear-gradient(145deg, #49316a, #1b142b);
   text-align: center;
 }
 .world-chapter-card .world-number {

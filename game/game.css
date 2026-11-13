@@ -1180,6 +1180,32 @@ body {
 }
 .world-card-first.locked,
 .world-card-illustrated.locked { opacity: 1; }
+
+/* Карточка анонса следующего мира */
+.world-release-card {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #70c9ff;
+  border-radius: 19px;
+  background: radial-gradient(ellipse at 50% 15%, #276da8 0%, #142b49 48%, #0b1427 100%);
+  box-shadow: inset 0 0 30px #3c9fe544, 0 9px 24px #0005;
+}
+.world-release-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #07111a33, #07111acc);
+}
+.world-release-card .world-content { position: absolute; z-index: 2; left: 15px; right: 15px; bottom: 16px; color: #fff; text-align: center; }
+.world-release-card .world-content p { margin: 0 0 7px; color: #eaf6ff; }
+.world-release-card .world-release-time { font-size: 17px; font-weight: 900; letter-spacing: .4px; color: #fff !important; }
+.world-release-card .world-illustrated-title { text-shadow: 0 0 18px #48baff; }
+.world-release-card .world-number { border-color: #70c9ff; background: #123c62; }
+.world-release-card .world-status { border-color: #70c9ff; background: #123c62 !important; }
 .world-chapter-divider {
   padding: 16px;
   border: 1px solid #785b9f;

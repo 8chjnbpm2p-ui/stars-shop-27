@@ -865,7 +865,7 @@ const questData = [
 
     title: "Воздух для убежища",
     character: "Лайетана",
-    portrait: "assets/characters/laietana.svg",
+    portrait: "https://i.postimg.cc/rFvMmqn0/IMG-1796.png",
     description: "В убежище нельзя долго оставаться без фильтрации. Собери надёжный фильтр из уцелевших деталей.",
     target: "shelter_filter",
     rewardSkint: 150,
@@ -878,7 +878,7 @@ const questData = [
 
     title: "Якорь живой ветки",
     character: "Вальдхар",
-    portrait: "assets/characters/valdhar.svg",
+    portrait: "https://i.postimg.cc/XJH00WBG/IMG-1797.jpg",
     description: "Ветка умирает, а времени почти не осталось. Создай якорь, который поможет удержать её от распада.",
     target: "branch_anchor",
     rewardSkint: 185,
@@ -891,7 +891,7 @@ const questData = [
 
     title: "Сосуд Первой Матери",
     character: "Кацпер Малецки",
-    portrait: "assets/characters/kacper-malecki.svg",
+    portrait: "https://i.postimg.cc/fyPZYswR/IMG-1795.jpg",
     description: "Для исследования нужен защищённый сосуд. Подготовь его и сохрани образец крови Первой Матери.",
     target: "first_mother_vial",
     rewardSkint: 220,

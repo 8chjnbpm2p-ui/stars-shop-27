@@ -1942,8 +1942,12 @@ function renderQuests() {
     portrait.className = "quest-portrait";
     portrait.alt = "Портрет персонажа " + quest.character;
     portrait.loading = "lazy";
+    // Postimg может блокировать запросы с Referer; отключаем его для прямых аватаров.
+    portrait.referrerPolicy = "no-referrer";
+    portrait.hidden = true;
     const portraitFallback = document.createElement("span");
     portraitFallback.className = "quest-portrait-fallback";
+    portraitFallback.hidden = true;
     portraitFallback.textContent = quest.character
       .split(/[\\s-]+/)
       .filter(Boolean)
@@ -1955,7 +1959,6 @@ function renderQuests() {
     portraitFrame.append(portrait, portraitFallback);
 
     if (quest.portrait) {
-      portrait.src = quest.portrait;
       portrait.onerror = () => {
         portrait.hidden = true;
         portraitFallback.hidden = false;
@@ -1966,6 +1969,7 @@ function renderQuests() {
         portraitFallback.hidden = true;
         portraitFrame.classList.remove("quest-portrait-unavailable");
       };
+      portrait.src = quest.portrait;
     } else {
       portrait.hidden = true;
       portraitFallback.hidden = false;

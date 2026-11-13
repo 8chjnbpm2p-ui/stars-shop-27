@@ -764,7 +764,7 @@ const questData = [
 
     title: "Путь через пески",
     character: "Синдбад",
-    portrait: characterPortraits.sindbad,
+    portrait: "https://fanfics.me/images/fandoms_heroes/3106-1756472607.jpg",
     description: "Мне нужен знак, который укажет безопасный путь через пустыню. Собери диск и наполни его жаром древнего пламени.",
     target: "sun_disc",
     rewardSkint: 145,
@@ -777,7 +777,7 @@ const questData = [
 
     title: "Клятва тринадцати",
     character: "Сдерик",
-    portrait: characterPortraits.sderik,
+    portrait: "https://fanfics.me/images/fandoms_heroes/3106-1756472605-big.jpg",
     description: "Боги не должны решать судьбу каждого. Создай печать клятвы, чтобы объединить тех, кто готов сопротивляться.",
     target: "oath_seal",
     rewardSkint: 175,

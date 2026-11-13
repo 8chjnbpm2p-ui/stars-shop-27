@@ -670,7 +670,7 @@ const questData = [
     title: "Предупреждение главного секретаря",
     character: "Калеб",
     portrait: "https://i.pinimg.com/736x/56/1a/cf/561acf2e99081a96f8a5a96db493c9ca.jpg",
-    description: "Ты слишком близко подобрался к правде. Империя следит за каждым шагом, а стирание личности — не пустая угроза. Я не обязан тебе помогать… но кое-что в этой системе давно пошло не так. Добудь шифр, который я оставил.",
+    description: "Ты слишком близко подобрался к правде. Империя следит за каждым шагом, а стирание личности — не пустая угроза. Я не обязан тебе помогать… но кое-что в этой системе давно пошло не так. Добудь шифр Империи.",
     target: "imperial_cipher",
     rewardSkint: 120,
     rewardAnti: 4
@@ -753,7 +753,7 @@ const questData = [
 
     title: "Путь через пески",
     character: "Синдбад",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/d/da/%D0%A1%D0%B8%D0%BD%D0%B4%D0%B1%D0%B0%D0%B4.png/revision/latest?cb=20230818172401&path-prefix=ru",
+    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/d/da/%D0%A1%D0%B8%D0%BD%D0%B4%D0%B1%D0%B0%D0%B4.png/revision/latest/scale-to-width-down/300?cb=20230818172401&path-prefix=ru",
     description: "Мне нужен знак, который укажет безопасный путь через пустыню. Собери диск и наполни его жаром древнего пламени.",
     target: "sun_disc",
     rewardSkint: 145,
@@ -766,7 +766,7 @@ const questData = [
 
     title: "Клятва тринадцати",
     character: "Сдерик",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/8/81/%D0%A1%D0%B4%D0%B5%D1%80%D0%B8%D0%BA.png/revision/latest?cb=20230821113935&path-prefix=ru",
+    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/8/81/%D0%A1%D0%B4%D0%B5%D1%80%D0%B8%D0%BA.png/revision/latest/scale-to-width-down/300?cb=20230821113935&path-prefix=ru",
     description: "Боги не должны решать судьбу каждого. Создай печать клятвы, чтобы объединить тех, кто готов сопротивляться.",
     target: "oath_seal",
     rewardSkint: 175,

@@ -252,7 +252,7 @@ const items = {
   oath_core: { name: "Основа клятвы", icon: "📜" },
   oath_seal: { name: "Клятва тринадцати огней", icon: "✨" },
 
-  broken_mask: { name: "Повреждённая маска автоматона", icon: "🥽" },
+  broken_mask: { name: "Повреждённая маска автоматона", icon: "🤖" },
   data_tape: { name: "Лента университетского архива", icon: "📼" },
   synth_chip: { name: "Синтетический чип", icon: "💾" },
   memory_film: { name: "Плёнка воспоминаний", icon: "🎞️" },
@@ -262,7 +262,7 @@ const items = {
   campus_pass: { name: "Пропуск университета", icon: "🪪" },
   automaton_core: { name: "Ядро перепрошивки", icon: "🤖" },
   automaton_key: { name: "Ключ свободы автоматонов", icon: "🔑" },
-  mask_core: { name: "Основа маски путешественника", icon: "🥷" },
+  mask_core: { name: "Основа маски путешественника", icon: "🎭" },
   jdh_mask: { name: "Маска JDH", icon: "🕶️" },
 
   cosmic_dust: { name: "Звёздная пыль", icon: "🌌" },
@@ -526,6 +526,17 @@ const profileRanks = {
   9: "Создатель МК-47"
 };
 
+
+/* Локальные SVG-портреты: не зависят от внешних хостингов изображений. */
+function localPortrait(svg) {
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+const characterPortraits = {
+  watcher: localPortrait(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><linearGradient id="b" x2="0" y2="1"><stop stop-color="#24233a"/><stop offset="1" stop-color="#05060c"/></linearGradient><linearGradient id="c" x2="1" y2="1"><stop stop-color="#343348"/><stop offset="1" stop-color="#090a12"/></linearGradient><filter id="g"><feGaussianBlur stdDeviation="5"/></filter></defs><rect width="240" height="240" rx="28" fill="url(#b)"/><circle cx="120" cy="100" r="76" fill="#11121d"/><path d="M43 240 58 112Q61 43 120 35q59 8 62 77l15 128Z" fill="url(#c)" stroke="#555468" stroke-width="3"/><path d="M66 76Q78 15 120 18q42-3 54 58l-16-17q-38-22-76 0Z" fill="#080910"/><path d="M77 98q18-17 38-2-18 20-38 2m48-2q20-15 38 2-20 18-38-2" fill="#f7fbff" filter="url(#g)"/><path d="M77 98q18-17 38-2-18 20-38 2m48-2q20-15 38 2-20 18-38-2" fill="#fff"/><path d="M58 145q62 30 124 0l-8 25q-54 26-108 0Z" fill="#d9d8e2"/><path d="M68 175 44 240h152l-24-65q-52 25-104 0Z" fill="#171824"/><path d="M77 183 55 240m108-57 22 57" stroke="#555468" stroke-width="5"/></svg>`),
+  sindbad: localPortrait(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><linearGradient id="b" x2="0" y2="1"><stop stop-color="#e8a64f"/><stop offset="1" stop-color="#69351e"/></linearGradient></defs><rect width="240" height="240" rx="28" fill="#42291f"/><circle cx="120" cy="100" r="77" fill="#d18a52"/><path d="M35 240q6-65 55-82h60q49 17 55 82" fill="#75452e"/><path d="M68 92q-4-55 52-64 47-8 62 37l-16 20q-38-21-98 7Z" fill="#7b1e2a"/><path d="M67 81q45-32 107-4l-6 15q-53-18-98 8Z" fill="#a52b37"/><path d="M84 105q14-8 27 0m20 0q14-8 27 0" stroke="#20212a" stroke-width="5" fill="none"/><path d="M116 112q-6 22 6 27" stroke="#70412e" stroke-width="4" fill="none"/><path d="M87 145q33 22 66 0l-8 25q-27 20-52 0Z" fill="#39251e"/><path d="M91 145q28 16 58 0" stroke="#201714" stroke-width="7" fill="none"/><path d="M66 188q54 24 108 0" stroke="#c38b4d" stroke-width="8" fill="none"/></svg>`),
+  sderik: localPortrait(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><linearGradient id="b" x2="0" y2="1"><stop stop-color="#b9c7d1"/><stop offset="1" stop-color="#46515b"/></linearGradient></defs><rect width="240" height="240" rx="28" fill="#26333b"/><circle cx="120" cy="98" r="76" fill="#c48c65"/><path d="M34 240q7-65 57-83h58q50 18 57 83" fill="#e9e9e5"/><path d="M65 78q4-55 55-58 50 2 57 58l-14 8q-43-26-85 0Z" fill="#d7d9d9"/><path d="M84 104q14-9 27 0m20 0q14-9 27 0" stroke="#20242a" stroke-width="5" fill="none"/><path d="M117 112q-5 20 6 24" stroke="#80563e" stroke-width="4" fill="none"/><path d="M88 145q32 17 64 0l-8 20q-24 17-48 0Z" fill="#55443d"/><path d="M75 183 120 204l45-21" stroke="#c4a66d" stroke-width="7" fill="none"/><path d="M88 188v52m64-52v52" stroke="#fff" stroke-width="13"/></svg>`)
+};
+
 /* =========================================
    КВЕСТЫ
 ========================================= */
@@ -753,7 +764,7 @@ const questData = [
 
     title: "Путь через пески",
     character: "Синдбад",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/d/da/%D0%A1%D0%B8%D0%BD%D0%B4%D0%B1%D0%B0%D0%B4.png/revision/latest/scale-to-width-down/300?cb=20230818172401&path-prefix=ru",
+    portrait: characterPortraits.sindbad,
     description: "Мне нужен знак, который укажет безопасный путь через пустыню. Собери диск и наполни его жаром древнего пламени.",
     target: "sun_disc",
     rewardSkint: 145,
@@ -766,7 +777,7 @@ const questData = [
 
     title: "Клятва тринадцати",
     character: "Сдерик",
-    portrait: "https://static.wikia.nocookie.net/trinadtsat-ognei/images/8/81/%D0%A1%D0%B4%D0%B5%D1%80%D0%B8%D0%BA.png/revision/latest/scale-to-width-down/300?cb=20230821113935&path-prefix=ru",
+    portrait: characterPortraits.sderik,
     description: "Боги не должны решать судьбу каждого. Создай печать клятвы, чтобы объединить тех, кто готов сопротивляться.",
     target: "oath_seal",
     rewardSkint: 175,
@@ -829,6 +840,7 @@ const questData = [
 
     title: "Пульс мироздания",
     character: "Смотрящий",
+    portrait: characterPortraits.watcher,
     description: "Сердце Вселенной откликается на резонанс. Собери фрагмент, способный удержать его импульс.",
     target: "heart_fragment",
     rewardSkint: 175,

@@ -902,7 +902,8 @@ const questData = [
     world: 9,
 
     title: "Сборка МК-47",
-    character: "Айтор",
+    character: "Иветт",
+    portrait: "https://i.postimg.cc/HLTQq1gd/IMG-1800.jpg",
     description: "Новый этап требует самостоятельности. Собери базовый модуль МК-47 из руды, пружины и чертежа.",
     target: "mk47_module",
     rewardSkint: 160,
@@ -914,7 +915,8 @@ const questData = [
     requires: "workshopAitorQuest",
 
     title: "Ядро Мастерской",
-    character: "Миландра",
+    character: "Риз",
+    portrait: "https://i.postimg.cc/1z1W4dZx/IMG-1798.jpg",
     description: "После катаклизма лагерю нужна новая опора. Создай ядро и активируй ключ Мастерской.",
     target: "workshop_key",
     rewardSkint: 190,
@@ -926,7 +928,8 @@ const questData = [
     requires: "workshopMilandraQuest",
 
     title: "Следующая форма",
-    character: "Смотрящий",
+    character: "Г.Л.А.С.",
+    portrait: "https://i.postimg.cc/Y9pbzm9T/IMG-1799.webp",
     description: "Предел развития ещё не достигнут. Объедини живое ядро с кристаллом логики и восстанови чертёж следующей формы.",
     target: "evolution_blueprint",
     rewardSkint: 230,

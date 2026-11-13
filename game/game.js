@@ -252,7 +252,7 @@ const items = {
   oath_core: { name: "Основа клятвы", icon: "📜" },
   oath_seal: { name: "Клятва тринадцати огней", icon: "✨" },
 
-  broken_mask: { name: "Повреждённая маска автоматона", icon: "🎭" },
+  broken_mask: { name: "Повреждённая маска автоматона", icon: "🥽" },
   data_tape: { name: "Лента университетского архива", icon: "📼" },
   synth_chip: { name: "Синтетический чип", icon: "💾" },
   memory_film: { name: "Плёнка воспоминаний", icon: "🎞️" },
@@ -262,7 +262,7 @@ const items = {
   campus_pass: { name: "Пропуск университета", icon: "🪪" },
   automaton_core: { name: "Ядро перепрошивки", icon: "🤖" },
   automaton_key: { name: "Ключ свободы автоматонов", icon: "🔑" },
-  mask_core: { name: "Основа маски путешественника", icon: "🎭" },
+  mask_core: { name: "Основа маски путешественника", icon: "🥷" },
   jdh_mask: { name: "Маска JDH", icon: "🕶️" },
 
   cosmic_dust: { name: "Звёздная пыль", icon: "🌌" },

@@ -778,6 +778,7 @@ const questData = [
 
     title: "Студенческий пропуск",
     character: "Дженна",
+    portrait: "https://fanfics.me/images/fandoms_heroes/3106-1756472578.jpg",
     description: "Без записи в базе Lucky Charms тебе не попасть в общежитие. Восстанови архивные данные и оформи пропуск.",
     target: "campus_pass",
     rewardSkint: 130,

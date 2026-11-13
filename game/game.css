@@ -2166,3 +2166,40 @@ body[data-world="9"] {
   filter:drop-shadow(0 3px 4px rgba(0,0,0,.42));
 }
 .sell-item-art{font-size:clamp(48px,14vw,76px);}
+
+
+/* Карточка даты выхода второй главы — в стиле списка миров */
+.world-chapter-card {
+  border-color: #a27bd4;
+  background: linear-gradient(145deg, #302044, #1b142b);
+  text-align: center;
+}
+.world-chapter-card .world-number {
+  margin: 0 0 9px;
+  width: auto;
+  min-width: 34px;
+  padding: 0 9px;
+}
+.world-chapter-card .world-illustrated-title {
+  display: block;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 21px;
+}
+.world-chapter-card .world-content {
+  margin-top: 7px;
+}
+.world-chapter-card .world-content p { margin: 0; }
+.chapter-release-date {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 13px;
+  border: 1px solid #9b78c8;
+  border-radius: 10px;
+  color: #ffe19a;
+  background: #21172f;
+  font-size: 14px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .4px;
+}

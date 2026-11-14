@@ -25,9 +25,42 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 .move{position:absolute;width:50px;height:50px;padding:0;font-size:23px;background:#101827dd;border:2px solid #ffffff55;box-shadow:0 3px 0 #0006;touch-action:none}
 #up{left:54px;top:0}#down{left:54px;bottom:0}#left{left:0;top:43px}#right{right:0;top:43px}
 #actions{display:none;position:fixed;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));gap:9px;flex-direction:column}
-#inventoryBtn{position:fixed;right:14px;top:calc(64px + env(safe-area-inset-top));width:48px;height:44px;padding:4px;background:#101827dd;display:none;z-index:4}
-#inventory{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,430px);max-height:78vh;overflow:auto;padding:14px;background:#101827f2;border:1px solid #ffffff40;border-radius:16px;z-index:5;box-shadow:0 12px 45px #0009}
-#inventory.open{display:block}#inventoryHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-weight:850}#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.inventory-label{font-size:11px;color:#c7d5e8;margin:10px 0 5px}.invslot{aspect-ratio:1;min-width:0;display:grid;place-items:center;gap:0;background:linear-gradient(145deg,#777,#454545);border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:3px;padding:2px;position:relative}.invslot .emoji{font-size:clamp(14px,4vw,23px);line-height:1}.invslot small{position:absolute;right:2px;bottom:0;font-size:10px;color:#fff;text-shadow:1px 1px #000;font-weight:900}.invslot:disabled{opacity:.48}.invslot.selected{outline:2px solid #fff;outline-offset:1px}#inventoryNote{font-size:11px;color:#c7d5e8;margin-top:10px}
+#inventoryBtn{position:fixed;left:calc(50% + min(43vw, 220px) + 8px);bottom:calc(9px + env(safe-area-inset-bottom));width:38px;height:40px;padding:0;background:#454545;border:2px solid;border-color:#aaa #222 #222 #aaa;border-radius:3px;display:none;z-index:4;font-size:22px;line-height:1}
+#inventory{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(96vw,650px);max-height:90vh;overflow:auto;padding:12px;background:#c6c6c6;border:3px solid;border-color:#fff #555 #555 #fff;border-radius:3px;color:#242424;z-index:5;box-shadow:0 12px 45px #0009}
+#inventory.open{display:block}#inventoryHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;color:#222;font-weight:900;text-shadow:1px 1px #fff}
+#inventoryHead button{background:#777;color:#fff;border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:2px;padding:3px 10px}
+#inventoryLayout{display:grid;grid-template-columns:minmax(120px, .85fr) minmax(0,1.5fr);gap:12px;align-items:start}
+#playerPreview{min-height:240px;position:relative;background:linear-gradient(#b7d9e9,#d4d4d4);border:2px solid;border-color:#777 #fff #fff #777;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#playerPreview:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#fff4 1px,transparent 1px),linear-gradient(90deg,#fff4 1px,transparent 1px);background-size:16px 16px;opacity:.22}
+#avatar{position:relative;width:104px;height:206px;image-rendering:pixelated;filter:drop-shadow(4px 5px 0 #0003)}
+.avatar-head{position:absolute;top:0;left:34px;width:36px;height:36px;background:linear-gradient(90deg,#bd805c 0 22%,#dca27a 22% 78%,#a96e50 78%);border:4px solid #70452f;box-shadow:inset 0 7px #60402e}
+.avatar-head:after{content:"";position:absolute;left:5px;top:17px;width:5px;height:5px;background:#25364b;box-shadow:17px 0 #25364b,7px 10px #75412f}
+.avatar-body{position:absolute;top:40px;left:27px;width:50px;height:66px;background:linear-gradient(90deg,#244b80 0 20%,#3976b8 20% 80%,#244b80 80%);border:3px solid #19385f}
+.avatar-arm{position:absolute;top:42px;width:19px;height:64px;background:linear-gradient(90deg,#c18b68,#d9a17b);border:3px solid #855b43}
+.avatar-arm.left{left:5px}.avatar-arm.right{right:5px}
+.avatar-leg{position:absolute;top:109px;width:23px;height:88px;background:linear-gradient(90deg,#283e68,#4569a0,#263c64);border:3px solid #1d2d4d}
+.avatar-leg.left{left:28px}.avatar-leg.right{right:28px}
+#equipment{display:grid;grid-template-columns:repeat(2,42px);gap:5px;position:absolute;left:6px;top:6px;z-index:2}
+.equip{width:42px;height:42px;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;display:grid;place-items:center;font-size:20px;color:#ddd}
+#inventoryMain{min-width:0}
+#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
+.inventory-label{font-size:11px;color:#333;margin:8px 0 5px;font-weight:800}
+.invslot{aspect-ratio:1;min-width:0;display:grid;place-items:center;gap:0;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:0;padding:2px;position:relative}
+.invslot small{position:absolute;right:2px;bottom:0;font-size:10px;color:#fff;text-shadow:1px 1px #000;font-weight:900}
+.invslot:disabled{opacity:.55}.invslot.selected{outline:2px solid #fff;outline-offset:-3px}
+#inventoryHotbar{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
+#inventoryNote{font-size:10px;color:#444;margin-top:8px}
+.block-icon{position:relative;width:25px;height:25px;display:block;image-rendering:pixelated;filter:drop-shadow(1px 2px 0 #2228)}
+.block-icon:before{content:"";position:absolute;left:2px;top:1px;width:20px;height:9px;transform:skewY(-25deg);background:var(--top);border:1px solid #2225}
+.block-icon:after{content:"";position:absolute;left:2px;top:9px;width:20px;height:14px;background:var(--front);border:1px solid #2225;box-shadow:5px -2px 0 -1px var(--side)}
+.block-icon.grass{--top:#72bd4b;--front:#805637;--side:#4b9138;background:linear-gradient(90deg,transparent 0 2px,#4b9138 2px 5px,transparent 5px)}
+.block-icon.dirt{--top:#a8794c;--front:#805637;--side:#674329}
+.block-icon.stone{--top:#b5bbc0;--front:#858d94;--side:#626a72}
+.block-icon.wood{--top:#d3ad70;--front:#986438;--side:#704525}
+.block-icon.sand{--top:#f0d994;--front:#d5bd79;--side:#b89c5d}
+.block-icon.leaves{--top:#65a94d;--front:#34743d;--side:#285b32}
+@media(max-width:520px){#inventoryLayout{grid-template-columns:112px minmax(0,1fr);gap:7px}#playerPreview{min-height:210px}#avatar{transform:scale(.82)}#equipment{grid-template-columns:repeat(2,34px)}.equip{width:34px;height:34px}#inventory{padding:8px}#inventoryGrid,#inventoryHotbar{gap:3px}}
+@media(orientation:landscape) and (pointer:coarse){#inventoryBtn{left:auto;right:calc(50% - min(43vw, 220px) - 46px);bottom:calc(8px + env(safe-area-inset-bottom))}}
 .action{width:62px;height:48px;padding:4px;font-size:11px;background:#101827d9;touch-action:none}
 #toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:#101827df;padding:8px 13px;border-radius:12px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none}#mineProgress{position:fixed;left:50%;top:calc(50% + 27px);transform:translateX(-50%);width:74px;height:6px;border-radius:8px;background:#101827aa;overflow:hidden;opacity:0;pointer-events:none}#mineProgress span{display:block;width:100%;height:100%;background:#fff;transform:scaleX(0);transform-origin:left}#mineProgress.active{opacity:1}
 @media(pointer:coarse){#mobile,#actions{display:flex}#help{display:none}#hotbar{bottom:calc(8px + env(safe-area-inset-bottom))}.slot{width:clamp(30px,8.4vw,38px);height:40px}.slot .emoji{font-size:19px}#top{top:calc(8px + env(safe-area-inset-top))}}
@@ -40,7 +73,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 <div id="crosshair"></div><div id="mineProgress"><span></span></div><div id="help">WASD — движение · ЛКМ — сломать · ПКМ — поставить</div>
 <div id="hotbar" aria-label="Панель блоков"></div>
 <div id="mobile"><button class="move" id="up">▲</button><button class="move" id="down">▼</button><button class="move" id="left">◀</button><button class="move" id="right">▶</button></div>
-<button id="inventoryBtn" type="button" aria-label="Инвентарь">🎒</button><div id="inventory"><div id="inventoryHead"><span>Инвентарь</span><button id="closeInventory" type="button">✕</button></div><div class="inventory-label">Предметы</div><div id="inventoryGrid"></div><div class="inventory-label">Панель быстрого доступа</div><div id="inventoryHotbar" style="display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px"></div><div id="inventoryNote">Выбери предмет в инвентаре или в нижней панели.</div></div><div id="actions"><button class="action" id="placeBtn">＋ Поставить</button><button class="action" id="jumpBtn">↑ Прыжок</button></div>
+<button id="inventoryBtn" type="button" aria-label="Инвентарь">•••</button><div id="inventory"><div id="inventoryHead"><span>Инвентарь</span><button id="closeInventory" type="button">✕</button></div><div id="inventoryLayout"><div id="playerPreview"><div id="equipment"><div class="equip">▧</div><div class="equip">▧</div><div class="equip">▧</div><div class="equip">▧</div></div><div id="avatar"><div class="avatar-head"></div><div class="avatar-body"></div><div class="avatar-arm left"></div><div class="avatar-arm right"></div><div class="avatar-leg left"></div><div class="avatar-leg right"></div></div></div><div id="inventoryMain"><div class="inventory-label">Инвентарь</div><div id="inventoryGrid"></div><div class="inventory-label">Быстрый доступ</div><div id="inventoryHotbar"></div><div id="inventoryNote">Нажми на предмет, чтобы выбрать его.</div></div></div></div><div id="actions"><button class="action" id="placeBtn">＋ Поставить</button><button class="action" id="jumpBtn">↑ Прыжок</button></div>
 <div id="toast"></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
@@ -95,14 +128,15 @@ let selected=0;
 const inventoryKey='stars_blockworld_inventory_v1';const inventory=Object.fromEntries(items.map(([id])=>[id,0]));try{Object.assign(inventory,JSON.parse(localStorage.getItem(inventoryKey)||'{}'))}catch{}
 function saveInventory(){try{localStorage.setItem(inventoryKey,JSON.stringify(inventory))}catch{}}
 function addItem(type,count=1){if(!(type in inventory))return;inventory[type]+=count;saveInventory();renderInventory()}
+function iconMarkup(id){return '<span class="block-icon '+id+'" aria-hidden="true"></span>'}
 function renderInventory(){
-  [...hotbar.children].forEach((el,i)=>{const item=items[i];el.querySelector('.emoji').textContent=item?item[1]:'';el.querySelector('small').textContent=item?String(inventory[item[0]]||0):'';el.classList.toggle('active',i===selected)});
+  [...hotbar.children].forEach((el,i)=>{const item=items[i];el.querySelector('.emoji').innerHTML=item?iconMarkup(item[0]):'';el.querySelector('small').textContent=item?String(inventory[item[0]]||0):'';el.classList.toggle('active',i===selected)});
   const grid=document.querySelector('#inventoryGrid'),bar=document.querySelector('#inventoryHotbar');if(!grid||!bar)return;grid.innerHTML='';bar.innerHTML='';
-  for(let i=0;i<27;i++){const item=items[i];const b=document.createElement('button');b.className='invslot';if(item){b.innerHTML='<span class="emoji">'+item[1]+'</span><small>'+(inventory[item[0]]||0)+'</small>';b.disabled=inventory[item[0]]<=0;b.onclick=()=>{select(i);document.querySelector('#inventory').classList.remove('open')}}else{b.disabled=true;b.innerHTML=''}grid.appendChild(b)}
-  for(let i=0;i<9;i++){const item=items[i];const b=document.createElement('button');b.className='invslot'+(i===selected?' selected':'');if(item){b.innerHTML='<span class="emoji">'+item[1]+'</span><small>'+(inventory[item[0]]||0)+'</small>';b.disabled=inventory[item[0]]<=0;b.onclick=()=>{select(i);document.querySelector('#inventory').classList.remove('open')}}else{b.disabled=true;b.innerHTML=''}bar.appendChild(b)}
+  for(let i=0;i<27;i++){const item=items[i];const b=document.createElement('button');b.className='invslot';if(item){b.innerHTML=iconMarkup(item[0])+'<small>'+(inventory[item[0]]||0)+'</small>';b.disabled=inventory[item[0]]<=0;b.onclick=()=>{select(i);document.querySelector('#inventory').classList.remove('open')}}else{b.disabled=true;b.innerHTML=''}grid.appendChild(b)}
+  for(let i=0;i<9;i++){const item=items[i];const b=document.createElement('button');b.className='invslot'+(i===selected?' selected':'');if(item){b.innerHTML=iconMarkup(item[0])+'<small>'+(inventory[item[0]]||0)+'</small>';b.disabled=inventory[item[0]]<=0;b.onclick=()=>{select(i);document.querySelector('#inventory').classList.remove('open')}}else{b.disabled=true;b.innerHTML=''}bar.appendChild(b)}
 }
 const hotbar=document.querySelector('#hotbar');
-for(let i=0;i<9;i++){const it=items[i];const b=document.createElement('button');b.className='slot'+(i===0?' active':'');b.innerHTML='<span class="emoji">'+(it?it[1]:'')+'</span><small>'+(it?(inventory[it[0]]||0):'')+'</small>';b.title=it?it[2]:'Пустой слот';b.onclick=()=>select(i);hotbar.appendChild(b)}
+for(let i=0;i<9;i++){const it=items[i];const b=document.createElement('button');b.className='slot'+(i===0?' active':'');b.innerHTML='<span class="emoji">'+(it?iconMarkup(it[0]):'')+'</span><small>'+(it?(inventory[it[0]]||0):'')+'</small>';b.title=it?it[2]:'Пустой слот';b.onclick=()=>select(i);hotbar.appendChild(b)}
 function select(i){selected=(i+9)%9;renderInventory()}
 const geo=new THREE.BoxGeometry(1,1,1);const blocks=new Map();const key=(x,y,z)=>x+','+y+','+z;
 function addBlock(x,y,z,type='grass',persist=false){const k=key(x,y,z);if(blocks.has(k))return;const mesh=new THREE.Mesh(geo,mats[type]||mats.grass);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;mesh.userData={x,y,z,type};scene.add(mesh);blocks.set(k,mesh);if(persist)saveEdits()}

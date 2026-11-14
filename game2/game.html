@@ -228,7 +228,7 @@ for(let x=-worldRadius;x<=worldRadius;x++)for(let z=-worldRadius;z<=worldRadius;
  const legs=[];for(const lx of [-.27,.27])for(const lz of [-.39,.39])legs.push(box(.19,animal?.48:.38,.19,darkMat,lx,animal?.25:.25,lz));
  g.position.set(x,heightAt(Math.round(x),Math.round(z))+.05,z);scene.add(g);mobs.push({g,type,hostile,dir:Math.random()*6.28,turn:1+Math.random()*4,legs,phase:Math.random()*6});
 }
-const mobs=[];function spawnAnimals(){for(let i=0;i<12;i++){const t=['pig','cow','sheep'][i%3];spawnMob((Math.random()-.5)*worldRadius*.8,(Math.random()-.5)*worldRadius*.8,t)}}spawnAnimals();
+function spawnAnimals(){for(let i=0;i<12;i++){const t=['pig','cow','sheep'][i%3];spawnMob((Math.random()-.5)*worldRadius*.8,(Math.random()-.5)*worldRadius*.8,t)}}spawnAnimals();
 let mobNight=false;
 function tickMobs(dt){
  const night=dayTime>.52&&dayTime<.98;

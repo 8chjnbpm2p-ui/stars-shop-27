@@ -1944,7 +1944,8 @@ function renderQuests() {
     portrait.loading = "lazy";
     // Postimg может блокировать запросы с Referer; отключаем его для прямых аватаров.
     portrait.referrerPolicy = "no-referrer";
-    portrait.hidden = true;
+    // Изображение должно оставаться загружаемым: display:none может мешать lazy-load.
+    portrait.hidden = false;
     const portraitFallback = document.createElement("span");
     portraitFallback.className = "quest-portrait-fallback";
     // Показываем инициалы сразу: круг не будет пустым, даже если внешний хостинг фото недоступен.

@@ -240,9 +240,12 @@ body.game-mode.game-nav-open .game-nav-toggle {
 .game-library-card-main { cursor:pointer; aspect-ratio:16 / 9; }
 .game-library-art { display:block; width:100%; height:100%; margin:0; padding:0; background:#17243e; }
 .game-library-art img { display:block; width:100%; height:100%; object-fit:cover; border-radius:0; }
-.game-library-copy { display:none !important; }
-.game-library-card-soon { display:flex; align-items:center; justify-content:center; aspect-ratio:16 / 9; border-style:dashed; border-color:#46516b; background:linear-gradient(135deg,#1b263b,#131b2b); opacity:.86; }
-.game-library-card-soon .game-library-art { display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size:72px; background:linear-gradient(145deg,#40536d,#202c40); }
+.game-library-card-soon { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; aspect-ratio:16 / 9; padding:20px; text-align:center; border-style:dashed; border-color:#46516b; background:linear-gradient(135deg,#1b263b,#131b2b); opacity:.9; }
+.game-library-card-soon .game-library-art { display:none; }
+.game-library-copy { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.game-library-copy strong { font-size:22px; font-weight:900; }
+.game-library-copy small { color:#aab8d2; font-size:14px; line-height:1.4; }
+.game-library-copy b { color:#8caee8; font-size:13px; letter-spacing:1px; }
 .library-game-frame { position:relative; width:100%; height:100dvh; }
 .library-game-frame iframe { display:block; width:100vw; height:100dvh; min-height:100dvh; margin:0 calc(50% - 50vw); border:0; background:#121126; }
 .library-back-button { position:fixed; top:calc(10px + env(safe-area-inset-top)); left:12px; z-index:35; padding:9px 13px; border:1px solid #8291ad; border-radius:12px; color:#fff; background:#1c2945eF; font-weight:800; box-shadow:0 4px 18px #0006; }
@@ -517,7 +520,6 @@ a { color: #55aaff; text-decoration: none; }
       <span class="game-library-art"><img src="https://i.postimg.cc/9XB6yqdN/F4B1DA8C-65AC-42F4-850B-9A851BEA25FF.webp?v=202611141925" alt=""></span>
     </button>
     <div class="game-library-card game-library-card-soon" aria-label="Вторая игра скоро появится">
-      <span class="game-library-art">🧊</span>
       <span class="game-library-copy">
         <strong>Новая игра</strong>
         <small>Следующий игровой мир уже в разработке</small>

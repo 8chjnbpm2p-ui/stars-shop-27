@@ -173,7 +173,7 @@ function pixelTexture(base,variation,seed,pattern='noise'){
  const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;let state=seed>>>0;
  const rand=()=>{state=(state*1664525+1013904223)>>>0;return state/4294967296};
  const rgb=base.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16));
- const color=(delta)=>'rgb('+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v+delta))).join(',')+')';
+ const color=(delta)=>'rgb('+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v+delta)))).join(',')+')';
  const tile=document.createElement('canvas');tile.width=16;tile.height=16;const p=tile.getContext('2d');
  for(let y=0;y<16;y++)for(let x=0;x<16;x++){p.fillStyle=color(Math.round((rand()*2-1)*variation));p.fillRect(x,y,1,1)}
  if(pattern==='grass'){for(let i=0;i<34;i++){p.fillStyle=i%3===0?'#4b9637':i%3===1?'#70bd4d':'#5ca943';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}

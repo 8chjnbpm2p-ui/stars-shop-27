@@ -239,6 +239,7 @@ body.game-mode.game-nav-open .game-nav-toggle {
 .game-library-card { display:flex; align-items:center; gap:16px; width:100%; min-height:150px; margin:0 0 14px; padding:18px; border:1px solid #4c6390; border-radius:22px; color:#fff; text-align:left; background:linear-gradient(135deg,#263e67,#17243e 70%); box-shadow:0 12px 30px #0004; }
 .game-library-card-main { cursor:pointer; }
 .game-library-art { display:grid; place-items:center; flex:0 0 88px; height:88px; border-radius:20px; font-size:43px; background:linear-gradient(145deg,#6c58a5,#263b69); box-shadow:inset 0 1px #ffffff35; }
+.game-library-art img { display:block; width:100%; height:100%; object-fit:cover; border-radius:inherit; }
 .game-library-copy { display:flex; flex-direction:column; align-items:flex-start; gap:7px; min-width:0; }
 .game-library-copy strong { font-size:19px; }
 .game-library-copy small { color:#bdc9df; font-size:12px; line-height:1.45; }
@@ -518,7 +519,7 @@ a { color: #55aaff; text-decoration: none; }
       <p>Выбирай приключение и отправляйся в свой мир.</p>
     </div>
     <button class="game-library-card game-library-card-main" type="button" onclick="openLibraryGame()">
-      <span class="game-library-art">🌌</span>
+      <span class="game-library-art"><img src="https://i.postimg.cc/9XB6yqdN/F4B1DA8C-65AC-42F4-850B-9A851BEA25FF.webp" alt="Обложка игры Приключение Lo"></span>
       <span class="game-library-copy">
         <strong>Приключение Lo</strong>
         <small>Миры, квесты, слияние предметов и тайны</small>

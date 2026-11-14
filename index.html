@@ -224,6 +224,7 @@ body.game-mode #gamePage iframe {
 }
 body.game-mode .bottom-nav { display: none; }
 body.game-mode .game-nav-toggle { display: block; }
+body.game-mode.block-world-mode .game-nav-toggle { display:none !important; }
 body.game-mode.game-nav-open .bottom-nav { display: grid; }
 body.game-mode.game-nav-open .game-nav-toggle {
   bottom: calc(88px + env(safe-area-inset-bottom));
@@ -795,11 +796,13 @@ function closeLibraryGame() {
   document.getElementById("gameLibrary").classList.remove("hidden");
 }
 function openLibraryGame2() {
+  document.body.classList.add("block-world-mode");
   document.getElementById("gameLibrary").classList.add("hidden");
   document.getElementById("libraryGameFrame").classList.add("hidden");
   document.getElementById("libraryGameFrame2").classList.remove("hidden");
 }
 function closeLibraryGame2() {
+  document.body.classList.remove("block-world-mode");
   document.getElementById("libraryGameFrame2").classList.add("hidden");
   document.getElementById("gameLibrary").classList.remove("hidden");
 }

@@ -72,6 +72,11 @@ function updateLook(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.r
 renderer.domElement.addEventListener('click',()=>{if(!isTouch&&!locked)renderer.domElement.requestPointerLock?.()});
 document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;document.querySelector('#help').style.opacity=locked?'0':'1'});
 document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=THREE.MathUtils.clamp(pitch,-1.45,1.45);updateLook()});
+let lookPointer=null,lastTouchX=0,lastTouchY=0;
+renderer.domElement.addEventListener('pointerdown',e=>{if(!isTouch)return;lookPointer=e.pointerId;lastTouchX=e.clientX;lastTouchY=e.clientY;renderer.domElement.setPointerCapture?.(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!isTouch||lookPointer!==e.pointerId)return;const dx=e.clientX-lastTouchX,dy=e.clientY-lastTouchY;lastTouchX=e.clientX;lastTouchY=e.clientY;yaw-=dx*.005;pitch=THREE.MathUtils.clamp(pitch-dy*.005,-1.45,1.45);updateLook()});
+const stopLook=e=>{if(lookPointer===e.pointerId)lookPointer=null};
+renderer.domElement.addEventListener('pointerup',stopLook);renderer.domElement.addEventListener('pointercancel',stopLook);
 document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Digit'))select(Number(e.code.slice(5))-1);if(e.code==='Space')move.jump=true;if(e.code==='KeyE')placeBlock()});
 document.addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')move.jump=false});
 renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('mousedown',e=>{if(e.button===0&&locked)breakBlock();if(e.button===2&&locked)placeBlock()});

@@ -7,7 +7,7 @@
 <title>Block World — Stars Shop</title>
 <style>
 :root{color-scheme:dark;--panel:#101827dc;--line:#ffffff26}
-*{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#87c9ed;color:#fff;touch-action:none}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-user-drag:none}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#87c9ed;color:#fff;touch-action:none}
 #game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
 #top{position:fixed;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:9px 12px;backdrop-filter:blur(10px);box-shadow:0 8px 28px #07101e44}
@@ -26,15 +26,15 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 #up{left:47px;top:0}#down{left:47px;bottom:0}#left{left:0;top:38px}#right{right:0;top:38px}
 #actions{display:none;position:fixed;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));gap:9px;flex-direction:column}
 .action{width:62px;height:48px;padding:4px;font-size:11px;background:#101827d9;touch-action:none}
-#toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:#101827df;padding:8px 13px;border-radius:12px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:#101827df;padding:8px 13px;border-radius:12px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none}#mineProgress{position:fixed;left:50%;top:calc(50% + 27px);transform:translateX(-50%);width:74px;height:6px;border-radius:8px;background:#101827aa;overflow:hidden;opacity:0;pointer-events:none}#mineProgress span{display:block;width:100%;height:100%;background:#fff;transform:scaleX(0);transform-origin:left}#mineProgress.active{opacity:1}
 @media(pointer:coarse){#mobile,#actions{display:flex}#help{display:none}#hotbar{bottom:calc(8px + env(safe-area-inset-bottom))}.slot{width:42px;height:44px}#top{top:calc(8px + env(safe-area-inset-top))}}
-@media(max-width:380px){#brand{font-size:12px}#hint{font-size:10px}.slot{width:37px}.slot .emoji{font-size:19px}}
+@media(orientation:landscape) and (pointer:coarse){#mobile{bottom:calc(14px + env(safe-area-inset-bottom));left:14px}#actions{bottom:calc(14px + env(safe-area-inset-bottom));right:14px}#hotbar{bottom:calc(8px + env(safe-area-inset-bottom))}}@media(max-width:380px){#brand{font-size:12px}#hint{font-size:10px}.slot{width:37px}.slot .emoji{font-size:19px}}
 </style>
 </head>
 <body>
 <div id="game"></div>
 <div id="top"><div class="panel"><div id="brand">🧱 BLOCK WORLD</div><div id="hint">Исследуй мир • строй • сохраняй</div></div><button id="exit" type="button">← Игры</button></div>
-<div id="crosshair"></div><div id="help">WASD — движение · ЛКМ — сломать · ПКМ — поставить</div>
+<div id="crosshair"></div><div id="mineProgress"><span></span></div><div id="help">WASD — движение · ЛКМ — сломать · ПКМ — поставить</div>
 <div id="hotbar" aria-label="Панель блоков"></div>
 <div id="mobile"><button class="move" id="up">▲</button><button class="move" id="down">▼</button><button class="move" id="left">◀</button><button class="move" id="right">▶</button></div>
 <div id="actions"><button class="action" id="breakBtn">⛏ Сломать</button><button class="action" id="placeBtn">＋ Поставить</button><button class="action" id="jumpBtn">↑ Прыжок</button></div>
@@ -69,11 +69,13 @@ function placeBlock(){const hit=target();if(!hit)return toast('Наведи пр
 let toastTimer;function toast(t){const el=document.querySelector('#toast');el.textContent=t;el.style.opacity='1';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity='0',1300)}
 let yaw=0,pitch=0,sprinting=false;const keys={};const move={forward:false,back:false,left:false,right:false,jump:false};const isTouch=matchMedia('(pointer:coarse)').matches;
 function updateLook(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch}
-let lookPointer=null,lastTouchX=0,lastTouchY=0,lookMoved=false,holdTimer=null,holdBroken=false;
-renderer.domElement.addEventListener('pointerdown',e=>{if(!isTouch)return;lookPointer=e.pointerId;lastTouchX=e.clientX;lastTouchY=e.clientY;lookMoved=false;holdBroken=false;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{if(lookPointer===e.pointerId&&!lookMoved){breakBlock();holdBroken=true}},430);renderer.domElement.setPointerCapture?.(e.pointerId)});
-renderer.domElement.addEventListener('pointermove',e=>{if(!isTouch||lookPointer!==e.pointerId)return;const dx=e.clientX-lastTouchX,dy=e.clientY-lastTouchY;if(Math.abs(dx)+Math.abs(dy)>7){lookMoved=true;clearTimeout(holdTimer)}lastTouchX=e.clientX;lastTouchY=e.clientY;yaw-=dx*.005;pitch=THREE.MathUtils.clamp(pitch-dy*.005,-1.35,1.35);updateLook()});
-const stopLook=e=>{if(lookPointer!==e.pointerId)return;clearTimeout(holdTimer);if(!lookMoved&&!holdBroken)placeBlock();lookPointer=null};
-renderer.domElement.addEventListener('pointerup',stopLook);renderer.domElement.addEventListener('pointercancel',e=>{clearTimeout(holdTimer);if(lookPointer===e.pointerId)lookPointer=null});renderer.domElement.addEventListener('lostpointercapture',e=>{clearTimeout(holdTimer);if(lookPointer===e.pointerId)lookPointer=null});
+const mineProgress=document.querySelector('#mineProgress'),mineFill=mineProgress.querySelector('span');let lookPointer=null,lastTouchX=0,lastTouchY=0,lookMoved=false,holdTimer=null,holdBroken=false;
+function resetMine(){clearTimeout(holdTimer);mineProgress.classList.remove('active');mineFill.style.transition='none';mineFill.style.transform='scaleX(0)'}
+renderer.domElement.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});renderer.domElement.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+renderer.domElement.addEventListener('pointerdown',e=>{if(!isTouch)return;e.preventDefault();lookPointer=e.pointerId;lastTouchX=e.clientX;lastTouchY=e.clientY;lookMoved=false;holdBroken=false;resetMine();mineProgress.classList.add('active');requestAnimationFrame(()=>{mineFill.style.transition='transform 950ms linear';mineFill.style.transform='scaleX(1)'});holdTimer=setTimeout(()=>{if(lookPointer===e.pointerId&&!lookMoved){breakBlock();holdBroken=true;mineProgress.classList.remove('active')}},950);renderer.domElement.setPointerCapture?.(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!isTouch||lookPointer!==e.pointerId)return;const dx=e.clientX-lastTouchX,dy=e.clientY-lastTouchY;if(Math.abs(dx)+Math.abs(dy)>7){lookMoved=true;resetMine()}lastTouchX=e.clientX;lastTouchY=e.clientY;yaw-=dx*.005;pitch=THREE.MathUtils.clamp(pitch-dy*.005,-1.35,1.35);updateLook()});
+const stopLook=e=>{if(lookPointer!==e.pointerId)return;resetMine();if(!lookMoved&&!holdBroken)placeBlock();lookPointer=null};
+renderer.domElement.addEventListener('pointerup',stopLook);renderer.domElement.addEventListener('pointercancel',e=>{if(lookPointer===e.pointerId){resetMine();lookPointer=null}});renderer.domElement.addEventListener('lostpointercapture',e=>{if(lookPointer===e.pointerId){resetMine();lookPointer=null}});
 document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Digit'))select(Number(e.code.slice(5))-1);if(e.code==='Space')move.jump=true;if(e.code==='KeyE')placeBlock()});
 document.addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')move.jump=false});
 renderer.domElement.addEventListener('mousedown',e=>{if(e.button===0)breakBlock();if(e.button===2)placeBlock()});

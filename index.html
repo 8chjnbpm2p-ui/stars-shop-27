@@ -749,6 +749,15 @@ let recipientChecked = false;
 let recipientUsername = "";
 
 function showPage(page) {
+  // Если пользователь нажал «Игры» из меню поверх запущенной игры,
+  // вернуться к библиотеке игр, а не оставаться внутри iframe.
+  if (page === "game") {
+    const libraryGameFrame = document.getElementById("libraryGameFrame");
+    if (libraryGameFrame && !libraryGameFrame.classList.contains("hidden")) {
+      closeLibraryGame();
+    }
+  }
+
   document.body.classList.toggle("game-mode", page === "game");
   document.body.classList.remove("game-nav-open");
   const gameNavToggle = document.getElementById("gameNavToggle");

@@ -1947,9 +1947,10 @@ function renderQuests() {
     portrait.hidden = true;
     const portraitFallback = document.createElement("span");
     portraitFallback.className = "quest-portrait-fallback";
-    portraitFallback.hidden = true;
+    // Показываем инициалы сразу: круг не будет пустым, даже если внешний хостинг фото недоступен.
+    portraitFallback.hidden = false;
     portraitFallback.textContent = quest.character
-      .split(/[\\s-]+/)
+      .split(/[\s-]+/)
       .filter(Boolean)
       .map(part => part[0])
       .slice(0, 2)

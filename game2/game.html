@@ -53,7 +53,32 @@ scene.add(new THREE.HemisphereLight(0xdaf1ff,0x65744c,2));
 // Видимая рука игрока в первом лице.
 const arm=new THREE.Group();const sleeve=new THREE.Mesh(new THREE.BoxGeometry(.22,.38,.24),new THREE.MeshLambertMaterial({color:0x315f9b}));sleeve.position.set(0,-.12,0);const hand=new THREE.Mesh(new THREE.BoxGeometry(.19,.2,.2),new THREE.MeshLambertMaterial({color:0xd7a078}));hand.position.set(0,-.38,-.015);arm.add(sleeve,hand);arm.position.set(.48,-.38,-.72);arm.rotation.set(-.22,-.18,-.18);camera.add(arm);scene.add(camera);
 const sun=new THREE.DirectionalLight(0xfff1d2,2.2);sun.position.set(-12,22,9);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
-const mats={grass:new THREE.MeshLambertMaterial({color:0x62ad48}),dirt:new THREE.MeshLambertMaterial({color:0x89603d}),stone:new THREE.MeshLambertMaterial({color:0x89929b}),wood:new THREE.MeshLambertMaterial({color:0x9a6738}),sand:new THREE.MeshLambertMaterial({color:0xd8c27b}),leaves:new THREE.MeshLambertMaterial({color:0x398348})};
+// Оригинальные пиксельные текстуры 16×16, создаются локально без заимствования игровых файлов.
+function pixelTexture(base,variation,seed,pattern='noise'){
+  const canvas=document.createElement('canvas');canvas.width=16;canvas.height=16;
+  const ctx=canvas.getContext('2d');let state=seed>>>0;
+  const rand=()=>{state=(state*1664525+1013904223)>>>0;return state/4294967296};
+  const rgb=base.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16));
+  for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+    let k=(rand()*2-1)*variation;
+    if(pattern==='bark')k+=Math.sin(x*1.7)*variation*.45;
+    if(pattern==='stone'&&rand()>.9)k+=variation*.8;
+    if(pattern==='leaves'&&rand()>.78)k+=variation*1.2;
+    const color=rgb.map(v=>Math.max(0,Math.min(255,Math.round(v+k))));
+    ctx.fillStyle='rgb('+color.join(',')+')';ctx.fillRect(x,y,1,1);
+  }
+  const tex=new THREE.CanvasTexture(canvas);tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.colorSpace=THREE.SRGBColorSpace;return tex;
+}
+function textured(hex,variation,seed,pattern){return new THREE.MeshLambertMaterial({map:pixelTexture(hex,variation,seed,pattern)})}
+const grassTop=textured('62ad48',30,1),grassSideTex=pixelTexture('89603d',24,2);
+{
+  const canvas=document.createElement('canvas');canvas.width=16;canvas.height=16;const ctx=canvas.getContext('2d');ctx.drawImage(grassSideTex.image,0,0);
+  ctx.fillStyle='#68b94b';ctx.fillRect(0,0,16,4);for(let x=0;x<16;x++)if((x*7)%5!==0){ctx.fillStyle=['#4f9b3d','#79c653','#5ba743'][x%3];ctx.fillRect(x,3+(x%2),1,1)}
+  const tex=new THREE.CanvasTexture(canvas);tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.colorSpace=THREE.SRGBColorSpace;
+  var grassSide=new THREE.MeshLambertMaterial({map:tex});
+}
+const dirtMat=textured('89603d',25,3),stoneMat=textured('89929b',28,4,'stone'),woodSide=textured('9a6738',25,5,'bark'),woodTop=textured('c49a5b',22,6),sandMat=textured('d8c27b',18,7),leavesMat=textured('398348',35,8,'leaves');
+const mats={grass:[grassSide,grassSide,grassTop,dirtMat,grassSide,grassSide],dirt:dirtMat,stone:stoneMat,wood:[woodSide,woodSide,woodTop,woodTop,woodSide,woodSide],sand:sandMat,leaves:leavesMat};
 const items=[['grass','🌿','Трава'],['dirt','🟫','Земля'],['stone','🪨','Камень'],['wood','🪵','Дерево'],['sand','🟨','Песок'],['leaves','🍃','Листва']];
 let selected=0;
 const inventoryKey='stars_blockworld_inventory_v1';const inventory=Object.fromEntries(items.map(([id])=>[id,0]));try{Object.assign(inventory,JSON.parse(localStorage.getItem(inventoryKey)||'{}'))}catch{}

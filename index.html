@@ -704,6 +704,10 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
+  // Не даём свайпу вниз случайно свернуть Telegram Mini App во время игры.
+  if (typeof tg.disableVerticalSwipes === "function") {
+    tg.disableVerticalSwipes();
+  }
 }
 
 function getInitData() {

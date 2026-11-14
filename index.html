@@ -240,7 +240,7 @@ body.game-mode.game-nav-open .game-nav-toggle {
 .game-library-card-main { cursor:pointer; aspect-ratio:16 / 9; }
 .game-library-art { display:block; width:100%; height:100%; margin:0; padding:0; background:#17243e; }
 .game-library-art img { display:block; width:100%; height:100%; object-fit:cover; border-radius:0; }
-.game-library-card-soon { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; aspect-ratio:16 / 9; padding:20px; text-align:center; border-style:dashed; border-color:#46516b; background:linear-gradient(135deg,#1b263b,#131b2b); opacity:.9; }
+.game-library-card-soon { cursor:pointer; font-family:inherit; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; aspect-ratio:16 / 9; padding:20px; text-align:center; border-style:dashed; border-color:#46516b; background:linear-gradient(135deg,#1b263b,#131b2b); opacity:.9; }
 .game-library-card-soon .game-library-art { display:none; }
 .game-library-copy { display:flex; flex-direction:column; align-items:center; gap:8px; }
 .game-library-copy strong { font-size:22px; font-weight:900; }
@@ -519,13 +519,13 @@ a { color: #55aaff; text-decoration: none; }
     <button class="game-library-card game-library-card-main" type="button" onclick="openLibraryGame()" aria-label="Играть">
       <span class="game-library-art"><img src="https://i.postimg.cc/9XB6yqdN/F4B1DA8C-65AC-42F4-850B-9A851BEA25FF.webp?v=202611141925" alt=""></span>
     </button>
-    <div class="game-library-card game-library-card-soon" aria-label="Вторая игра скоро появится">
+    <button class="game-library-card game-library-card-soon" type="button" onclick="openLibraryGame2()" aria-label="Играть в Block World">
       <span class="game-library-copy">
-        <strong>Новая игра</strong>
-        <small>Следующий игровой мир уже в разработке</small>
-        <b>Скоро <span>✦</span></b>
+        <strong>Block World</strong>
+        <small>Исследуй кубический мир, добывай ресурсы и строй свои сооружения.</small>
+        <b>Играть <span>✦</span></b>
       </span>
-    </div>
+    </button>
   </div>
   <div id="libraryGameFrame" class="library-game-frame hidden">
     <iframe
@@ -533,6 +533,14 @@ a { color: #55aaff; text-decoration: none; }
       title="Приключение Lo"
       loading="lazy"
       allow="clipboard-read; clipboard-write"
+    ></iframe>
+  </div>
+  <div id="libraryGameFrame2" class="library-game-frame hidden">
+    <iframe
+      src="./game2/game.html?v=1"
+      title="Block World"
+      loading="lazy"
+      allow="fullscreen"
     ></iframe>
   </div>
 </section>
@@ -746,9 +754,9 @@ function showPage(page) {
   // вернуться к библиотеке игр, а не оставаться внутри iframe.
   if (page === "game") {
     const libraryGameFrame = document.getElementById("libraryGameFrame");
-    if (libraryGameFrame && !libraryGameFrame.classList.contains("hidden")) {
-      closeLibraryGame();
-    }
+    const libraryGameFrame2 = document.getElementById("libraryGameFrame2");
+    if (libraryGameFrame && !libraryGameFrame.classList.contains("hidden")) closeLibraryGame();
+    if (libraryGameFrame2 && !libraryGameFrame2.classList.contains("hidden")) closeLibraryGame2();
   }
 
   document.body.classList.toggle("game-mode", page === "game");
@@ -779,10 +787,20 @@ function showPage(page) {
 
 function openLibraryGame() {
   document.getElementById("gameLibrary").classList.add("hidden");
+  document.getElementById("libraryGameFrame2").classList.add("hidden");
   document.getElementById("libraryGameFrame").classList.remove("hidden");
 }
 function closeLibraryGame() {
   document.getElementById("libraryGameFrame").classList.add("hidden");
+  document.getElementById("gameLibrary").classList.remove("hidden");
+}
+function openLibraryGame2() {
+  document.getElementById("gameLibrary").classList.add("hidden");
+  document.getElementById("libraryGameFrame").classList.add("hidden");
+  document.getElementById("libraryGameFrame2").classList.remove("hidden");
+}
+function closeLibraryGame2() {
+  document.getElementById("libraryGameFrame2").classList.add("hidden");
   document.getElementById("gameLibrary").classList.remove("hidden");
 }
 function toggleGameNavigation() {

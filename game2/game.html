@@ -71,10 +71,15 @@ let yaw=0,pitch=0,sprinting=false;const keys={};const move={forward:false,back:f
 function updateLook(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch}
 const mineProgress=document.querySelector('#mineProgress'),mineFill=mineProgress.querySelector('span');let lookPointer=null,lastTouchX=0,lastTouchY=0,lookMoved=false,holdTimer=null,holdBroken=false;
 function resetMine(){clearTimeout(holdTimer);mineProgress.classList.remove('active');mineFill.style.transition='none';mineFill.style.transform='scaleX(0)'}
+// На iPhone игровой холст принимает только поворот камеры и удержание для добычи.
+renderer.domElement.style.touchAction='none';renderer.domElement.style.webkitTouchCallout='none';renderer.domElement.style.webkitUserSelect='none';
 renderer.domElement.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});renderer.domElement.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+for(const ev of ['gesturestart','gesturechange','gestureend'])renderer.domElement.addEventListener(ev,e=>e.preventDefault());
 renderer.domElement.addEventListener('pointerdown',e=>{if(!isTouch)return;e.preventDefault();lookPointer=e.pointerId;lastTouchX=e.clientX;lastTouchY=e.clientY;lookMoved=false;holdBroken=false;resetMine();mineProgress.classList.add('active');requestAnimationFrame(()=>{mineFill.style.transition='transform 950ms linear';mineFill.style.transform='scaleX(1)'});holdTimer=setTimeout(()=>{if(lookPointer===e.pointerId&&!lookMoved){breakBlock();holdBroken=true;mineProgress.classList.remove('active')}},950);renderer.domElement.setPointerCapture?.(e.pointerId)});
 renderer.domElement.addEventListener('pointermove',e=>{if(!isTouch||lookPointer!==e.pointerId)return;const dx=e.clientX-lastTouchX,dy=e.clientY-lastTouchY;if(Math.abs(dx)+Math.abs(dy)>7){lookMoved=true;resetMine()}lastTouchX=e.clientX;lastTouchY=e.clientY;yaw-=dx*.005;pitch=THREE.MathUtils.clamp(pitch-dy*.005,-1.35,1.35);updateLook()});
-const stopLook=e=>{if(lookPointer!==e.pointerId)return;resetMine();if(!lookMoved&&!holdBroken)placeBlock();lookPointer=null};
+// Отпускание пальца никогда не ставит блок: для этого есть отдельная кнопка «Поставить».
+const stopLook=e=>{if(lookPointer!==e.pointerId)return;resetMine();lookPointer=null};
 renderer.domElement.addEventListener('pointerup',stopLook);renderer.domElement.addEventListener('pointercancel',e=>{if(lookPointer===e.pointerId){resetMine();lookPointer=null}});renderer.domElement.addEventListener('lostpointercapture',e=>{if(lookPointer===e.pointerId){resetMine();lookPointer=null}});
 document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Digit'))select(Number(e.code.slice(5))-1);if(e.code==='Space')move.jump=true;if(e.code==='KeyE')placeBlock()});
 document.addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')move.jump=false});

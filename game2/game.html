@@ -170,30 +170,32 @@ sunSprite.scale.set(5,5,1);moonSprite.scale.set(4.5,4.5,1);scene.add(sunSprite,m
 const skyClock=new THREE.Clock();let dayTime=0;
 // Оригинальные пиксельные текстуры 16×16, создаются локально без заимствования игровых файлов.
 function pixelTexture(base,variation,seed,pattern='noise'){
-  const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;
-  const ctx=canvas.getContext('2d');let state=seed>>>0;
-  const rand=()=>{state=(state*1664525+1013904223)>>>0;return state/4294967296};
-  const rgb=base.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16));
-  for(let y=0;y<16;y++)for(let x=0;x<16;x++){
-    let k=(rand()*2-1)*variation;
-    if(pattern==='bark')k+=Math.sin(x*.22)*variation*.45;
-    if(pattern==='stone'&&rand()>.9)k+=variation*.8;
-    if(pattern==='leaves'&&rand()>.78)k+=variation*1.2;
-    const color=rgb.map(v=>Math.max(0,Math.min(255,Math.round(v+k))));
-    ctx.fillStyle='rgb('+color.join(',')+')';ctx.fillRect(x*8,y*8,8,8);
-  }
-  const tex=new THREE.CanvasTexture(canvas);tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.colorSpace=THREE.SRGBColorSpace;return tex;
+ const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;let state=seed>>>0;
+ const rand=()=>{state=(state*1664525+1013904223)>>>0;return state/4294967296};
+ const rgb=base.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16));
+ const color=(delta)=>'rgb('+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v+delta))).join(',')+')';
+ const tile=document.createElement('canvas');tile.width=16;tile.height=16;const p=tile.getContext('2d');
+ for(let y=0;y<16;y++)for(let x=0;x<16;x++){p.fillStyle=color(Math.round((rand()*2-1)*variation));p.fillRect(x,y,1,1)}
+ if(pattern==='grass'){for(let i=0;i<34;i++){p.fillStyle=i%3===0?'#4b9637':i%3===1?'#70bd4d':'#5ca943';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}
+ if(pattern==='dirt'){for(let i=0;i<28;i++){p.fillStyle=i%2?'#68472f':'#a4774c';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}
+ if(pattern==='stone'){for(let i=0;i<34;i++){p.fillStyle=i%2?'#6d747b':'#b2b8bd';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1+Math.floor(rand()*2),1)}}
+ if(pattern==='bark'){for(let x=1;x<16;x+=4){p.fillStyle='#704725';p.fillRect(x,0,1,16);p.fillStyle='#b17b45';p.fillRect(x+1,0,1,16)}}
+ if(pattern==='leaves'){for(let i=0;i<46;i++){p.fillStyle=i%3?'#2e7139':'#65a94d';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}
+ if(pattern==='sand'){for(let i=0;i<24;i++){p.fillStyle=i%2?'#bba76c':'#f0d991';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}
+ if(pattern==='planks'){for(let y=0;y<16;y+=4){p.fillStyle='#704725';p.fillRect(0,y,16,1);for(let x=2+(y%3);x<16;x+=7){p.fillRect(x,y+1,1,3)}}}
+ if(pattern==='wool'){for(let i=0;i<30;i++){p.fillStyle=i%2?'#f5f1e8':'#cbc7be';p.fillRect(Math.floor(rand()*16),Math.floor(rand()*16),1,1)}}
+ ctx.drawImage(tile,0,0,128,128);const tex=new THREE.CanvasTexture(canvas);tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.colorSpace=THREE.SRGBColorSpace;return tex;
 }
 function textured(hex,variation,seed,pattern){return new THREE.MeshLambertMaterial({map:pixelTexture(hex,variation,seed,pattern)})}
-const grassTop=textured('62ad48',30,1),grassSideTex=pixelTexture('89603d',24,2);
+const grassTop=textured('62ad48',12,1,'grass'),grassSideTex=pixelTexture('89603d',24,2);
 {
   const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(grassSideTex.image,0,0,128,128);
   ctx.fillStyle='#68b94b';ctx.fillRect(0,0,128,30);for(let x=0;x<16;x++)if((x*7)%5!==0){ctx.fillStyle=['#4f9b3d','#79c653','#5ba743'][x%3];ctx.fillRect(x*8,24+(x%4)*2,8,8)}
   const tex=new THREE.CanvasTexture(canvas);tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.colorSpace=THREE.SRGBColorSpace;
   var grassSide=new THREE.MeshLambertMaterial({map:tex});
 }
-const dirtMat=textured('89603d',25,3),stoneMat=textured('89929b',28,4,'stone'),woodSide=textured('9a6738',25,5,'bark'),woodTop=textured('c49a5b',22,6),sandMat=textured('d8c27b',18,7),leavesMat=textured('398348',35,8,'leaves');
-const planksMat=textured('b88752',19,9,'bark'),stickMat=textured('9c7446',12,10,'bark'),woolMat=textured('e2dfd5',8,11),tableMat=textured('96633c',18,12,'bark');
+const dirtMat=textured('89603d',12,3,'dirt'),stoneMat=textured('89929b',28,4,'stone'),woodSide=textured('9a6738',25,5,'bark'),woodTop=textured('c49a5b',22,6),sandMat=textured('d8c27b',18,7),leavesMat=textured('398348',35,8,'leaves');
+const planksMat=textured('b88752',8,9,'planks'),stickMat=textured('9c7446',12,10,'bark'),woolMat=textured('e2dfd5',5,11,'wool'),tableMat=textured('96633c',8,12,'planks');
 const mats={grass:[grassSide,grassSide,grassTop,dirtMat,grassSide,grassSide],dirt:dirtMat,stone:stoneMat,wood:[woodSide,woodSide,woodTop,woodTop,woodSide,woodSide],sand:sandMat,leaves:leavesMat,planks:planksMat,wool:woolMat,crafting_table:tableMat};
 const items=[['grass','🌿','Трава'],['dirt','🟫','Земля'],['stone','🪨','Камень'],['wood','🪵','Дерево'],['sand','🟨','Песок'],['leaves','🍃','Листва'],['planks','🟫','Доски'],['stick','╱','Палка'],['crafting_table','▦','Верстак'],['wool','⬜','Шерсть']];
 let selected=0;let gameMode='survival';let worldRadius=24;let lookSensitivity=.005;

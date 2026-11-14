@@ -97,6 +97,16 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  .menuPlayerName{font-size:12px}
 }
 @media(max-width:370px){#mainMenu{gap:0}.menuBrand{width:58vw;padding:10px 8px}.menuPlayer{width:39vw}#menu3d{height:175px}}
+
+/* Menu subpages replace the home screen instead of expanding below its buttons. */
+#mainMenu.subpage{justify-content:center;align-items:center;gap:0;background:radial-gradient(ellipse at 50% 35%,#31536d 0%,#14283b 48%,#091421 100%)}
+#mainMenu.subpage .menuBrand{width:min(520px,88vw);max-height:88vh;overflow:visible;padding:clamp(20px,4vw,34px);background:linear-gradient(145deg,#172b40f5,#0b1728f5);border:1px solid #d8f1ff55;border-radius:20px;box-shadow:0 22px 70px #0009}
+#mainMenu.subpage .menuTitle,#mainMenu.subpage .menuSubtitle,#mainMenu.subpage .menuButtons,#mainMenu.subpage .menuPlayer{display:none!important}
+#mainMenu.subpage #settingsPanel.open,#mainMenu.subpage #worldPanel.open,#mainMenu.subpage #createPanel.open{display:grid;width:100%;max-height:78vh;overflow-y:auto;gap:14px;margin:0;padding:0;background:transparent;border:0;box-shadow:none;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+#mainMenu.subpage #settingsPanel h3,#mainMenu.subpage #worldPanel h3,#mainMenu.subpage #createPanel h3{font-size:clamp(23px,4vw,32px);margin:0 0 5px;text-align:center}
+#mainMenu.subpage #settingsPanel label,#mainMenu.subpage #createPanel label{font-size:14px;gap:8px}
+#mainMenu.subpage #worldPanel button,#mainMenu.subpage #createPanel button,#mainMenu.subpage #settingsPanel button{min-height:46px;font-size:15px}
+@media(max-width:600px){#mainMenu.subpage .menuBrand{width:min(92vw,480px);padding:22px 18px}#mainMenu.subpage #settingsPanel.open,#mainMenu.subpage #worldPanel.open,#mainMenu.subpage #createPanel.open{max-height:82vh}}
 </style>
 </head>
 <body>
@@ -114,7 +124,7 @@ import * as THREE from 'three';
 const previewHost=document.querySelector('#menu3d');
 const previewScene=new THREE.Scene();
 const previewCamera=new THREE.PerspectiveCamera(32,1,.1,30);
-previewCamera.position.set(3.1,2.05,5.8);previewCamera.lookAt(0,1.55,0);
+previewCamera.position.set(1.35,2.0,7.1);previewCamera.lookAt(0,1.48,0);
 const previewRenderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
 previewRenderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 previewRenderer.setSize(260,300);previewRenderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -123,7 +133,7 @@ previewHost.appendChild(previewRenderer.domElement);
 previewScene.add(new THREE.HemisphereLight(0xd8efff,0x47506a,2.1));
 const previewKey=new THREE.DirectionalLight(0xffe2b4,2.4);previewKey.position.set(-3,6,5);previewScene.add(previewKey);
 const previewRim=new THREE.DirectionalLight(0x76bfff,1.5);previewRim.position.set(4,3,-4);previewScene.add(previewRim);
-const hero=new THREE.Group();previewScene.add(hero);
+const hero=new THREE.Group();hero.scale.set(1.24,1,1);previewScene.add(hero);
 const skin=new THREE.MeshStandardMaterial({color:0xc98c65,roughness:.88});
 const hair=new THREE.MeshStandardMaterial({color:0x3b281f,roughness:1});
 const shirt=new THREE.MeshStandardMaterial({color:0x3475b9,roughness:.9});
@@ -149,7 +159,7 @@ const previewFloor=new THREE.Mesh(new THREE.CircleGeometry(1.05,40),new THREE.Me
 previewFloor.rotation.x=-Math.PI/2;previewFloor.position.y=-.08;previewScene.add(previewFloor);
 function resizePreview(){const w=Math.max(1,previewHost.clientWidth),h=Math.max(1,previewHost.clientHeight);previewCamera.aspect=w/h;previewCamera.updateProjectionMatrix();previewRenderer.setSize(w,h,false)}
 resizePreview();
-const root=document.querySelector('#game');document.body.classList.add('menu-open');const menu=document.querySelector('#mainMenu'),settings=document.querySelector('#settingsPanel'),worldPanel=document.querySelector('#worldPanel'),createPanel=document.querySelector('#createPanel');const hideMenuPanels=()=>[settings,worldPanel,createPanel].forEach(p=>p.classList.remove('open'));document.querySelector('#createWorld').onclick=()=>{hideMenuPanels();worldPanel.classList.add('open')};document.querySelector('#newWorld').onclick=()=>{hideMenuPanels();createPanel.classList.add('open')};document.querySelector('#joinWorld').onclick=()=>toast('Сетевая игра пока не подключена');document.querySelector('#worldBack').onclick=hideMenuPanels;document.querySelector('#createBack').onclick=()=>{hideMenuPanels();worldPanel.classList.add('open')};document.querySelector('#startWorld').onclick=()=>{gameMode=document.querySelector('#gameMode').value;lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;const size=document.querySelector('#worldSize').value;worldRadius=size==='small'?16:size==='large'?32:24;rebuildWorld();hideMenuPanels();menu.classList.add('hidden');document.body.classList.remove('menu-open')};document.querySelector('#menuSettings').onclick=()=>{hideMenuPanels();settings.classList.add('open')};document.querySelector('#settingsDone').onclick=()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));settings.classList.remove('open')};document.querySelector('#menuBack').onclick=()=>{if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back()};
+const root=document.querySelector('#game');document.body.classList.add('menu-open');const menu=document.querySelector('#mainMenu'),settings=document.querySelector('#settingsPanel'),worldPanel=document.querySelector('#worldPanel'),createPanel=document.querySelector('#createPanel');const hideMenuPanels=()=>[settings,worldPanel,createPanel].forEach(p=>p.classList.remove('open'));const showMenuPanel=p=>{hideMenuPanels();menu.classList.add('subpage');p.classList.add('open')};const showMainMenu=()=>{hideMenuPanels();menu.classList.remove('subpage')};document.querySelector('#createWorld').onclick=()=>showMenuPanel(worldPanel);document.querySelector('#newWorld').onclick=()=>showMenuPanel(createPanel);document.querySelector('#joinWorld').onclick=()=>toast('Сетевая игра пока не подключена');document.querySelector('#worldBack').onclick=showMainMenu;document.querySelector('#createBack').onclick=()=>showMenuPanel(worldPanel);document.querySelector('#startWorld').onclick=()=>{gameMode=document.querySelector('#gameMode').value;lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;const size=document.querySelector('#worldSize').value;worldRadius=size==='small'?16:size==='large'?32:24;rebuildWorld();hideMenuPanels();menu.classList.remove('subpage');menu.classList.add('hidden');document.body.classList.remove('menu-open')};document.querySelector('#menuSettings').onclick=()=>showMenuPanel(settings);document.querySelector('#settingsDone').onclick=()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));showMainMenu()};document.querySelector('#menuBack').onclick=()=>{if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back()};
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8cccf0);scene.fog=new THREE.Fog(0x8cccf0,22,58);
 const camera=new THREE.PerspectiveCamera(74,innerWidth/innerHeight,.1,100);camera.position.set(0,2.3,7);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;root.appendChild(renderer.domElement);

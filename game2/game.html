@@ -108,10 +108,10 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 #mainMenu.subpage #settingsPanel label,#mainMenu.subpage #createPanel label{font-size:14px;gap:8px}
 #mainMenu.subpage #worldPanel button,#mainMenu.subpage #createPanel button,#mainMenu.subpage #settingsPanel button{min-height:46px;font-size:15px}
 @media(max-width:600px){#mainMenu.subpage .menuBrand{width:min(92vw,480px);padding:22px 18px}#mainMenu.subpage #settingsPanel.open,#mainMenu.subpage #worldPanel.open,#mainMenu.subpage #createPanel.open{max-height:82vh}}
-</style>
+#createPanel p#engineStatus{margin:0;padding:8px;border-radius:8px;background:#6b321f;color:#fff;font-size:12px;line-height:1.4;overflow-wrap:anywhere}#createPanel p#engineStatus:empty{display:none}</style>
 </head>
 <body>
-<div id="game"></div><div id="mainMenu"><div class="menuBrand"><div class="menuTitle">BLOCK WORLD</div><div class="menuSubtitle">Твой мир начинается здесь</div><div class="menuButtons"><button id="createWorld">▶ Играть</button><button id="menuSettings">⚙ Настройки</button><button id="menuBack">← Назад</button></div><div id="settingsPanel"><h3>Настройки</h3><label>Чувствительность камеры <input id="sensitivity" type="range" min="2" max="12" value="5"></label><label>Поле зрения <input id="fovSetting" type="range" min="60" max="100" value="74"></label><label>Качество графики <select id="graphicsSetting"><option value="1.7">Высокое</option><option value="1.3">Среднее</option><option value="1">Низкое</option></select></label><button id="settingsDone">Готово</button></div><div id="worldPanel"><h3>Играть</h3><button id="newWorld">Создать мир</button><button id="joinWorld">Подключиться</button><button id="worldBack">Назад</button></div><div id="createPanel"><h3>Создать мир</h3><label>Название мира <input id="worldName" maxlength="20" value="Мой мир"></label><label>Режим <select id="gameMode"><option value="survival">Выживание</option><option value="creative">Творческий</option></select></label><label>Размер <select id="worldSize"><option value="small">Маленький</option><option value="normal" selected>Обычный — 49×49</option><option value="large">Большой — 65×65</option></select></label><button id="startWorld">Создать</button><button id="createBack">Назад</button></div></div><div class="menuPlayer"><div class="menuAvatar" aria-label="Стив"><div class="avatar-head"></div><div class="avatar-body"></div><div class="avatar-arm left"></div><div class="avatar-arm right"></div><div class="avatar-leg left"></div><div class="avatar-leg right"></div></div><div class="menuPlayerName">Игрок</div></div></div>
+<div id="game"></div><div id="mainMenu"><div class="menuBrand"><div class="menuTitle">BLOCK WORLD</div><div class="menuSubtitle">Твой мир начинается здесь</div><div class="menuButtons"><button id="createWorld">▶ Играть</button><button id="menuSettings">⚙ Настройки</button><button id="menuBack">← Назад</button></div><div id="settingsPanel"><h3>Настройки</h3><label>Чувствительность камеры <input id="sensitivity" type="range" min="2" max="12" value="5"></label><label>Поле зрения <input id="fovSetting" type="range" min="60" max="100" value="74"></label><label>Качество графики <select id="graphicsSetting"><option value="1.7">Высокое</option><option value="1.3">Среднее</option><option value="1">Низкое</option></select></label><button id="settingsDone">Готово</button></div><div id="worldPanel"><h3>Играть</h3><button id="newWorld">Создать мир</button><button id="joinWorld">Подключиться</button><button id="worldBack">Назад</button></div><div id="createPanel"><h3>Создать мир</h3><label>Название мира <input id="worldName" maxlength="20" value="Мой мир"></label><label>Режим <select id="gameMode"><option value="survival">Выживание</option><option value="creative">Творческий</option></select></label><label>Размер <select id="worldSize"><option value="small">Маленький</option><option value="normal" selected>Обычный — 49×49</option><option value="large">Большой — 65×65</option></select></label><button id="startWorld">Создать</button><p id="engineStatus" role="status" aria-live="polite"></p><button id="createBack">Назад</button></div></div><div class="menuPlayer"><div class="menuAvatar" aria-label="Стив"><div class="avatar-head"></div><div class="avatar-body"></div><div class="avatar-arm left"></div><div class="avatar-arm right"></div><div class="avatar-leg left"></div><div class="avatar-leg right"></div></div><div class="menuPlayerName">Игрок</div></div></div>
 <div id="top"><button id="exit" type="button">← Игры</button><button id="weatherBtn" type="button" aria-label="Сменить погоду">☀️ Ясно</button></div>
 <div id="crosshair"></div><div id="mineProgress"><span></span></div><div id="help">WASD — движение · ЛКМ — сломать · ПКМ — поставить</div>
 <div id="survivalHud" aria-label="Здоровье и голод"><span id="healthHud">❤❤❤❤❤❤❤❤❤❤</span><span id="hungerHud">🍗🍗🍗🍗🍗🍗🍗🍗🍗🍗</span></div><div id="hotbar" aria-label="Панель блоков"></div>
@@ -124,6 +124,10 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  const menu=document.getElementById('mainMenu');
  if(!menu)return;
  const panels=['settingsPanel','worldPanel','createPanel'].map(id=>document.getElementById(id));
+ const status=document.getElementById('engineStatus');
+ const showStatus=message=>{if(status)status.textContent=message};
+ window.addEventListener('error',()=>showStatus('Ошибка запуска игрового движка. Перезагрузи страницу и попробуй снова.'));
+ window.addEventListener('unhandledrejection',()=>showStatus('Не удалось загрузить игровой движок. Проверь интернет и перезагрузи страницу.'));
  try{const meta=JSON.parse(localStorage.getItem('stars_blockworld_world_v1')||'null');const panel=document.getElementById('worldPanel');const create=document.getElementById('newWorld');if(create)create.textContent='＋ Создать новый мир';if(meta&&panel&&!document.getElementById('continueWorld')){const b=document.createElement('button');b.id='continueWorld';b.type='button';const name=String(meta.name||'Мой мир').slice(0,20);b.textContent='▶ Продолжить: '+name;panel.insertBefore(b,create||panel.children[1]||null)}}catch{}
  const hide=()=>panels.forEach(p=>p&&p.classList.remove('open'));
  const open=id=>{hide();menu.classList.add('subpage');document.getElementById(id)?.classList.add('open')};
@@ -138,7 +142,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
    case 'createBack':open('worldPanel');break;
    case 'menuSettings':open('settingsPanel');break;
    case 'settingsDone':document.dispatchEvent(new Event('blockworld:settings'));hide();menu.classList.remove('subpage');break;
-   case 'startWorld':if(window.__blockWorldEngineReady)document.dispatchEvent(new Event('blockworld:start'));else{window.__blockWorldPendingStart=true;const t=document.getElementById('toast');if(t){t.textContent='Загружается игровой движок…';t.style.opacity='1';setTimeout(()=>t.style.opacity='0',1800)}}break;
+   case 'startWorld':if(window.__blockWorldEngineReady){showStatus('');document.dispatchEvent(new Event('blockworld:start'))}else{window.__blockWorldPendingStart=true;showStatus('Подключаем игровой движок… Если это сообщение не исчезнет, игра не загрузилась.');}break;
    case 'menuBack':
     if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back();
     break;
@@ -149,7 +153,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 
-import * as THREE from 'three';
+let THREE;\ntry{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(firstError){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(secondError){const status=document.querySelector('#engineStatus');if(status)status.textContent='Не удалось загрузить игровой движок. Проверь подключение к интернету и обнови страницу.';throw secondError}}
 const root=document.querySelector('#game');const menu=document.querySelector('#mainMenu');document.body.classList.add('menu-open');
 document.addEventListener('blockworld:settings',()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));});
 document.addEventListener('blockworld:start',()=>{
@@ -166,8 +170,9 @@ document.addEventListener('blockworld:start',()=>{
   rebuildWorld();
   menu.classList.remove('subpage');menu.classList.add('hidden');
   document.body.classList.remove('menu-open');
+  const status=document.querySelector('#engineStatus');if(status)status.textContent='';
   toast('Мир «'+worldName+'» создан и сохранён');
- }catch(err){console.error('Block World: world creation failed',err);toast('Не удалось создать мир. Попробуй ещё раз');}
+ }catch(err){console.error('Block World: world creation failed',err);const status=document.querySelector('#engineStatus');if(status)status.textContent='Ошибка создания мира: '+(err?.message||'неизвестная ошибка');toast('Не удалось создать мир.');}
 });
 document.addEventListener('blockworld:continue',()=>{
  try{

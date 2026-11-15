@@ -43,7 +43,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 .avatar-leg{position:absolute;top:109px;width:23px;height:88px;background:linear-gradient(90deg,#283e68,#4569a0,#263c64);border:3px solid #1d2d4d}
 .avatar-leg.left{left:28px}.avatar-leg.right{right:28px}
 #inventoryMain{min-width:0}
-#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.item-icon{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(17px,3vw,25px);line-height:1;filter:drop-shadow(1px 2px 1px #2228)}.slot .item-icon{font-size:22px}.craft-cell .item-icon,.craft-output .item-icon{font-size:24px}
+#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.item-icon{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(17px,3vw,25px);line-height:1;filter:drop-shadow(1px 2px 1px #2228)}.item-icon img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(1px 2px 1px #2228)}.slot .item-icon{font-size:22px}.craft-cell .item-icon,.craft-output .item-icon{font-size:24px}
 .inventory-label{font-size:11px;color:#333;margin:8px 0 5px;font-weight:800}
 .invslot{aspect-ratio:1;min-width:0;display:grid;place-items:center;gap:0;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:0;padding:2px;position:relative}
 .invslot small{position:absolute;right:2px;bottom:0;font-size:10px;color:#fff;text-shadow:1px 1px #000;font-weight:900}
@@ -279,8 +279,21 @@ function selectedItemId(){return items[selected]?.[0]||null}
 function damageSelectedItem(){const id=selectedItemId();if(!maxDurability[id]||inventory[id]<=0)return;itemDurability[id]=(itemDurability[id]??maxDurability[id])-1;if(itemDurability[id]<=0){inventory[id]=Math.max(0,inventory[id]-1);itemDurability[id]=maxDurability[id];toast('Инструмент сломался')}saveInventory();renderInventory()}
 function itemCountLabel(id){return maxDurability[id]?(itemDurability[id]??maxDurability[id]):(inventory[id]||0)}
 function iconMarkup(id){
- const icons={grass:'🟩',dirt:'🟫',stone:'🪨',wood:'🪵',sand:'🟨',leaves:'🍃',planks:'🪵',wool:'⬜',knife:'🔪',stick:'🪵',crafting_table:'🧰',wooden_pickaxe:'⛏️',stone_pickaxe:'⛏️',coal_ore:'⚫',iron_ore:'🪨',coal:'⚫',raw_pork:'🥩',raw_beef:'🥩',raw_mutton:'🥩',cooked_pork:'🍖',cooked_beef:'🍖',cooked_mutton:'🍖',leather:'🟤',bone:'🦴',rotten_flesh:'🥀'};
- return '<span class="item-icon" aria-hidden="true">'+(icons[id]||'📦')+'</span>';
+ const textures={
+  grass:'blocks/grass.png',dirt:'blocks/dirt.png',stone:'blocks/stone.png',wood:'blocks/log_oak.png',
+  sand:'blocks/sand.png',leaves:'blocks/leaves_oak.png',planks:'blocks/planks_oak.png',
+  wool:'blocks/wool_colored_white.png',crafting_table:'blocks/crafting_table_front.png',
+  wooden_pickaxe:'items/wooden_pickaxe.png',stone_pickaxe:'items/stone_pickaxe.png',
+  stick:'items/stick.png',coal:'items/coal.png',coal_ore:'blocks/coal_ore.png',
+  iron_ore:'blocks/iron_ore.png',knife:'items/iron_sword.png',
+  raw_pork:'items/porkchop.png',raw_beef:'items/beef.png',raw_mutton:'items/mutton.png',
+  cooked_pork:'items/cooked_porkchop.png',cooked_beef:'items/cooked_beef.png',
+  cooked_mutton:'items/cooked_mutton.png',leather:'items/leather.png',
+  bone:'items/bone.png',rotten_flesh:'items/rotten_flesh.png'
+ };
+ const path=textures[id];
+ if(!path)return '<span class="item-icon" aria-hidden="true">📦</span>';
+ return '<span class="item-icon" aria-hidden="true"><img draggable="false" alt="" src="https://mcasset.cloud/1.8.8/assets/minecraft/textures/'+path+'" onerror="this.style.display=\'none\'"></span>';
 }
 const recipes=[
  {name:'4 доски',kind:'shapeless',ingredients:{wood:1},out:{planks:4}},
@@ -539,8 +552,7 @@ const walkAmount=moving&&!airborne?1:0,walkSwing=Math.sin(walkCycle)*walkAmount;
 arm.rotation.z=performance.now()<attackUntil?-.85:-.18+walkSwing*(sprintingNow?.14:.09)-jumpPose*.24+landPose*.16;
 arm.rotation.x=-.22+Math.abs(walkSwing)*.055+jumpPose*.18;
 arm.position.y=-.38+(moving&&!airborne?Math.abs(Math.cos(walkCycle*2))*(sprintingNow?.035:.02):0)+jumpPose*.11-landPose*.07;
-armL.rotation.x=walkSwing*.62-jumpPose*.38+landPose*.18;armR.rotation.x=-walkSwing*.62-jumpPose*.38+landPose*.18;
-legL.rotation.x=-walkSwing*.72+jumpPose*.3-landPose*.12;legR.rotation.x=walkSwing*.72+jumpPose*.3-landPose*.12;
+// В этой версии используется только видимая правая рука от первого лица; лишние ссылки на отсутствующие конечности удалены.
 updateLook();renderer.render(scene,camera);}
 document.querySelector('#exit').onclick=()=>{if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back()};
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});

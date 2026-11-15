@@ -23,10 +23,10 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 .slot.active{outline:2px solid #fff;outline-offset:0;background:#777}.slot .emoji{font-size:22px;line-height:24px}.slot small{font-size:9px;color:#fff;text-shadow:1px 1px #000}
 /* Minecraft-style inventory: hide stack counters and numeric labels. */
 #hotbar .slot small,#inventory .invslot small,.craft-cell small,.craft-output small{display:none!important}
-#mobile{display:none;position:fixed;left:14px;bottom:calc(82px + env(safe-area-inset-bottom));width:158px;height:136px}
-.move{position:absolute;width:50px;height:50px;padding:0;font-size:23px;background:#101827dd;border:2px solid #ffffff55;box-shadow:0 3px 0 #0006;touch-action:none}
+#mobile{display:none;position:fixed;z-index:30;left:14px;bottom:calc(82px + env(safe-area-inset-bottom));width:158px;height:136px;pointer-events:auto;touch-action:none}
+.move{position:absolute;width:50px;height:50px;padding:0;font-size:23px;background:#101827ee;border:2px solid #ffffff75;box-shadow:0 3px 0 #0006;touch-action:none;pointer-events:auto}.move.pressed{background:#477e32;transform:translateY(2px)}
 #up{left:54px;top:0}#down{left:54px;bottom:0}#left{left:0;top:43px}#right{right:0;top:43px}
-#actions{display:none;position:fixed;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));gap:9px;flex-direction:column}
+#actions{display:none;position:fixed;z-index:30;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));gap:9px;flex-direction:column;pointer-events:auto;touch-action:none}
 #inventoryBtn{position:fixed;left:auto;right:8px;bottom:calc(9px + env(safe-area-inset-bottom));width:32px;height:40px;padding:0;background:#454545;border:2px solid;border-color:#aaa #222 #222 #aaa;border-radius:3px;display:none;z-index:4;font-size:22px;line-height:1}
 #inventory{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(96vw,650px);max-height:90vh;overflow:auto;padding:12px;background:#c6c6c6;border:3px solid;border-color:#fff #555 #555 #fff;border-radius:3px;color:#242424;z-index:5;box-shadow:0 12px 45px #0009}
 #inventory.open{display:block}#inventoryHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;color:#222;font-weight:900;text-shadow:1px 1px #fff}
@@ -43,7 +43,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 .avatar-leg{position:absolute;top:109px;width:23px;height:88px;background:linear-gradient(90deg,#283e68,#4569a0,#263c64);border:3px solid #1d2d4d}
 .avatar-leg.left{left:28px}.avatar-leg.right{right:28px}
 #inventoryMain{min-width:0}
-#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.item-icon{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(17px,3vw,25px);line-height:1;filter:drop-shadow(1px 2px 1px #2228)}.item-icon img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(1px 2px 1px #2228)}.slot .item-icon{font-size:22px}.craft-cell .item-icon,.craft-output .item-icon{font-size:24px}
+#inventoryGrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.item-icon{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(17px,3vw,25px);line-height:1;filter:drop-shadow(1px 2px 1px #2228)}.item-icon img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(1px 2px 1px #2228)}.item-icon.icon-fallback:after{content:'📦';font-size:22px}.slot .item-icon{font-size:22px}.craft-cell .item-icon,.craft-output .item-icon{font-size:24px}
 .inventory-label{font-size:11px;color:#333;margin:8px 0 5px;font-weight:800}
 .invslot{aspect-ratio:1;min-width:0;display:grid;place-items:center;gap:0;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:0;padding:2px;position:relative}
 .invslot small{position:absolute;right:2px;bottom:0;font-size:10px;color:#fff;text-shadow:1px 1px #000;font-weight:900}
@@ -293,7 +293,7 @@ function iconMarkup(id){
  };
  const path=textures[id];
  if(!path)return '<span class="item-icon" aria-hidden="true">📦</span>';
- return '<span class="item-icon" aria-hidden="true"><img draggable="false" alt="" src="https://mcasset.cloud/1.8.8/assets/minecraft/textures/'+path+'" onerror="this.style.display=\'none\'"></span>';
+ return '<span class="item-icon" aria-hidden="true"><img draggable="false" alt="" src="https://mcasset.cloud/1.8.8/assets/minecraft/textures/'+path+'" onerror="this.parentElement.classList.add(\'icon-fallback\');this.remove()"></span>';
 }
 const recipes=[
  {name:'4 доски',kind:'shapeless',ingredients:{wood:1},out:{planks:4}},
@@ -529,7 +529,7 @@ document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('
 document.addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')move.jump=false});
 renderer.domElement.addEventListener('mousedown',e=>{const hit=target();if(e.button===0){if(hit?.object.userData.type==='crafting_table')openWorkbench();else if(!attackMob())breakBlock()}if(e.button===2){if(hit?.object.userData.type==='crafting_table')openWorkbench();else placeBlock()}});
 document.addEventListener('contextmenu',e=>e.preventDefault(),{capture:true});document.addEventListener('selectstart',e=>e.preventDefault());
-let lastForwardTap=0;function bindMove(id,name){const el=document.getElementById(id);const on=e=>{e.preventDefault();if(name==='forward'){const now=performance.now();if(now-lastForwardTap<330){sprinting=true;toast('Бег включён')}lastForwardTap=now}move[name]=true;el.setPointerCapture?.(e.pointerId)};const off=e=>{e.preventDefault();move[name]=false;if(name==='forward')sprinting=false};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('lostpointercapture',off)}
+let lastForwardTap=0;function bindMove(id,name){const el=document.getElementById(id);const on=e=>{e.preventDefault();e.stopPropagation();if(name==='forward'){const now=performance.now();if(now-lastForwardTap<330){sprinting=true;toast('Бег включён')}lastForwardTap=now}move[name]=true;el.classList.add('pressed')};const off=e=>{if(e)e.preventDefault();move[name]=false;el.classList.remove('pressed');if(name==='forward')sprinting=false};el.addEventListener('pointerdown',on,{passive:false});document.addEventListener('pointerup',off,{passive:false});document.addEventListener('pointercancel',off,{passive:false});el.addEventListener('contextmenu',e=>e.preventDefault());el.addEventListener('touchstart',on,{passive:false});document.addEventListener('touchend',off,{passive:false});document.addEventListener('touchcancel',off,{passive:false})}
 bindMove('up','forward');bindMove('down','back');bindMove('left','left');bindMove('right','right');
 document.querySelector('#placeBtn').addEventListener('click',e=>{e.preventDefault();unlockGameAudio();playGameSound('place');placeBlock()});document.querySelector('#jumpBtn').onpointerdown=e=>{e.preventDefault();move.jump=true};document.querySelector('#jumpBtn').onpointerup=()=>move.jump=false;document.querySelector('#jumpBtn').onpointercancel=()=>move.jump=false;
 let velocityY=0;const clock=new THREE.Clock();

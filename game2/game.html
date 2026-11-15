@@ -469,11 +469,12 @@ arm.position.y=-.38+(moving&&!airborne?Math.abs(Math.cos(walkCycle*2))*(sprintin
 armL.rotation.x=walkSwing*.62-jumpPose*.38+landPose*.18;armR.rotation.x=-walkSwing*.62-jumpPose*.38+landPose*.18;
 legL.rotation.x=-walkSwing*.72+jumpPose*.3-landPose*.12;legR.rotation.x=walkSwing*.72+jumpPose*.3-landPose*.12;
 updateLook();renderer.render(scene,camera);}
-tick();
 document.querySelector('#exit').onclick=()=>{if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back()};
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));resizePreview()});
-// Сигнализируем меню только после полной инициализации мира, камеры и игрового цикла.
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
+// Движок и обработчики создания мира уже готовы. Не ждём первого кадра:
+// если tick() споткнётся, кнопка «Создать» всё равно сможет запустить мир.
 window.__blockWorldEngineReady=true;
 if(window.__blockWorldPendingStart){window.__blockWorldPendingStart=false;document.dispatchEvent(new Event('blockworld:start'));}
+tick();
 </script>
 </body></html>

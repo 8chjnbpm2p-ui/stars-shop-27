@@ -136,7 +136,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
    case 'worldBack':hide();menu.classList.remove('subpage');break;
    case 'createBack':open('worldPanel');break;
    case 'menuSettings':open('settingsPanel');break;
-   case 'settingsDone':hide();menu.classList.remove('subpage');break;
+   case 'settingsDone':document.dispatchEvent(new Event('blockworld:settings'));hide();menu.classList.remove('subpage');break;
    case 'startWorld':document.dispatchEvent(new Event('blockworld:start'));break;
    case 'menuBack':
     if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back();
@@ -187,7 +187,8 @@ const previewFloor=new THREE.Mesh(new THREE.CircleGeometry(1.05,40),new THREE.Me
 previewFloor.rotation.x=-Math.PI/2;previewFloor.position.y=-.08;previewScene.add(previewFloor);
 function resizePreview(){const w=Math.max(1,previewHost.clientWidth),h=Math.max(1,previewHost.clientHeight);previewCamera.aspect=w/h;previewCamera.updateProjectionMatrix();previewRenderer.setSize(w,h,false)}
 resizePreview();
-const root=document.querySelector('#game');document.body.classList.add('menu-open');
+const root=document.querySelector('#game');const menu=document.querySelector('#mainMenu');document.body.classList.add('menu-open');
+document.addEventListener('blockworld:settings',()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));});
 document.addEventListener('blockworld:start',()=>{
  gameMode=document.querySelector('#gameMode').value;
  lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;

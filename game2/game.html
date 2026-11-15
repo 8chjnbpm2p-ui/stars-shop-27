@@ -128,8 +128,18 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  const panels=['settingsPanel','worldPanel','createPanel'].map(id=>document.getElementById(id));
  const status=document.getElementById('engineStatus');
  const showStatus=message=>{if(status)status.textContent=message};
- window.addEventListener('error',()=>showStatus('Ошибка запуска игрового движка. Перезагрузи страницу и попробуй снова.'));
- window.addEventListener('unhandledrejection',()=>showStatus('Не удалось загрузить игровой движок. Проверь интернет и перезагрузи страницу.'));
+ window.addEventListener('error',event=>{
+  const detail=event?.message||'Неизвестная ошибка JavaScript';
+  const where=event?.lineno?(' · строка '+event.lineno):'';
+  showStatus('Ошибка игры: '+detail+where);
+  console.error('Block World runtime error:',event?.error||event);
+ });
+ window.addEventListener('unhandledrejection',event=>{
+  const reason=event?.reason;
+  const detail=reason?.message||String(reason||'Неизвестная ошибка Promise');
+  showStatus('Ошибка загрузки: '+detail);
+  console.error('Block World unhandled rejection:',reason);
+ });
  try{const meta=JSON.parse(localStorage.getItem('stars_blockworld_world_v1')||'null');const panel=document.getElementById('worldPanel');const create=document.getElementById('newWorld');if(create)create.textContent='＋ Создать новый мир';if(meta&&panel&&!document.getElementById('continueWorld')){const b=document.createElement('button');b.id='continueWorld';b.type='button';const name=String(meta.name||'Мой мир').slice(0,20);b.textContent='▶ Продолжить: '+name;panel.insertBefore(b,create||panel.children[1]||null)}}catch{}
  const hide=()=>panels.forEach(p=>p&&p.classList.remove('open'));
  const open=id=>{hide();menu.classList.add('subpage');document.getElementById(id)?.classList.add('open')};

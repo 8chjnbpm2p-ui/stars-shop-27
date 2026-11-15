@@ -112,7 +112,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 @media(max-width:600px){#mainMenu.subpage .menuBrand{width:min(92vw,480px);padding:22px 18px}#mainMenu.subpage #settingsPanel.open,#mainMenu.subpage #worldPanel.open,#mainMenu.subpage #createPanel.open{max-height:82vh}}
 #createPanel p#engineStatus{margin:0;padding:8px;border-radius:8px;background:#6b321f;color:#fff;font-size:12px;line-height:1.4;overflow-wrap:anywhere}#createPanel p#engineStatus:empty{display:none}
 /* Native anchor-based menu navigation: works even if game JavaScript fails. */
-#mainMenu .menuNav{display:block;text-align:center;text-decoration:none;color:#fff;font:750 14px system-ui,sans-serif;border:1px solid #ffffff50;border-radius:10px;padding:9px 12px;background:linear-gradient(#65788c,#3c4b5e);box-shadow:0 3px 0 #0005;touch-action:manipulation;cursor:pointer}
+#mainMenu .menuNav{display:block;position:relative;z-index:1005;pointer-events:auto;cursor:pointer;text-align:center;text-decoration:none;color:#fff;font:750 14px system-ui,sans-serif;border:1px solid #ffffff50;border-radius:10px;padding:9px 12px;background:linear-gradient(#65788c,#3c4b5e);box-shadow:0 3px 0 #0005;touch-action:manipulation;cursor:pointer}
 #mainMenu .menuNav.primary{background:linear-gradient(#70b64e,#477e32)}
 #mainMenu #worldPanel:target,#mainMenu #settingsPanel:target,#mainMenu #createPanel:target{display:grid;gap:12px}
 /* Target panels use fixed positioning so navigation does not depend on :has() support or JavaScript. */
@@ -157,6 +157,20 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  document.getElementById('gameMenuBtn')?.addEventListener('click',togglePause);
  const open=id=>{hide();menu.classList.add('subpage');document.getElementById(id)?.classList.add('open')};
  menu.addEventListener('click',e=>{
+  const link=e.target.closest('a.menuNav');
+  if(link&&menu.contains(link)){
+   e.preventDefault();
+   switch(link.id){
+    case 'createWorld':open('worldPanel');break;
+    case 'newWorld':open('createPanel');break;
+    case 'menuSettings':open('settingsPanel');break;
+    case 'settingsDone':document.dispatchEvent(new Event('blockworld:settings'));hide();if(menu.classList.contains('ingame')){document.getElementById('pausePanel')?.classList.add('open');menu.classList.add('subpage')}else menu.classList.remove('subpage');break;
+    case 'worldBack':hide();menu.classList.remove('subpage');break;
+    case 'createBack':open('worldPanel');break;
+    case 'menuBack':if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back();break;
+   }
+   return;
+  }
   const button=e.target.closest('button');if(!button||!menu.contains(button))return;
   switch(button.id){
    case 'continueWorld':document.dispatchEvent(new Event('blockworld:continue'));break;

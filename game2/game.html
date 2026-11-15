@@ -137,7 +137,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
    case 'createBack':open('worldPanel');break;
    case 'menuSettings':open('settingsPanel');break;
    case 'settingsDone':document.dispatchEvent(new Event('blockworld:settings'));hide();menu.classList.remove('subpage');break;
-   case 'startWorld':document.dispatchEvent(new Event('blockworld:start'));break;
+   case 'startWorld':if(window.__blockWorldEngineReady)document.dispatchEvent(new Event('blockworld:start'));else{window.__blockWorldPendingStart=true;const t=document.getElementById('toast');if(t){t.textContent='Загружается игровой движок…';t.style.opacity='1';setTimeout(()=>t.style.opacity='0',1800)}}break;
    case 'menuBack':
     if(window.parent!==window&&window.parent.closeLibraryGame2)window.parent.closeLibraryGame2();else history.back();
     break;
@@ -190,14 +190,24 @@ resizePreview();
 const root=document.querySelector('#game');const menu=document.querySelector('#mainMenu');document.body.classList.add('menu-open');
 document.addEventListener('blockworld:settings',()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));});
 document.addEventListener('blockworld:start',()=>{
- gameMode=document.querySelector('#gameMode').value;
- lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;
- const size=document.querySelector('#worldSize').value;
- worldRadius=size==='small'?16:size==='large'?32:24;
- rebuildWorld();
- menu.classList.remove('subpage');menu.classList.add('hidden');
- document.body.classList.remove('menu-open');
+ try{
+  gameMode=document.querySelector('#gameMode').value;
+  lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;
+  const size=document.querySelector('#worldSize').value;
+  worldRadius=size==='small'?16:size==='large'?32:24;
+  const worldName=(document.querySelector('#worldName').value||'Мой мир').trim().slice(0,20)||'Мой мир';
+  edits=[];
+  localStorage.removeItem(editsKey);
+  savedWorldMeta={name:worldName,gameMode,worldRadius,createdAt:Date.now()};
+  localStorage.setItem(worldMetaKey,JSON.stringify(savedWorldMeta));
+  rebuildWorld();
+  menu.classList.remove('subpage');menu.classList.add('hidden');
+  document.body.classList.remove('menu-open');
+  toast('Мир «'+worldName+'» создан и сохранён');
+ }catch(err){console.error('Block World: world creation failed',err);toast('Не удалось создать мир. Попробуй ещё раз');}
 });
+window.__blockWorldEngineReady=true;
+if(window.__blockWorldPendingStart){window.__blockWorldPendingStart=false;document.dispatchEvent(new Event('blockworld:start'));}
 
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8cccf0);scene.fog=new THREE.Fog(0x8cccf0,22,58);
 const camera=new THREE.PerspectiveCamera(74,innerWidth/innerHeight,.1,100);camera.position.set(0,2.3,7);
@@ -256,7 +266,7 @@ const dirtMat=textured('89603d',12,3,'dirt'),stoneMat=textured('89929b',28,4,'st
 const planksMat=textured('b88752',8,9,'planks'),stickMat=textured('9c7446',12,10,'bark'),woolMat=textured('e2dfd5',5,11,'wool'),tableMat=textured('96633c',8,12,'planks'),coalOreMat=textured('34383d',22,13,'stone'),ironOreMat=textured('b47754',18,14,'stone');
 const mats={grass:[grassSide,grassSide,grassTop,dirtMat,grassSide,grassSide],dirt:dirtMat,stone:stoneMat,wood:[woodSide,woodSide,woodTop,woodTop,woodSide,woodSide],sand:sandMat,leaves:leavesMat,planks:planksMat,wool:woolMat,crafting_table:tableMat,coal_ore:coalOreMat,iron_ore:ironOreMat};
 const items=[['grass','🌿','Трава'],['dirt','🟫','Земля'],['stone','🪨','Камень'],['wood','🪵','Дерево'],['sand','🟨','Песок'],['leaves','🍃','Листва'],['planks','🟫','Доски'],['wooden_pickaxe','⛏️','Деревянная кирка'],['stone_pickaxe','⛏️','Каменная кирка'],['knife','🔪','Нож'],['stick','╱','Палка'],['crafting_table','▦','Верстак'],['wool','⬜','Шерсть'],['raw_pork','🥩','Сырая свинина'],['raw_beef','🥩','Сырая говядина'],['raw_mutton','🥩','Сырая баранина'],['leather','🟫','Кожа'],['bone','🦴','Кость'],['rotten_flesh','🍖','Гнилая плоть'],['coal_ore','⚫','Угольная руда'],['iron_ore','🟤','Железная руда'],['coal','⚫','Уголь'],['cooked_pork','🍖','Жареная свинина'],['cooked_beef','🍖','Жареная говядина'],['cooked_mutton','🍖','Жареная баранина']];
-let selected=0;let gameMode='survival';let worldRadius=24;let lookSensitivity=.005;
+const worldMetaKey='stars_blockworld_world_v1';let savedWorldMeta=null;try{savedWorldMeta=JSON.parse(localStorage.getItem(worldMetaKey)||'null')}catch{};let selected=0;let gameMode=savedWorldMeta?.gameMode||'survival';let worldRadius=savedWorldMeta?.worldRadius||24;let lookSensitivity=.005;
 const inventoryKey='stars_blockworld_inventory_v1',durabilityKey='stars_blockworld_durability_v1';const inventory=Object.fromEntries(items.map(([id])=>[id,0]));try{Object.assign(inventory,JSON.parse(localStorage.getItem(inventoryKey)||'{}'))}catch{}
 const itemDurability={wooden_pickaxe:59,stone_pickaxe:131,knife:80},maxDurability={wooden_pickaxe:59,stone_pickaxe:131,knife:80};try{Object.assign(itemDurability,JSON.parse(localStorage.getItem(durabilityKey)||'{}'))}catch{}
 function saveInventory(){try{localStorage.setItem(inventoryKey,JSON.stringify(inventory));localStorage.setItem(durabilityKey,JSON.stringify(itemDurability))}catch{}}
@@ -355,7 +365,7 @@ function tickMobs(dt){
 }
 const editsKey='stars_blockworld_edits_v1';let edits=[];try{edits=JSON.parse(localStorage.getItem(editsKey)||'[]')}catch{};edits.forEach(e=>{if(e.op==='add')addBlock(e.x,e.y,e.z,e.type);else if(e.op==='del'){const m=blocks.get(key(e.x,e.y,e.z));if(m)removeBlockNoSave(m)}});function rebuildWorld(){for(const m of blocks.values())scene.remove(m);blocks.clear();for(const m of mobs)scene.remove(m.g);mobs.length=0;mobNight=false;spawnAnimals();for(let x=-worldRadius;x<=worldRadius;x++)for(let z=-worldRadius;z<=worldRadius;z++){const h=heightAt(x,z);for(let y=0;y<=h;y++)addBlock(x,y,z,y===h?'grass':y>h-3?'dirt':'stone');if(h>1&&((x*17+z*31)%47===0)){for(let y=h+1;y<h+4;y++)addBlock(x,y,z,'wood');for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)for(let dy=2;dy<=4;dy++)if(Math.abs(dx)+Math.abs(dz)+(dy===4?1:0)<5)addBlock(x+dx,h+dy,z+dz,'leaves')}}edits.forEach(e=>{if(e.op==='add')addBlock(e.x,e.y,e.z,e.type);else if(e.op==='del'){const m=blocks.get(key(e.x,e.y,e.z));if(m)removeBlockNoSave(m)}});camera.position.set(0,heightAt(0,0)+2.15,7)}
 function removeBlockNoSave(m){scene.remove(m);const d=m.userData;blocks.delete(key(d.x,d.y,d.z))}
-function saveEdits(){try{const base=[];for(const [k,m] of blocks){const {x,y,z,type}=m.userData;if(Math.abs(x)<=worldRadius&&Math.abs(z)<=worldRadius&&y<=8){const h=heightAt(x,z);const expected=y<=h?(y===h?'grass':y>h-3?'dirt':'stone'):null;if(expected!==type)base.push({op:'add',x,y,z,type})}}const original=[];for(let x=-13;x<=13;x++)for(let z=-13;z<=13;z++){const h=heightAt(x,z);for(let y=0;y<=h;y++)original.push(key(x,y,z))}const current=new Set([...blocks.keys()]);const removed=original.filter(k=>!current.has(k)).map(k=>{const [x,y,z]=k.split(',').map(Number);return{op:'del',x,y,z}});localStorage.setItem(editsKey,JSON.stringify([...base,...removed]))}catch{}}
+function saveEdits(){try{const base=[];for(const [k,m] of blocks){const {x,y,z,type}=m.userData;if(Math.abs(x)<=worldRadius&&Math.abs(z)<=worldRadius&&y<=8){const h=heightAt(x,z);const expected=y<=h?(y===h?'grass':y>h-3?'dirt':'stone'):null;if(expected!==type)base.push({op:'add',x,y,z,type})}}const original=[];for(let x=-worldRadius;x<=worldRadius;x++)for(let z=-worldRadius;z<=worldRadius;z++){const h=heightAt(x,z);for(let y=0;y<=h;y++)original.push(key(x,y,z))}const current=new Set([...blocks.keys()]);const removed=original.filter(k=>!current.has(k)).map(k=>{const [x,y,z]=k.split(',').map(Number);return{op:'del',x,y,z}});localStorage.setItem(editsKey,JSON.stringify([...base,...removed]));if(savedWorldMeta)localStorage.setItem(worldMetaKey,JSON.stringify(savedWorldMeta))}catch(err){console.warn('Block World save failed',err)}}
 const ray=new THREE.Raycaster();const center=new THREE.Vector2(0,0);
 let gameAudio=null;
 function unlockGameAudio(){

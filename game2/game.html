@@ -96,6 +96,10 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 }
 @media(max-width:370px){#mainMenu{gap:0}.menuBrand{width:58vw;padding:10px 8px}.menuPlayer{width:39vw}#menu3d{height:175px}}
 
+/* Ensure the main menu remains interactive above the WebGL canvases on touch devices. */
+#mainMenu{z-index:1000;pointer-events:auto;isolation:isolate;touch-action:manipulation}
+#mainMenu .menuBrand,#mainMenu .menuBrand * ,#mainMenu .menuPlayer{pointer-events:auto}
+#mainMenu button,#mainMenu input,#mainMenu select{pointer-events:auto;position:relative;z-index:1;touch-action:manipulation}
 /* Menu subpages replace the home screen instead of expanding below its buttons. */
 #mainMenu.subpage{justify-content:center;align-items:center;gap:0;background:radial-gradient(ellipse at 50% 35%,#31536d 0%,#14283b 48%,#091421 100%)}
 #mainMenu.subpage .menuBrand{width:min(520px,88vw);max-height:88vh;overflow:visible;padding:clamp(20px,4vw,34px);background:linear-gradient(145deg,#172b40f5,#0b1728f5);border:1px solid #d8f1ff55;border-radius:20px;box-shadow:0 22px 70px #0009}

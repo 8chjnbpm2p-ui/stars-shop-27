@@ -142,7 +142,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  });
  try{const meta=JSON.parse(localStorage.getItem('stars_blockworld_world_v1')||'null');const panel=document.getElementById('worldPanel');const create=document.getElementById('newWorld');if(create)create.textContent='＋ Создать новый мир';if(meta&&panel&&!document.getElementById('continueWorld')){const b=document.createElement('button');b.id='continueWorld';b.type='button';const name=String(meta.name||'Мой мир').slice(0,20);b.textContent='▶ Продолжить: '+name;panel.insertBefore(b,create||panel.children[1]||null)}}catch{}
  const hide=()=>panels.forEach(p=>p&&p.classList.remove('open'));
- const togglePause=()=>{const opened=!menu.classList.contains('hidden');if(opened){hide();menu.classList.add('hidden');menu.classList.remove('subpage','ingame');document.body.classList.remove('menu-open');}else{hide();document.getElementById('pausePanel')?.classList.add('open');menu.classList.add('subpage','ingame');menu.classList.remove('hidden');document.body.classList.add('menu-open');}};
+ const togglePause=()=>{const opened=!menu.classList.contains('hidden');if(opened){hide();menu.classList.add('hidden');menu.classList.remove('subpage','ingame');document.body.classList.remove('menu-open');document.getElementById('gameMenuBtn')?.setAttribute('aria-expanded','false');}else{hide();document.getElementById('pausePanel')?.classList.add('open');menu.classList.add('subpage','ingame');menu.classList.remove('hidden');document.body.classList.add('menu-open');document.getElementById('gameMenuBtn')?.setAttribute('aria-expanded','true');}};
  document.getElementById('gameMenuBtn')?.addEventListener('click',togglePause);
  const open=id=>{hide();menu.classList.add('subpage');document.getElementById(id)?.classList.add('open')};
  menu.addEventListener('click',e=>{
@@ -566,7 +566,7 @@ arm.rotation.x=-.22+Math.abs(walkSwing)*.055+jumpPose*.18;
 arm.position.y=-.38+(moving&&!airborne?Math.abs(Math.cos(walkCycle*2))*(sprintingNow?.035:.02):0)+jumpPose*.11-landPose*.07;
 // В этой версии используется только видимая правая рука от первого лица; лишние ссылки на отсутствующие конечности удалены.
 updateLook();renderer.render(scene,camera);}
-document.querySelector('#gameMenuBtn').onclick=()=>{const menu=document.querySelector('#mainMenu');const open=menu.classList.contains('hidden');if(open){document.querySelectorAll('#settingsPanel,#worldPanel,#createPanel,#pausePanel').forEach(p=>p.classList.remove('open'));document.querySelector('#pausePanel').classList.add('open');menu.classList.add('subpage','ingame');menu.classList.remove('hidden');document.body.classList.add('menu-open');document.querySelector('#gameMenuBtn').setAttribute('aria-expanded','true')}else{menu.classList.add('hidden');menu.classList.remove('subpage');document.body.classList.remove('menu-open');document.querySelector('#gameMenuBtn').setAttribute('aria-expanded','false')}};
+
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
 // Движок и обработчики создания мира уже готовы. Не ждём первого кадра:
 // если tick() споткнётся, кнопка «Создать» всё равно сможет запустить мир.

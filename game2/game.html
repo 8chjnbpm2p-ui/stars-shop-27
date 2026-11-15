@@ -21,6 +21,8 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 #survivalHud{position:fixed;left:50%;bottom:calc(62px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:14px;align-items:center;padding:5px 10px;background:#101827c9;border:1px solid #ffffff44;border-radius:8px;font-size:15px;font-weight:900;text-shadow:1px 2px #000;white-space:nowrap;pointer-events:none}#hotbar{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:3px;padding:5px;background:#343434eF;border:2px solid;border-color:#aaa #222 #222 #aaa;border-radius:3px;backdrop-filter:blur(5px)}
 .slot{width:43px;height:43px;padding:3px;display:grid;place-items:center;gap:0;border:2px solid;border-color:#888 #222 #222 #888;border-radius:2px;background:#555}
 .slot.active{outline:2px solid #fff;outline-offset:0;background:#777}.slot .emoji{font-size:22px;line-height:24px}.slot small{font-size:9px;color:#fff;text-shadow:1px 1px #000}
+/* Minecraft-style inventory: hide stack counters and numeric labels. */
+#hotbar .slot small,#inventory .invslot small,.craft-cell small,.craft-output small{display:none!important}
 #mobile{display:none;position:fixed;left:14px;bottom:calc(82px + env(safe-area-inset-bottom));width:158px;height:136px}
 .move{position:absolute;width:50px;height:50px;padding:0;font-size:23px;background:#101827dd;border:2px solid #ffffff55;box-shadow:0 3px 0 #0006;touch-action:none}
 #up{left:54px;top:0}#down{left:54px;bottom:0}#left{left:0;top:43px}#right{right:0;top:43px}
@@ -153,8 +155,19 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 
-let THREE;
-try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(firstError){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(secondError){const status=document.querySelector('#engineStatus');if(status)status.textContent='Не удалось загрузить игровой движок. Проверь подключение к интернету и обнови страницу.';throw secondError}}
+let THREE,lastEngineError;
+for(const engineUrl of [
+ 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js',
+ 'https://unpkg.com/three@0.160.0/build/three.module.js',
+ 'https://esm.sh/three@0.160.0'
+]){
+ try{THREE=await import(engineUrl);break}catch(err){lastEngineError=err;console.warn('Block World: не загрузился движок с',engineUrl,err)}
+}
+if(!THREE){
+ const status=document.querySelector('#engineStatus');
+ if(status)status.textContent='Не удалось загрузить 3D-движок с трёх серверов. Проверь интернет или попробуй позже.';
+ throw lastEngineError||new Error('Three.js unavailable');
+}
 const root=document.querySelector('#game');const menu=document.querySelector('#mainMenu');document.body.classList.add('menu-open');
 document.addEventListener('blockworld:settings',()=>{lookSensitivity=Number(document.querySelector('#sensitivity').value)/1000;camera.fov=Number(document.querySelector('#fovSetting').value);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,Number(document.querySelector('#graphicsSetting').value)));});
 document.addEventListener('blockworld:start',()=>{

@@ -159,7 +159,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  menu.addEventListener('click',e=>{
   const link=e.target.closest('a.menuNav');
   if(link&&menu.contains(link)){
-   e.preventDefault();
+   /* Let the browser follow the anchor as a fallback; JS also opens the panel. */
    switch(link.id){
     case 'createWorld':open('worldPanel');break;
     case 'newWorld':open('createPanel');break;

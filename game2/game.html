@@ -125,11 +125,13 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  const menu=document.getElementById('mainMenu');
  if(!menu)return;
  const panels=['settingsPanel','worldPanel','createPanel'].map(id=>document.getElementById(id));
+ try{if(localStorage.getItem('stars_blockworld_world_v1')){const b=document.createElement('button');b.id='continueWorld';b.type='button';b.textContent='▶ Продолжить мир';const buttons=menu.querySelector('.menuButtons');if(buttons&&!document.getElementById('continueWorld'))buttons.insertBefore(b,buttons.firstChild)}}catch{}
  const hide=()=>panels.forEach(p=>p&&p.classList.remove('open'));
  const open=id=>{hide();menu.classList.add('subpage');document.getElementById(id)?.classList.add('open')};
  menu.addEventListener('click',e=>{
   const button=e.target.closest('button');if(!button||!menu.contains(button))return;
   switch(button.id){
+   case 'continueWorld':document.dispatchEvent(new Event('blockworld:continue'));break;
    case 'createWorld':open('worldPanel');break;
    case 'newWorld':open('createPanel');break;
    case 'joinWorld':{const t=document.getElementById('toast');if(t){t.textContent='Сетевая игра пока не подключена';t.style.opacity='1';setTimeout(()=>t.style.opacity='0',1300)}break}
@@ -205,6 +207,14 @@ document.addEventListener('blockworld:start',()=>{
   document.body.classList.remove('menu-open');
   toast('Мир «'+worldName+'» создан и сохранён');
  }catch(err){console.error('Block World: world creation failed',err);toast('Не удалось создать мир. Попробуй ещё раз');}
+});
+document.addEventListener('blockworld:continue',()=>{
+ try{
+  if(savedWorldMeta){gameMode=savedWorldMeta.gameMode||'survival';worldRadius=savedWorldMeta.worldRadius||24}
+  menu.classList.remove('subpage');menu.classList.add('hidden');document.body.classList.remove('menu-open');
+  camera.position.set(0,heightAt(0,0)+2.15,7);
+  toast('Мир загружен');
+ }catch(err){console.error('Block World: world load failed',err);toast('Не удалось загрузить мир');}
 });
 window.__blockWorldEngineReady=true;
 if(window.__blockWorldPendingStart){window.__blockWorldPendingStart=false;document.dispatchEvent(new Event('blockworld:start'));}

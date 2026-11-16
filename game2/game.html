@@ -518,6 +518,7 @@ function playGameSound(kind){
  gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.075,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+cfg[2]);
  osc.connect(gain);gain.connect(gameAudio.destination);osc.start(now);osc.stop(now+cfg[2]+.015);
 }
+const musicToggle=document.getElementById('musicToggle');if(musicToggle){try{musicEnabled=localStorage.getItem('blockworld_music')!=='off';musicToggle.checked=musicEnabled}catch{}musicToggle.addEventListener('change',()=>{musicEnabled=musicToggle.checked;try{localStorage.setItem('blockworld_music',musicEnabled?'on':'off')}catch{}if(musicEnabled)unlockGameAudio();else stopAmbientMusic()})}
 function target(){ray.setFromCamera(center,camera);const hits=ray.intersectObjects([...blocks.values()],false);return hits.find(h=>h.distance<6)||null}
 const drops=[];let breaking=null;
 const blockParticles=[],particleGeometry=new THREE.BoxGeometry(.075,.075,.075);

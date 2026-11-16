@@ -48,9 +48,9 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 .inventory-label{font-size:11px;color:#333;margin:8px 0 5px;font-weight:800}
 .invslot{aspect-ratio:1;min-width:0;display:grid;place-items:center;gap:0;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;border-radius:0;padding:2px;position:relative}
 .invslot small{position:absolute;right:2px;bottom:0;font-size:10px;color:#fff;text-shadow:1px 1px #000;font-weight:900}
-.invslot:disabled{opacity:.55}.invslot.selected{outline:2px solid #fff;outline-offset:-3px}
+.invslot:disabled{opacity:.55}.invslot.selected{outline:2px solid #fff;outline-offset:-3px}.invslot.selected-for-craft{box-shadow:inset 0 0 0 3px #f6d34a}
 #inventoryHotbar{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
-#craftArea{display:grid;grid-template-columns:auto 24px 48px;align-items:center;justify-content:center;gap:10px;margin:10px 0;padding:9px;background:#aaa;border:2px solid;border-color:#777 #fff #fff #777}#craftGrid{display:grid;grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,42px);gap:4px}#craftGrid.workbench{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,36px)}#craftGrid.workbench .craft-cell{width:36px;height:36px}.craft-cell,.craft-output{width:42px;height:42px;display:grid;place-items:center;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;padding:2px;position:relative}.craft-output{width:48px;height:48px;background:#8a8a8a}.craft-cell small,.craft-output small{position:absolute;right:1px;bottom:0;font-size:9px;color:white;text-shadow:1px 1px #000}.craft-arrow{font-size:24px;color:#444;font-weight:900}@media(max-width:520px){#craftGrid{grid-template-columns:repeat(2,36px);grid-template-rows:repeat(2,36px)}#craftGrid.workbench{grid-template-columns:repeat(3,29px);grid-template-rows:repeat(3,29px)}#craftGrid.workbench .craft-cell{width:29px;height:29px}.craft-cell{width:36px;height:36px}.craft-output{width:42px;height:42px}#craftArea{gap:6px;padding:6px}}#inventoryNote{display:none}#craftHint:empty{display:none}#recipeList{display:grid;grid-template-columns:1fr;gap:5px}#recipeList button{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px;background:#888;border:2px solid;border-color:#aaa #333 #333 #aaa;color:#fff;font-size:11px;text-align:left;border-radius:0}#recipeList button:disabled{opacity:.4}
+#craftArea{display:grid;grid-template-columns:auto 24px 48px;align-items:center;justify-content:center;gap:10px;margin:10px 0;padding:9px;background:#aaa;border:2px solid;border-color:#777 #fff #fff #777}#craftGrid{display:grid;grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,42px);gap:4px}#craftGrid.workbench{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,36px)}#craftGrid.workbench .craft-cell{width:36px;height:36px}.craft-cell,.craft-output{width:42px;height:42px;display:grid;place-items:center;background:#777;border:2px solid;border-color:#aaa #333 #333 #aaa;padding:2px;position:relative}.craft-output{width:48px;height:48px;background:#8a8a8a}.craft-cell small,.craft-output small{position:absolute;right:1px;bottom:0;font-size:9px;color:white;text-shadow:1px 1px #000}.craft-arrow{font-size:24px;color:#444;font-weight:900}@media(max-width:520px){#craftGrid{grid-template-columns:repeat(2,36px);grid-template-rows:repeat(2,36px)}#craftGrid.workbench{grid-template-columns:repeat(3,29px);grid-template-rows:repeat(3,29px)}#craftGrid.workbench .craft-cell{width:29px;height:29px}.craft-cell{width:36px;height:36px}.craft-output{width:42px;height:42px}#craftArea{gap:6px;padding:6px}}#inventoryNote{display:none}#craftHint:empty{display:none}.invslot{touch-action:none;user-select:none;-webkit-user-select:none}
 .block-icon{position:relative;width:25px;height:25px;display:block;image-rendering:pixelated;filter:drop-shadow(1px 2px 0 #2228)}
 .block-icon:before{content:"";position:absolute;left:2px;top:1px;width:20px;height:9px;transform:skewY(-25deg);background:var(--top);border:1px solid #2225}
 .block-icon:after{content:"";position:absolute;left:2px;top:9px;width:20px;height:14px;background:var(--front);border:1px solid #2225;box-shadow:5px -2px 0 -1px var(--side)}
@@ -141,7 +141,7 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
 <div id="crosshair"></div><div id="mineProgress"><span></span></div><div id="help">WASD — движение · ЛКМ — сломать · ПКМ — поставить · F — верстак</div>
 <div id="survivalHud" aria-label="Здоровье и голод"><span id="healthHud">❤❤❤❤❤❤❤❤❤❤</span><span id="hungerHud">🍗🍗🍗🍗🍗🍗🍗🍗🍗🍗</span></div><div id="hotbar" aria-label="Панель блоков"></div>
 <div id="mobile"><button class="move" id="up">▲</button><button class="move" id="down">▼</button><button class="move" id="left">◀</button><button class="move" id="right">▶</button></div>
-<button id="inventoryBtn" type="button" aria-label="Инвентарь">•••</button><div id="inventory"><div id="inventoryHead"><span id="inventoryTitle">Инвентарь</span><button id="closeInventory" type="button">✕</button></div><div id="inventoryLayout"><div id="playerPreview"><div id="avatar"><div class="avatar-head"></div><div class="avatar-body"></div><div class="avatar-arm left"></div><div class="avatar-arm right"></div><div class="avatar-leg left"></div><div class="avatar-leg right"></div></div></div><div id="inventoryMain"><div id="inventoryGrid"></div><div id="inventoryHotbar"></div><div id="crafting"><div id="craftLabel" class="inventory-label">Создание · 2×2</div><div id="craftArea"><div id="craftGrid"><button class="craft-cell" data-craft="0"></button><button class="craft-cell" data-craft="1"></button><button class="craft-cell" data-craft="2"></button><button class="craft-cell" data-craft="3"></button></div><span class="craft-arrow">➜</span><button id="craftOutput" class="craft-output" aria-label="Забрать результат"></button></div><div id="craftHint" class="inventory-label"></div><div id="recipeList" aria-label="Список рецептов"></div></div></div></div></div><div id="actions"><button class="action" id="placeBtn">＋ Поставить</button><button class="action" id="jumpBtn">↑ Прыжок</button></div>
+<button id="inventoryBtn" type="button" aria-label="Инвентарь">•••</button><div id="inventory"><div id="inventoryHead"><span id="inventoryTitle">Инвентарь</span><button id="closeInventory" type="button">✕</button></div><div id="inventoryLayout"><div id="playerPreview"><div id="avatar"><div class="avatar-head"></div><div class="avatar-body"></div><div class="avatar-arm left"></div><div class="avatar-arm right"></div><div class="avatar-leg left"></div><div class="avatar-leg right"></div></div></div><div id="inventoryMain"><div id="inventoryGrid"></div><div id="inventoryHotbar"></div><div id="crafting"><div id="craftLabel" class="inventory-label">Создание · 2×2</div><div id="craftArea"><div id="craftGrid"><button class="craft-cell" data-craft="0"></button><button class="craft-cell" data-craft="1"></button><button class="craft-cell" data-craft="2"></button><button class="craft-cell" data-craft="3"></button></div><span class="craft-arrow">➜</span><button id="craftOutput" class="craft-output" aria-label="Забрать результат"></button></div><div id="craftHint" class="inventory-label"></div></div></div></div></div><div id="actions"><button class="action" id="placeBtn">＋ Поставить</button><button class="action" id="jumpBtn">↑ Прыжок</button></div>
 <div id="toast"></div>
 <script>
 /* Keep menu navigation available even if the optional Three.js module fails to load. */
@@ -399,31 +399,6 @@ function currentRecipe(){
   return true;
  })||null;
 }
-function recipeNeeds(recipe){
- if(recipe.kind==='shapeless')return {...recipe.ingredients};
- const need={};for(const id of recipe.pattern.flat().filter(Boolean))need[id]=(need[id]||0)+1;return need;
-}
-function canCraftRecipe(recipe){
- if(recipe.station==='workbench'&&!workbenchOpen)return false;
- const need=recipeNeeds(recipe);
- return Object.entries(need).every(([id,n])=>(inventory[id]||0)>=n);
-}
-function renderRecipeList(){
- const el=document.querySelector('#recipeList');if(!el)return;
- el.innerHTML=recipes.map((r,i)=>{
-  const need=recipeNeeds(r),available=canCraftRecipe(r),out=Object.keys(r.out)[0],count=Object.values(r.out)[0];
-  const ingredients=Object.entries(need).map(([id,n])=>(items.find(x=>x?.[0]===id)?.[2]||id)+' ×'+n).join(', ');
-  return '<button type="button" data-recipe="'+i+'" '+(available?'':'disabled')+'><span><b>'+r.name+'</b><small>'+ingredients+(r.station?' · нужен верстак':'')+'</small></span><strong>'+iconMarkup(out)+' ×'+count+'</strong></button>';
- }).join('');
-}
-function craftRecipe(index){
- const recipe=recipes[index];if(!recipe)return;
- if(!canCraftRecipe(recipe)){toast(recipe.station&&!workbenchOpen?'Для этого рецепта нужен верстак':'Не хватает материалов');return}
- for(const [id,n] of Object.entries(recipeNeeds(recipe)))inventory[id]-=n;
- for(const [id,n] of Object.entries(recipe.out))inventory[id]=Math.min(64,(inventory[id]||0)+n);
- saveInventory();renderInventory();unlockAchievement('first_craft');toast('Создано: '+recipe.name);
-}
-document.querySelector('#recipeList').addEventListener('click',e=>{const b=e.target.closest('button[data-recipe]');if(b)craftRecipe(Number(b.dataset.recipe))});
 function renderCraft(){
  const grid=document.querySelector('#craftGrid'),size=workbenchOpen?3:2,count=size*size;
  grid.classList.toggle('workbench',workbenchOpen);
@@ -434,10 +409,10 @@ function renderCraft(){
  out.innerHTML=r?iconMarkup(Object.keys(r.out)[0])+'<small>×'+Object.values(r.out)[0]+'</small>':'';
  out.disabled=!r;out.title=r?'Создать: '+r.name:'Нет подходящего рецепта';
  document.querySelector('#craftHint').textContent=r?'Нажми на результат, чтобы забрать: '+r.name:'';
- renderRecipeList();
 }
 function craftTake(){const r=currentRecipe();if(!r)return;for(const[k,v]of Object.entries(r.out)){inventory[k]=Math.min(64,(inventory[k]||0)+v);if(maxDurability[k]&&inventory[k]>0)itemDurability[k]=maxDurability[k]}craftCells.fill(null);saveInventory();renderInventory();unlockAchievement('first_craft');toast('Создано: '+r.name)}
-document.querySelector('#craftGrid').addEventListener('click',e=>{const b=e.target.closest('.craft-cell');if(!b)return;const i=Number(b.dataset.craft);if(craftCells[i]){inventory[craftCells[i]]=Math.min(64,(inventory[craftCells[i]]||0)+1);craftCells[i]=null;saveInventory();renderInventory()}});document.querySelector('#craftOutput').onclick=craftTake;
+let inventorySelectedForCraft=null;
+document.querySelector('#craftGrid').addEventListener('click',e=>{const b=e.target.closest('.craft-cell');if(!b)return;const i=Number(b.dataset.craft);if(craftCells[i]){inventory[craftCells[i]]=Math.min(64,(inventory[craftCells[i]]||0)+1);craftCells[i]=null;saveInventory();renderInventory();return}if(inventorySelectedForCraft!==null){const item=items[inventorySelectedForCraft];if(item&&inventory[item[0]]>0){inventory[item[0]]--;craftCells[i]=item[0];inventorySelectedForCraft=null;saveInventory();renderInventory()}}});document.querySelector('#craftOutput').onclick=craftTake;
 let inventoryDragFrom=null;
 document.addEventListener('pointerdown',e=>{const slot=e.target.closest('#inventoryGrid .invslot,#inventoryHotbar .invslot');if(slot)inventoryDragFrom=Number(slot.dataset.itemIndex)},true);
 document.addEventListener('pointerup',e=>{if(inventoryDragFrom===null)return;const from=inventoryDragFrom;inventoryDragFrom=null;const slot=document.elementFromPoint(e.clientX,e.clientY)?.closest('#inventoryGrid .invslot,#inventoryHotbar .invslot');if(!slot)return;const to=Number(slot.dataset.itemIndex);if(!Number.isInteger(to)||to===from)return;[items[from],items[to]]=[items[to],items[from]];try{localStorage.setItem(itemOrderKey,JSON.stringify(items.map(x=>x?.[0]||null)))}catch{}renderInventory();e.preventDefault();e.stopPropagation();toast('Предмет перемещён')},true);
@@ -445,8 +420,8 @@ document.addEventListener('pointercancel',()=>{inventoryDragFrom=null},true);
 function renderInventory(){
   [...hotbar.children].forEach((el,i)=>{const item=items[i];el.querySelector('.emoji').innerHTML=item&&inventory[item[0]]>0?iconMarkup(item[0]):'';el.querySelector('small').textContent=item&&inventory[item[0]]>0?String(itemCountLabel(item[0])):'';el.classList.toggle('active',i===selected)});
   const grid=document.querySelector('#inventoryGrid'),bar=document.querySelector('#inventoryHotbar');if(!grid||!bar)return;grid.innerHTML='';bar.innerHTML='';
-  for(let i=0;i<27;i++){const idx=i+9,item=items[idx],hasItem=!!item&&inventory[item[0]]>0;const b=document.createElement('button');b.className='invslot'+(idx===selected?' selected':'');b.dataset.itemIndex=String(idx);b.disabled=false;if(hasItem){b.innerHTML=iconMarkup(item[0])+'<small>'+itemCountLabel(item[0])+'</small>';b.onclick=()=>{const id=item[0],food={raw_pork:[2,0],raw_beef:[2,0],raw_mutton:[2,0],cooked_pork:[6,2],cooked_beef:[7,3],cooked_mutton:[6,2],rotten_flesh:[1,-1],apple:[4,0]};if(food[id]&&playerHunger<20){inventory[id]--;playerHunger=Math.min(20,playerHunger+food[id][0]);playerHealth=Math.max(1,Math.min(20,playerHealth+food[id][1]));saveInventory();renderInventory();updateSurvivalHud();toast('Съедено: '+item[2]);return}const slot=craftCells.findIndex(x=>x===null);if(slot<0){toast('Все ячейки заняты');return}inventory[id]--;craftCells[slot]=id;saveInventory();renderInventory()}}else{b.classList.add('empty');b.innerHTML=''}grid.appendChild(b)}
-  for(let i=0;i<9;i++){const item=items[i],hasItem=!!item&&inventory[item[0]]>0;const b=document.createElement('button');b.className='invslot'+(i===selected?' selected':'');b.dataset.itemIndex=String(i);b.disabled=false;if(hasItem){b.innerHTML=iconMarkup(item[0])+'<small>'+itemCountLabel(item[0])+'</small>';b.onclick=()=>{select(i);document.querySelector('#inventory').classList.remove('open')}}else{b.classList.add('empty');b.innerHTML=''}bar.appendChild(b)}
+  for(let i=0;i<27;i++){const idx=i+9,item=items[idx],hasItem=!!item&&inventory[item[0]]>0;const b=document.createElement('button');b.className='invslot'+(idx===selected?' selected':'');b.dataset.itemIndex=String(idx);b.disabled=false;if(hasItem){b.innerHTML=iconMarkup(item[0])+'<small>'+itemCountLabel(item[0])+'</small>';b.onclick=()=>{inventorySelectedForCraft=idx;renderInventory()};if(inventorySelectedForCraft===idx)b.classList.add('selected-for-craft')}else{b.classList.add('empty');b.innerHTML=''}grid.appendChild(b)}
+  for(let i=0;i<9;i++){const item=items[i],hasItem=!!item&&inventory[item[0]]>0;const b=document.createElement('button');b.className='invslot'+(i===selected?' selected':'');b.dataset.itemIndex=String(i);b.disabled=false;if(hasItem){b.innerHTML=iconMarkup(item[0])+'<small>'+itemCountLabel(item[0])+'</small>';b.onclick=()=>{inventorySelectedForCraft=i;select(i);renderInventory()};if(inventorySelectedForCraft===i)b.classList.add('selected-for-craft')}else{b.classList.add('empty');b.innerHTML=''}bar.appendChild(b)}
   renderCraft();
 }
 const hotbar=document.querySelector('#hotbar');

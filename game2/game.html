@@ -449,7 +449,7 @@ function renderCraft(){
  out.disabled=!r;out.title=r?'Создать: '+r.name:'Нет подходящего рецепта';
  document.querySelector('#craftHint').textContent=r?'Нажми на результат, чтобы забрать: '+r.name:'';renderRecipeBook();
 }
-function craftTake(){const r=currentRecipe();if(!r)return;for(const[k,v]of Object.entries(r.out)){inventory[k]=Math.min(64,(inventory[k]||0)+v);if(maxDurability[k]&&inventory[k]>0)itemDurability[k]=maxDurability[k]}craftCells.fill(null);saveInventory();renderInventory();unlockAchievement('first_craft');toast('Создано: '+r.name)}
+function craftTake(){const r=currentRecipe();if(!r)return;for(const[k,v]of Object.entries(r.out))if((inventory[k]||0)+v>64)return toast('Нет места для результата — освободи ячейку инвентаря');for(const[k,v]of Object.entries(r.out)){inventory[k]=(inventory[k]||0)+v;if(maxDurability[k]&&inventory[k]>0)itemDurability[k]=maxDurability[k]}craftCells.fill(null);saveInventory();renderInventory();unlockAchievement('first_craft');toast('Создано: '+r.name)}
 let inventorySelectedForCraft=null,inventoryMoveFrom=null;
 document.querySelector('#craftGrid').addEventListener('click',e=>{const b=e.target.closest('.craft-cell');if(!b)return;const i=Number(b.dataset.craft);if(craftCells[i]){inventory[craftCells[i]]=Math.min(64,(inventory[craftCells[i]]||0)+1);craftCells[i]=null;saveInventory();renderInventory();return}if(inventorySelectedForCraft!==null){const item=items[inventorySelectedForCraft];if(item&&inventory[item[0]]>0){inventory[item[0]]--;craftCells[i]=item[0];inventorySelectedForCraft=null;inventoryMoveFrom=null;saveInventory();renderInventory()}}});document.querySelector('#craftOutput').onclick=craftTake;
 let inventoryDragFrom=null;

@@ -210,7 +210,8 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  });
 })();
 </script>
-<script type="module" id="blockWorldModule">
+<script id="blockWorldModule">
+(async()=>{
 const engineStatus=document.querySelector('#engineStatus');
 if(engineStatus)engineStatus.textContent='Запускаем игровой модуль…';
 let MinecraftUtilities;
@@ -706,5 +707,10 @@ window.__blockWorldEngineReady=true;
 const readyStatus=document.querySelector('#engineStatus');if(readyStatus)readyStatus.textContent='';
 if(window.__blockWorldPendingStart){window.__blockWorldPendingStart=false;document.dispatchEvent(new Event('blockworld:start'));}
 tick();
+})().catch(err=>{
+ console.error('Block World startup failed:',err);
+ const status=document.querySelector('#engineStatus');
+ if(status)status.textContent='Ошибка запуска игры: '+(err?.message||'неизвестная ошибка')+'. Обнови страницу и попробуй ещё раз.';
+});
 </script>
 </body></html>

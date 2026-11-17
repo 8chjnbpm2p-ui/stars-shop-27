@@ -567,7 +567,6 @@ function updateBlockParticles(dt){
   const p=blockParticles[i],u=p.userData;u.life-=dt;u.vy-=5.5*dt;
   p.position.x+=u.vx*dt;p.position.y+=u.vy*dt;p.position.z+=u.vz*dt;
   p.rotation.x+=dt*5;p.rotation.y+=dt*6;
-  p.material.opacity=Math.max(0,u.life/.6);
   if(u.life<=0){scene.remove(p);blockParticles.splice(i,1)}
  }
 }

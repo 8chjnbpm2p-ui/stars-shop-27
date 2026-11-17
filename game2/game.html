@@ -151,6 +151,9 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  const panels=['settingsPanel','worldPanel','createPanel','pausePanel','achievementsPanel'].map(id=>document.getElementById(id));
  const status=document.getElementById('engineStatus');
  const showStatus=message=>{if(status)status.textContent=message};
+ document.getElementById('blockWorldModule')?.addEventListener('error',()=>{
+  showStatus('Браузер не смог запустить игровой модуль. Обнови страницу; если ошибка повторится, пришли скриншот.');
+ });
  window.addEventListener('error',event=>{
   const detail=event?.message||'Неизвестная ошибка JavaScript';
   const where=event?.lineno?(' · строка '+event.lineno):'';
@@ -207,14 +210,26 @@ button{font:inherit;color:#fff;border:1px solid var(--line);background:#17243ddd
  });
 })();
 </script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
-<script type="module">
-import * as MinecraftUtilities from './minecraft-utilities.js';
+<script type="module" id="blockWorldModule">
+const engineStatus=document.querySelector('#engineStatus');
+if(engineStatus)engineStatus.textContent='Запускаем игровой модуль…';
+let MinecraftUtilities;
+try{
+ MinecraftUtilities=await import('./minecraft-utilities.js');
+}catch(err){
+ console.warn('Block World: вспомогательная библиотека недоступна, используем встроенную проверку столкновений.',err);
+ MinecraftUtilities={AABBUtils:{intersects(a,b){
+  const amin={x:a.center.x-a.extent.x,y:a.center.y-a.extent.y,z:a.center.z-a.extent.z};
+  const amax={x:a.center.x+a.extent.x,y:a.center.y+a.extent.y,z:a.center.z+a.extent.z};
+  const bmin={x:b.center.x-b.extent.x,y:b.center.y-b.extent.y,z:b.center.z-b.extent.z};
+  const bmax={x:b.center.x+b.extent.x,y:b.center.y+b.extent.y,z:b.center.z+b.extent.z};
+  return !(bmax.x<amin.x||bmin.x>amax.x||bmax.y<amin.y||bmin.y>amax.y||bmax.z<amin.z||bmin.z>amax.z);
+ }}};
+}
 const {AABBUtils}=MinecraftUtilities;
 window.BlockWorldUtilities=MinecraftUtilities;
 
 let THREE,lastEngineError;
-const engineStatus=document.querySelector('#engineStatus');
 const engineSources=[
  'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js',
  'https://unpkg.com/three@0.160.0/build/three.module.js',

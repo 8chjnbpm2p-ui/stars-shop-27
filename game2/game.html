@@ -214,16 +214,27 @@ const {AABBUtils}=MinecraftUtilities;
 window.BlockWorldUtilities=MinecraftUtilities;
 
 let THREE,lastEngineError;
-for(const engineUrl of [
+const engineStatus=document.querySelector('#engineStatus');
+const engineSources=[
  'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js',
  'https://unpkg.com/three@0.160.0/build/three.module.js',
- 'https://esm.sh/three@0.160.0'
-]){
- try{THREE=await import(engineUrl);break}catch(err){lastEngineError=err;console.warn('Block World: не загрузился движок с',engineUrl,err)}
+ 'https://esm.sh/three@0.160.0?bundle',
+ 'https://cdn.skypack.dev/three@0.160.0'
+];
+for(let attempt=0;attempt<engineSources.length;attempt++){
+ const engineUrl=engineSources[attempt];
+ if(engineStatus)engineStatus.textContent='Загружаем 3D-движок… Попытка '+(attempt+1)+' из '+engineSources.length;
+ try{
+  THREE=await Promise.race([
+   import(engineUrl),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error('Превышено время ожидания')),15000))
+  ]);
+  if(THREE)break;
+ }catch(err){lastEngineError=err;console.warn('Block World: не загрузился движок с',engineUrl,err)}
 }
 if(!THREE){
- const status=document.querySelector('#engineStatus');
- if(status)status.textContent='Не удалось загрузить 3D-движок с трёх серверов. Проверь интернет или попробуй позже.';
+ const reason=lastEngineError?.message||'неизвестная ошибка';
+ if(engineStatus)engineStatus.textContent='Не удалось загрузить игровой движок ('+reason+'). Проверь интернет и нажми «Создать» ещё раз.';
  throw lastEngineError||new Error('Three.js unavailable');
 }
 const root=document.querySelector('#game');const menu=document.querySelector('#mainMenu');document.body.classList.add('menu-open');
@@ -677,6 +688,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updat
 // Движок и обработчики создания мира уже готовы. Не ждём первого кадра:
 // если tick() споткнётся, кнопка «Создать» всё равно сможет запустить мир.
 window.__blockWorldEngineReady=true;
+const readyStatus=document.querySelector('#engineStatus');if(readyStatus)readyStatus.textContent='';
 if(window.__blockWorldPendingStart){window.__blockWorldPendingStart=false;document.dispatchEvent(new Event('blockworld:start'));}
 tick();
 </script>

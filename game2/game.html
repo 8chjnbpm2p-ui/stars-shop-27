@@ -486,7 +486,7 @@ function removeBlock(mesh){
  const {x,y,z,type}=mesh.userData;scene.remove(mesh);blocks.delete(key(x,y,z));
  if(type==='wood'){
   // Листва начинает опадать только после удаления последнего стволового блока рядом.
-  let trunkRemains=false;for(const other of blocks.values()){const d=other.userData;if(d.type==='wood'&&Math.hypot(d.x-x,d.z-z)<=3.5&&d.y>=y-5&&d.y<=y+10){trunkRemains=true;break}}
+  let trunkRemains=false;for(const other of blocks.values()){const d=other.userData;if(d.type==='wood'&&Math.hypot(d.x-x,d.z-z)<=1.25&&d.y>=y-8&&d.y<=y+14){trunkRemains=true;break}}
   if(!trunkRemains)beginTreeLeafDecay(x,y,z);
  }
  saveEdits()

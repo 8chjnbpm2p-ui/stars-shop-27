@@ -534,13 +534,13 @@ function collidesMobAt(x,feet,z){return mobs.some(m=>Math.abs(m.g.position.y-(fe
 function mobHitsBlocks(m,x,feet,z){const r=m.radius,h=m.hostile?2.1:1.45,minX=x-r,maxX=x+r,minZ=z-r,maxZ=z+r;for(let bx=Math.floor(minX-.5);bx<=Math.ceil(maxX+.5);bx++)for(let by=Math.floor(feet-.5);by<=Math.ceil(feet+h+.5);by++)for(let bz=Math.floor(minZ-.5);bz<=Math.ceil(maxZ+.5);bz++){if(!blocks.has(key(bx,by,bz)))continue;if(maxX>bx-.5&&minX<bx+.5&&maxZ>bz-.5&&minZ<bz+.5&&feet<by+.5&&feet+h>by-.5)return true}return false}
 function tickMobs(dt){
  const night=dayTime>.52&&dayTime<.98;
- if(night&&!mobNight){for(let i=0;i<2;i++){const a=Math.random()*Math.PI*2,d=13+Math.random()*9,x=camera.position.x+Math.cos(a)*d,z=camera.position.z+Math.sin(a)*d;if(Math.abs(x)<worldRadius-1&&Math.abs(z)<worldRadius-1)spawnMob(x,z,i%2?'skeleton':'zombie')}mobNight=true}
+ if(night&&!mobNight){let spawned=0;for(let i=0;i<18&&spawned<4;i++){const a=Math.random()*Math.PI*2,d=12+Math.random()*10,x=camera.position.x+Math.cos(a)*d,z=camera.position.z+Math.sin(a)*d;if(Math.abs(x)<worldRadius-2&&Math.abs(z)<worldRadius-2&&heightAt(Math.round(x),Math.round(z))>=1){spawnMob(x,z,spawned%2?'skeleton':'zombie');spawned++}}mobNight=true}
  if(!night&&mobNight){for(let i=mobs.length-1;i>=0;i--)if(mobs[i].hostile){scene.remove(mobs[i].g);mobs.splice(i,1)}mobNight=false}
  for(const m of mobs){updateMobHitEffect(m,dt);m.turn-=dt;m.phase+=dt*7;if(m.turn<=0){m.turn=2+Math.random()*4;m.targetDir=Math.random()*6.28}
   let speed=m.hostile ? 0.72 : 0.36;
   if(m.hitPush>0){m.hitPush=Math.max(0,m.hitPush-dt);speed=4}
   else if(!m.hostile&&m.fleeTimer>0){m.fleeTimer=Math.max(0,m.fleeTimer-dt);speed=2.25}
-  else if(m.hostile){const dx=camera.position.x-m.g.position.x,dz=camera.position.z-m.g.position.z;if(Math.hypot(dx,dz)<8){m.targetDir=Math.atan2(dz,dx);speed=1.05}}
+  else if(m.hostile){const dx=camera.position.x-m.g.position.x,dz=camera.position.z-m.g.position.z,dist=Math.hypot(dx,dz);if(dist<10){m.targetDir=Math.atan2(dz,dx);speed=1.15}if(gameMode==='survival'&&dist<1.35&&performance.now()-m.lastAttack>1250){m.lastAttack=performance.now();playerHealth=Math.max(0,playerHealth-2);updateSurvivalHud();playGameSound('hurt');if(playerHealth<=0)respawnPlayer();else toast('Монстр атаковал!')}}
   if(m.hitPush>0||(!m.hostile&&m.fleeTimer>0)){const dx=m.g.position.x-camera.position.x,dz=m.g.position.z-camera.position.z;m.targetDir=Math.atan2(dz,dx)}
   m.dir+=Math.atan2(Math.sin(m.targetDir-m.dir),Math.cos(m.targetDir-m.dir))*Math.min(1,dt*4.5);
   const nx=m.g.position.x+Math.cos(m.dir)*dt*speed,nz=m.g.position.z+Math.sin(m.dir)*dt*speed,ground=heightAt(Math.round(nx),Math.round(nz))+.5;
@@ -696,7 +696,7 @@ document.querySelector('#inventoryBtn').onclick=()=>{unlockGameAudio();playGameS
 document.querySelector('#closeInventory').onclick=()=>{playGameSound('inventory');closeWorkbench();document.querySelector('#inventory').classList.remove('open')};let lookPointer=null,lastTouchX=0,lastTouchY=0,lookMoved=false,holdBroken=false;
 function resetMine(){mineProgress.classList.remove('active');mineFill.style.transition='none';mineFill.style.transform='scaleX(0)'}
 // На iPhone игровой холст принимает только поворот камеры и удержание для добычи.
-renderer.domElement.style.touchAction='none';renderer.domElement.style.webkitTouchCallout='none';renderer.domElement.style.webkitUserSelect='none';
+renderer.domElement.style.touchAction='none';renderer.domElement.style.webkitTouchCallout='none';renderer.domElement.style.webkitUserSelect='none';document.getElementById('game').style.touchAction='none';
 renderer.domElement.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});renderer.domElement.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
 for(const ev of ['gesturestart','gesturechange','gestureend'])renderer.domElement.addEventListener(ev,e=>e.preventDefault());

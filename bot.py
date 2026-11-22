@@ -1478,6 +1478,18 @@ async def start(
         ),
     )
 
+    # Отдельная inline Web App кнопка в сообщении чата.
+    # Она запускает Mini App в Telegram-контексте и передаёт initData.
+    await update.effective_message.reply_text(
+        "🛍 Чтобы сразу открыть магазин, нажми кнопку ниже:",
+        reply_markup=InlineKeyboardMarkup([[
+            InlineKeyboardButton(
+                "🛍 Открыть магазин",
+                web_app=WebAppInfo(url=SHOP_URL),
+            )
+        ]]),
+    )
+
 
 async def prices(
     update: Update,

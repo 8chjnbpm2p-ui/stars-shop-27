@@ -53,7 +53,7 @@ ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID", "")
 
 SUPPORT_USERNAME = os.getenv(
     "SUPPORT_USERNAME",
-    "JonDayviHar1s",
+    "mr_mirohodec",
 ).lstrip("@")
 
 IFRAGMENT_API_KEY = os.getenv("IFRAGMENT_API_KEY", "")

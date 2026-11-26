@@ -2,34 +2,165 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101522">
-<title>Stars Shop 27 — новый интерфейс</title>
+<title>Stars Shop 27</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{color-scheme:dark;--bg:#0d1423;--panel:#17243a;--line:#2b3b58;--muted:#aab8d0;--blue:#438fff;--mint:#61e0b1}
+:root{color-scheme:dark;--bg:#0d1423;--panel:#17243a;--line:#2b3b58;--muted:#aab8d0;--blue:#438fff;--mint:#61e0b1;--red:#ff9c9c}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#254477 0,transparent 48%),var(--bg);color:#f6f8ff;font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-main{max-width:520px;margin:auto;padding:22px 17px 42px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}.brand{font-weight:850;font-size:19px}.online{font-size:11px;color:var(--mint);letter-spacing:1.2px}.eyebrow{font-size:11px;letter-spacing:2px;color:#91b8ff;font-weight:800}h1{font-size:30px;line-height:1.12;margin:9px 0}.sub{color:var(--muted);font-size:14px}.tabs{display:flex;gap:8px;margin:24px 0 18px;padding:5px;border:1px solid var(--line);border-radius:15px;background:#111c2e}.tab{flex:1;border:0;border-radius:10px;padding:12px 5px;background:transparent;color:#9eacc4;font-weight:700}.tab.active{background:#2a4165;color:white}.section{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 12px}.section strong{font-size:17px}.section span{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.item{border:1px solid var(--line);border-radius:18px;padding:16px 13px;background:linear-gradient(155deg,#1b2b46,#141f33);text-align:center;box-shadow:0 8px 24px #0002}.emoji{font-size:30px}.amount{font-size:21px;font-weight:850;margin:7px 0 2px}.price{color:var(--mint);font-weight:800;font-size:15px;margin:7px 0 13px}.buy{width:100%;border:0;border-radius:11px;padding:12px;background:linear-gradient(100deg,#3988ff,#5579ff);color:white;font-weight:800}.buy:active{transform:scale(.98)}.premium .item{background:linear-gradient(155deg,#342d58,#1d2541)}.premium .price{color:#c9b4ff}.hint{margin-top:18px;border:1px solid #304563;background:#14233a;border-radius:14px;padding:13px;color:#b8c8e2;font-size:12px}.foot{text-align:center;color:#71819d;font-size:11px;margin-top:28px}.hidden{display:none}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#263b5b;border:1px solid #58739d;border-radius:14px;padding:12px 17px;box-shadow:0 8px 30px #0008;transition:.2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+main{max-width:520px;margin:auto;padding:18px 17px 42px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.brand{font-weight:850;font-size:19px}.online{font-size:11px;color:var(--mint);letter-spacing:1.2px}.eyebrow{font-size:11px;letter-spacing:2px;color:#91b8ff;font-weight:800}h1{font-size:30px;line-height:1.12;margin:9px 0}.sub{color:var(--muted);font-size:14px}.tabs{display:flex;gap:8px;margin:23px 0 18px;padding:5px;border:1px solid var(--line);border-radius:15px;background:#111c2e}.tab{flex:1;border:0;border-radius:10px;padding:12px 5px;background:transparent;color:#9eacc4;font-weight:700}.tab.active{background:#2a4165;color:white}.section{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 12px}.section strong{font-size:17px}.section span{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.item{border:1px solid var(--line);border-radius:18px;padding:16px 13px;background:linear-gradient(155deg,#1b2b46,#141f33);text-align:center;box-shadow:0 8px 24px #0002}.emoji{font-size:30px}.amount{font-size:21px;font-weight:850;margin:7px 0 2px}.price{color:var(--mint);font-weight:800;font-size:15px;margin:7px 0 13px}.buy,.primary{width:100%;border:0;border-radius:11px;padding:12px;background:linear-gradient(100deg,#3988ff,#5579ff);color:white;font-weight:800}.buy:disabled,.primary:disabled{opacity:.55}.premium .item{background:linear-gradient(155deg,#342d58,#1d2541)}.premium .price{color:#c9b4ff}.hidden{display:none!important}.panel{margin-top:17px;border:1px solid var(--line);background:#142139;border-radius:17px;padding:16px}.panel h2{margin:0 0 12px;font-size:20px}.label{display:block;color:var(--muted);font-size:13px;margin:13px 0 7px}input{width:100%;padding:13px;background:#0d1729;border:1px solid #394c6a;border-radius:11px;color:white;font:inherit;outline:none}input:focus{border-color:var(--blue)}.hint,.notice{margin-top:12px;border:1px solid #304563;background:#14233a;border-radius:12px;padding:12px;color:#b8c8e2;font-size:12px;overflow-wrap:anywhere}.notice.success{border-color:#28664e;color:#a8f0d2}.notice.error{border-color:#74414b;color:#ffc2c2}.product-line{font-weight:800;color:#fff}.muted{color:var(--muted);font-size:13px}.details{white-space:pre-wrap;overflow-wrap:anywhere;background:#0d1729;border:1px solid #394c6a;border-radius:11px;padding:13px;margin-top:12px;line-height:1.6}.secondary{width:100%;border:1px solid #43536e;border-radius:11px;padding:11px;color:#dce8fa;background:#26334a;font-weight:700;margin-top:10px}.back{border:0;background:transparent;color:#7eb6ff;padding:0 0 12px}.order{border:1px solid var(--line);background:#101b2e;border-radius:12px;padding:12px;margin-top:9px}.order strong{display:block}.order small{color:var(--muted)}.foot{text-align:center;color:#71819d;font-size:11px;margin-top:28px}.tab:focus-visible,button:focus-visible{outline:2px solid #91b8ff;outline-offset:2px}
 </style>
 </head>
 <body><main>
 <header class="top"><div class="brand">⭐ Stars Shop 27</div><div class="online">● ONLINE</div></header>
-<div class="eyebrow">TELEGRAM STORE</div><h1>Покупай легко.<br>Получай быстро.</h1><div class="sub">Выбери то, что тебе нужно</div>
-<nav class="tabs"><button class="tab active" data-tab="stars">⭐ Звёзды</button><button class="tab" data-tab="premium">💎 Premium</button></nav>
+<div class="eyebrow">TELEGRAM STORE</div><h1>Покупай легко.<br>Получай быстро.</h1><div class="sub">Выбери продукт и оформи заказ прямо здесь.</div>
+<div id="authNotice" class="notice">Проверяем подключение к Telegram…</div>
+<nav class="tabs"><button class="tab active" data-tab="stars" type="button">⭐ Звёзды</button><button class="tab" data-tab="premium" type="button">💎 Premium</button></nav>
 <section id="stars"><div class="section"><strong>Telegram Stars</strong><span>Выбери количество</span></div><div class="grid">
-<article class="item"><div class="emoji">⭐</div><div class="amount">50 Stars</div><div class="price">10 500 сум</div><button class="buy" data-product="50 Stars">Выбрать</button></article>
-<article class="item"><div class="emoji">⭐</div><div class="amount">100 Stars</div><div class="price">21 000 сум</div><button class="buy" data-product="100 Stars">Выбрать</button></article>
-<article class="item"><div class="emoji">🌟</div><div class="amount">250 Stars</div><div class="price">52 000 сум</div><button class="buy" data-product="250 Stars">Выбрать</button></article>
-<article class="item"><div class="emoji">🌟</div><div class="amount">500 Stars</div><div class="price">105 000 сум</div><button class="buy" data-product="500 Stars">Выбрать</button></article>
+<article class="item"><div class="emoji">⭐</div><div class="amount">50 Stars</div><div class="price">10 500 сум</div><button class="buy" data-product="STARS" data-package="50">Купить</button></article>
+<article class="item"><div class="emoji">⭐</div><div class="amount">100 Stars</div><div class="price">21 000 сум</div><button class="buy" data-product="STARS" data-package="100">Купить</button></article>
+<article class="item"><div class="emoji">🌟</div><div class="amount">250 Stars</div><div class="price">52 000 сум</div><button class="buy" data-product="STARS" data-package="250">Купить</button></article>
+<article class="item"><div class="emoji">🌟</div><div class="amount">500 Stars</div><div class="price">105 000 сум</div><button class="buy" data-product="STARS" data-package="500">Купить</button></article>
 </div></section>
 <section id="premium" class="hidden premium"><div class="section"><strong>Telegram Premium</strong><span>Подписка</span></div><div class="grid">
-<article class="item"><div class="emoji">💎</div><div class="amount">3 месяца</div><div class="price">165 000 сум</div><button class="buy" data-product="Premium 3 месяца">Выбрать</button></article>
-<article class="item"><div class="emoji">💎</div><div class="amount">6 месяцев</div><div class="price">225 000 сум</div><button class="buy" data-product="Premium 6 месяцев">Выбрать</button></article>
-<article class="item"><div class="emoji">👑</div><div class="amount">12 месяцев</div><div class="price">399 000 сум</div><button class="buy" data-product="Premium 12 месяцев">Выбрать</button></article>
+<article class="item"><div class="emoji">💎</div><div class="amount">3 месяца</div><div class="price">165 000 сум</div><button class="buy" data-product="PREMIUM" data-months="3">Купить</button></article>
+<article class="item"><div class="emoji">💎</div><div class="amount">6 месяцев</div><div class="price">225 000 сум</div><button class="buy" data-product="PREMIUM" data-months="6">Купить</button></article>
+<article class="item"><div class="emoji">👑</div><div class="amount">12 месяцев</div><div class="price">399 000 сум</div><button class="buy" data-product="PREMIUM" data-months="12">Купить</button></article>
 </div></section>
-<div class="hint">ℹ️ Это предварительный макет нового оформления. Кнопки пока только показывают выбранный товар — оплата и оформление заказа не подключены.</div>
-<div class="foot">Stars Shop 27 · Мироходец</div>
-</main><div class="toast" id="toast"></div>
+
+<section id="purchasePanel" class="panel hidden">
+<button class="back" id="backToShop" type="button">← Назад к товарам</button>
+<h2>Оформление заказа</h2><div id="selectedProduct" class="product-line"></div>
+<label class="label" for="username">Telegram username получателя</label>
+<input id="username" type="text" placeholder="@username" maxlength="33" autocomplete="off" autocapitalize="none">
+<div class="muted">Введи username того, кому нужно отправить Stars или Premium.</div>
+<button id="checkButton" class="primary" style="margin-top:14px" type="button">Проверить username</button>
+<div id="checkMessage" class="notice hidden" role="status"></div>
+<div id="recipientCard" class="notice hidden"></div>
+<button id="createButton" class="primary hidden" style="margin-top:12px" type="button">Создать заказ и перейти к оплате</button>
+</section>
+
+<section id="paymentPanel" class="panel hidden">
+<button class="back" id="backFromPayment" type="button">← Назад к магазину</button>
+<h2>Оплата заказа</h2><div id="orderSummary" class="muted"></div>
+<div class="notice">Переведи точную сумму по реквизитам ниже. После перевода нажми «Я оплатил». Администратор проверит поступление денег.</div>
+<div id="paymentDetails" class="details"></div>
+<button id="copyButton" class="secondary" type="button">Скопировать реквизиты</button>
+<button id="paidButton" class="primary" style="margin-top:12px" type="button">Я оплатил</button>
+<div id="paymentMessage" class="notice hidden" role="status"></div>
+</section>
+
+<section id="historyPanel" class="panel hidden">
+<h2>Мои заказы</h2><button class="secondary" id="refreshHistory" type="button">Обновить</button>
+<div id="historyList" class="muted" style="margin-top:12px"></div>
+</section>
+<div class="hint">Заказы оформляются через сервер Stars Shop 27. Не отправляй деньги, пока не увидишь созданный заказ и реквизиты оплаты.</div>
+<div class="foot">Stars Shop 27 · Новый интерфейс</div>
+</main>
 <script>
-const tabs=[...document.querySelectorAll('.tab')];tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.toggle('active',x===t));document.querySelector('#stars').classList.toggle('hidden',t.dataset.tab!=='stars');document.querySelector('#premium').classList.toggle('hidden',t.dataset.tab!=='premium')}));
-let timer;document.querySelectorAll('.buy').forEach(b=>b.addEventListener('click',()=>{const el=document.querySelector('#toast');el.textContent='Выбрано: '+b.dataset.product;el.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>el.classList.remove('show'),2100)}));
-</script></body></html>
+const API_BASE = "https://starsshopbot27.onrender.com";
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+const $ = id => document.getElementById(id);
+const state = { product: null, packageId: null, months: null, username: "", checked: false, order: null, paymentDetails: "" };
+function initData(){ return tg?.initData || ""; }
+function headers(){ return {"Content-Type":"application/json","X-Telegram-Init-Data":initData()}; }
+function showNotice(id,message,type=""){ const el=$(id); el.textContent=message; el.className="notice"+(type?" "+type:""); el.classList.remove("hidden"); }
+function hide(id){ $(id).classList.add("hidden"); }
+function formatPrice(value){ return new Intl.NumberFormat("ru-RU").format(Number(value)||0)+" сум"; }
+function productTitle(){ return state.product==="STARS" ? state.packageId+" Telegram Stars" : "Telegram Premium на "+state.months+" месяцев"; }
+function showShop(){ hide("purchasePanel");hide("paymentPanel");hide("historyPanel");$("stars").classList.toggle("hidden",document.querySelector(".tab.active").dataset.tab!=="stars"); }
+function openPurchase(button){
+ state.product=button.dataset.product; state.packageId=button.dataset.package||null; state.months=button.dataset.months?Number(button.dataset.months):null; state.checked=false;state.username="";state.order=null;
+ $("selectedProduct").textContent=productTitle();$("username").value="";
+ hide("checkMessage");hide("recipientCard");hide("createButton");hide("paymentPanel");hide("historyPanel");
+ $("purchasePanel").classList.remove("hidden");$("purchasePanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>{
+ document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t===tab));
+ $("stars").classList.toggle("hidden",tab.dataset.tab!=="stars");$("premium").classList.toggle("hidden",tab.dataset.tab!=="premium");
+ hide("purchasePanel");hide("paymentPanel");hide("historyPanel");
+}));
+document.querySelectorAll(".buy").forEach(button=>button.addEventListener("click",()=>openPurchase(button)));
+$("backToShop").addEventListener("click",showShop);
+$("backFromPayment").addEventListener("click",()=>{hide("paymentPanel");$("purchasePanel").classList.remove("hidden");});
+$("username").addEventListener("input",()=>{state.checked=false;hide("recipientCard");hide("createButton");hide("checkMessage");});
+function normalizedUsername(value){return value.trim().replace(/^@+/,"");}
+async function api(path,options={}){
+ if(!initData()) throw new Error("Открой магазин через кнопку бота в Telegram — в обычном браузере оформить заказ нельзя.");
+ const response=await fetch(API_BASE+path,{...options,headers:{...headers(),...(options.headers||{})}});
+ let data={};try{data=await response.json();}catch{}
+ if(!response.ok) throw new Error(data.error||data.message||"Ошибка сервера. Попробуй позже.");
+ return data;
+}
+$("checkButton").addEventListener("click",async()=>{
+ const username=normalizedUsername($("username").value);
+ if(!/^[A-Za-z0-9_]{5,32}$/.test(username)){showNotice("checkMessage","Username должен содержать от 5 до 32 символов: латинские буквы, цифры или _.","error");return;}
+ const button=$("checkButton");button.disabled=true;button.textContent="Проверяем…";state.checked=false;hide("createButton");hide("recipientCard");
+ try{
+  const payload={username,product:state.product,months:state.months};
+  const data=await api("/api/recipient/check",{method:"POST",body:JSON.stringify(payload)});
+  if(!data.eligible) throw new Error(data.error||"Этот получатель не подходит.");
+  state.username=username;state.checked=true;
+  showNotice("recipientCard",(data.name?data.name+" · ":"")+"@"+username+"\nПолучатель проверен. Можно создавать заказ.","success");
+  showNotice("checkMessage","Проверка прошла успешно.","success");$("createButton").classList.remove("hidden");
+ }catch(error){showNotice("checkMessage",error.message,"error");}
+ finally{button.disabled=false;button.textContent="Проверить username";}
+});
+$("createButton").addEventListener("click",async()=>{
+ if(!state.checked||!state.username){showNotice("checkMessage","Сначала проверь username.","error");return;}
+ const button=$("createButton");button.disabled=true;button.textContent="Создаём заказ…";
+ try{
+  const payload={product:state.product,username:state.username};
+  if(state.product==="STARS")payload.package_id=state.packageId;else payload.months=state.months;
+  const data=await api("/api/orders",{method:"POST",body:JSON.stringify(payload)});
+  state.order=data.order||null;state.paymentDetails=data.payment_details||"";
+  if(!state.order?.id)throw new Error("Сервер не вернул номер заказа. Обратись в поддержку и не повторяй оплату.");
+  $("orderSummary").textContent=productTitle()+" · получатель @"+state.username+" · "+formatPrice(state.order.price)+" · № "+state.order.id;
+  $("paymentDetails").textContent=state.paymentDetails||"Реквизиты не получены. Не отправляй деньги — обратись в поддержку.";
+  hide("purchasePanel");$("paymentPanel").classList.remove("hidden");$("paymentPanel").scrollIntoView({behavior:"smooth",block:"start"});
+  if(!state.paymentDetails){$("paidButton").disabled=true;showNotice("paymentMessage","Реквизиты оплаты отсутствуют. Не переводи деньги.","error");}
+ }catch(error){showNotice("checkMessage",error.message,"error");}
+ finally{button.disabled=false;button.textContent="Создать заказ и перейти к оплате";}
+});
+$("copyButton").addEventListener("click",async()=>{
+ if(!state.paymentDetails){showNotice("paymentMessage","Реквизиты отсутствуют.","error");return;}
+ try{await navigator.clipboard.writeText(state.paymentDetails);showNotice("paymentMessage","Реквизиты скопированы.","success");}
+ catch{const field=document.createElement("textarea");field.value=state.paymentDetails;document.body.appendChild(field);field.select();document.execCommand("copy");field.remove();showNotice("paymentMessage","Реквизиты скопированы.","success");}
+});
+$("paidButton").addEventListener("click",async()=>{
+ if(!state.order?.id)return;
+ const button=$("paidButton");button.disabled=true;button.textContent="Отправляем…";
+ try{
+  const data=await api("/api/orders/"+encodeURIComponent(state.order.id)+"/paid",{method:"POST",body:JSON.stringify({})});
+  showNotice("paymentMessage",data.message||"Сообщение об оплате отправлено администратору.","success");button.textContent="Заявка отправлена";
+ }catch(error){showNotice("paymentMessage",error.message,"error");button.disabled=false;button.textContent="Я оплатил";}
+});
+$("refreshHistory").addEventListener("click",loadHistory);
+async function loadHistory(){
+ const list=$("historyList");list.textContent="Загружаем…";$("historyPanel").classList.remove("hidden");
+ try{
+  const data=await api("/api/orders");
+  if(!data.orders?.length){list.textContent="Пока заказов нет.";return;}
+  list.innerHTML="";
+  data.orders.forEach(order=>{
+   const item=document.createElement("div");item.className="order";
+   const title=order.product==="PREMIUM"?"Premium · "+order.months+" мес.":(order.quantity||"")+" Stars";
+   const strong=document.createElement("strong");strong.textContent=title+" · "+formatPrice(order.price);
+   const small=document.createElement("small");small.textContent="@"+order.username+" · "+(order.status||"Статус неизвестен")+" · "+(order.id||"");
+   item.append(strong,small);list.appendChild(item);
+  });
+ }catch(error){list.textContent=error.message;}
+}
+const auth=$("authNotice");
+if(initData()){
+ const user=tg?.initDataUnsafe?.user;
+ auth.textContent="Telegram подключён"+(user?.first_name?", "+user.first_name:"")+". Можно оформлять заказ.";
+ auth.classList.add("success");
+}else{
+ auth.textContent="Это ссылка-предпросмотр. Для оформления заказа открой магазин из Telegram-бота.";
+ auth.classList.add("error");
+}
+</script>
+</body></html>

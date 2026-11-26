@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101522">
+<title>Stars Shop 27 — новый интерфейс</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1423;--panel:#17243a;--line:#2b3b58;--muted:#aab8d0;--blue:#438fff;--mint:#61e0b1}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#254477 0,transparent 48%),var(--bg);color:#f6f8ff;font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:520px;margin:auto;padding:22px 17px 42px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}.brand{font-weight:850;font-size:19px}.online{font-size:11px;color:var(--mint);letter-spacing:1.2px}.eyebrow{font-size:11px;letter-spacing:2px;color:#91b8ff;font-weight:800}h1{font-size:30px;line-height:1.12;margin:9px 0}.sub{color:var(--muted);font-size:14px}.tabs{display:flex;gap:8px;margin:24px 0 18px;padding:5px;border:1px solid var(--line);border-radius:15px;background:#111c2e}.tab{flex:1;border:0;border-radius:10px;padding:12px 5px;background:transparent;color:#9eacc4;font-weight:700}.tab.active{background:#2a4165;color:white}.section{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 12px}.section strong{font-size:17px}.section span{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.item{border:1px solid var(--line);border-radius:18px;padding:16px 13px;background:linear-gradient(155deg,#1b2b46,#141f33);text-align:center;box-shadow:0 8px 24px #0002}.emoji{font-size:30px}.amount{font-size:21px;font-weight:850;margin:7px 0 2px}.price{color:var(--mint);font-weight:800;font-size:15px;margin:7px 0 13px}.buy{width:100%;border:0;border-radius:11px;padding:12px;background:linear-gradient(100deg,#3988ff,#5579ff);color:white;font-weight:800}.buy:active{transform:scale(.98)}.premium .item{background:linear-gradient(155deg,#342d58,#1d2541)}.premium .price{color:#c9b4ff}.hint{margin-top:18px;border:1px solid #304563;background:#14233a;border-radius:14px;padding:13px;color:#b8c8e2;font-size:12px}.foot{text-align:center;color:#71819d;font-size:11px;margin-top:28px}.hidden{display:none}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#263b5b;border:1px solid #58739d;border-radius:14px;padding:12px 17px;box-shadow:0 8px 30px #0008;transition:.2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body><main>
+<header class="top"><div class="brand">⭐ Stars Shop 27</div><div class="online">● ONLINE</div></header>
+<div class="eyebrow">TELEGRAM STORE</div><h1>Покупай легко.<br>Получай быстро.</h1><div class="sub">Выбери то, что тебе нужно</div>
+<nav class="tabs"><button class="tab active" data-tab="stars">⭐ Звёзды</button><button class="tab" data-tab="premium">💎 Premium</button></nav>
+<section id="stars"><div class="section"><strong>Telegram Stars</strong><span>Выбери количество</span></div><div class="grid">
+<article class="item"><div class="emoji">⭐</div><div class="amount">50 Stars</div><div class="price">10 500 сум</div><button class="buy" data-product="50 Stars">Выбрать</button></article>
+<article class="item"><div class="emoji">⭐</div><div class="amount">100 Stars</div><div class="price">21 000 сум</div><button class="buy" data-product="100 Stars">Выбрать</button></article>
+<article class="item"><div class="emoji">🌟</div><div class="amount">250 Stars</div><div class="price">52 000 сум</div><button class="buy" data-product="250 Stars">Выбрать</button></article>
+<article class="item"><div class="emoji">🌟</div><div class="amount">500 Stars</div><div class="price">105 000 сум</div><button class="buy" data-product="500 Stars">Выбрать</button></article>
+</div></section>
+<section id="premium" class="hidden premium"><div class="section"><strong>Telegram Premium</strong><span>Подписка</span></div><div class="grid">
+<article class="item"><div class="emoji">💎</div><div class="amount">3 месяца</div><div class="price">165 000 сум</div><button class="buy" data-product="Premium 3 месяца">Выбрать</button></article>
+<article class="item"><div class="emoji">💎</div><div class="amount">6 месяцев</div><div class="price">225 000 сум</div><button class="buy" data-product="Premium 6 месяцев">Выбрать</button></article>
+<article class="item"><div class="emoji">👑</div><div class="amount">12 месяцев</div><div class="price">399 000 сум</div><button class="buy" data-product="Premium 12 месяцев">Выбрать</button></article>
+</div></section>
+<div class="hint">ℹ️ Это предварительный макет нового оформления. Кнопки пока только показывают выбранный товар — оплата и оформление заказа не подключены.</div>
+<div class="foot">Stars Shop 27 · Мироходец</div>
+</main><div class="toast" id="toast"></div>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.toggle('active',x===t));document.querySelector('#stars').classList.toggle('hidden',t.dataset.tab!=='stars');document.querySelector('#premium').classList.toggle('hidden',t.dataset.tab!=='premium')}));
+let timer;document.querySelectorAll('.buy').forEach(b=>b.addEventListener('click',()=>{const el=document.querySelector('#toast');el.textContent='Выбрано: '+b.dataset.product;el.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>el.classList.remove('show'),2100)}));
+</script></body></html>

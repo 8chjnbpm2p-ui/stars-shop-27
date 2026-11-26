@@ -70,7 +70,7 @@ function showNotice(id,message,type=""){ const el=$(id); el.textContent=message;
 function hide(id){ $(id).classList.add("hidden"); }
 function formatPrice(value){ return new Intl.NumberFormat("ru-RU").format(Number(value)||0)+" сум"; }
 function productTitle(){ return state.product==="STARS" ? state.packageId+" Telegram Stars" : "Telegram Premium на "+state.months+" месяцев"; }
-function showShop(){ hide("purchasePanel");hide("paymentPanel");hide("historyPanel");$("stars").classList.toggle("hidden",document.querySelector(".tab.active").dataset.tab!=="stars"); }
+function showShop(){ hide("purchasePanel");hide("paymentPanel");hide("historyPanel");const active=document.querySelector(".tab.active").dataset.tab;$("stars").classList.toggle("hidden",active!=="stars");$("premium").classList.toggle("hidden",active!=="premium"); }
 function openPurchase(button){
  state.product=button.dataset.product; state.packageId=button.dataset.package||null; state.months=button.dataset.months?Number(button.dataset.months):null; state.checked=false;state.username="";state.order=null;
  $("selectedProduct").textContent=productTitle();$("username").value="";
